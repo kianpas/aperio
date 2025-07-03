@@ -1,0 +1,60 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.4'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.wb'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	// 기본 라이브러리
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+
+	// DB 연결에 필요한 라이브러리
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+//	implementation 'org.springframework.boot:spring-boot-starter-jdbc'			// jdbc 드라이버(jdbc 적용 DB와 연결하기 위한 필수 라이브러리)
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'		// JPA 드라이버(JPA 적용 DB와 연결하기 위한 필수 라이브러리, jdbc도 포함되어 있음)
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'	// reids 연동
+	// 유틸
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'				// 소스 수정 시 재기동이 자동으로 되게 하는 라이브러리
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'net.nurigo:sdk:4.3.2'										// 휴대폰 본인인증(coolsms) 라이브러리
+	implementation 'org.springframework.boot:spring-boot-starter-mail'			// 메일 발송 라이브러리
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'	// OAuth2 클라이언트 라이브러리(소셜로그인에 사용)
+
+	//타임리프 + 시큐리티
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

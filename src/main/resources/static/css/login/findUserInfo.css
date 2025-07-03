@@ -1,0 +1,270 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/*
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+}
+*/
+
+.container {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+    margin: 40px auto; /* 상하 여백 및 가로 중앙 정렬 */
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+}
+
+h2 {
+    color: #34495e;
+    margin-bottom: 20px;
+    font-size: 1.4em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+h3 { /* 새 비밀번호 섹션 제목 */
+    color: #34495e;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    text-align: left;
+}
+
+
+/* Tabs */
+.tabs {
+    display: flex;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.tab-link {
+    flex-grow: 1;
+    padding: 12px 15px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    font-size: 1em;
+    color: #7f8c8d;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    border-bottom: 3px solid transparent; /* For active indicator */
+    margin-bottom: -2px; /* Overlap container border */
+}
+
+.tab-link.active {
+    color: #3498db;
+    border-bottom-color: #3498db;
+    font-weight: 600;
+}
+
+.tab-link:hover:not(.active) {
+    color: #5d6d7e;
+}
+
+.tab-content {
+    display: none; /* Hidden by default */
+    animation: fadeIn 0.5s ease; /* Simple fade-in animation */
+}
+
+.tab-content.active {
+    display: block; /* Show active tab content */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+
+/* Form Styles */
+.form-group {
+    /* margin-bottom: 18px; */ /* 기존 값 */
+    margin-bottom: 10px; /* 수정: 입력 필드 그룹 간 하단 여백 줄임 */
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.95em;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="number"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+/* 입력 비활성화 스타일 */
+input:disabled {
+    background-color: #ecf0f1;
+    cursor: not-allowed;
+    color: #7f8c8d;
+}
+
+/* OTP 섹션 공통 스타일 */
+.otp-section {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0s linear 0.5s;
+    margin-top: 15px;
+}
+
+.otp-section.visible {
+    max-height: 150px;
+    opacity: 1;
+    visibility: visible;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0s linear 0s;
+}
+
+/* 새 비밀번호 섹션 스타일 */
+.new-password-section {
+    /*
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0s linear 0.5s;
+
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px;
+    */
+
+}
+
+.new-password-section.visible {
+    max-height: 300px;
+    opacity: 1;
+    visibility: visible;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0s linear 0s;
+}
+
+
+/* 타이머 공통 스타일 */
+.otp-timer {
+    display: block;
+    margin-top: 8px;
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 0.9em;
+    text-align: right;
+    height: auto;
+    min-width: auto;
+}
+
+/* 비밀번호 찾기 안내 문구 */
+.info-text {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+/* 메시지 영역 스타일 */
+.result-message,
+.error-message {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 0.95em;
+    text-align: center;
+}
+.result-message {
+    background-color: #eafaf1;
+    border: 1px solid #abebc6;
+    color: #1e8449;
+}
+.error-message {
+    background-color: #feeeee;
+    border: 1px solid #f5b7b1;
+    color: #c0392b;
+}
+
+/* 하단 액션 버튼 영역 스타일 */
+.form-actions {
+    /* margin-top: 15px; */ /* 이전 수정 값 */
+    margin-top: 5px; /* 수정: 메시지 영역과 버튼 사이 간격 더 줄임 */
+}
+
+
+/* 모든 폼 하단 버튼 공통 스타일 */
+.form-actions button {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.form-actions button:hover {
+    background-color: #2980b9;
+}
+.form-actions button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+
+/* 하단 링크 영역 스타일 */
+.links {
+    margin-top: 25px;
+    font-size: 0.9em;
+}
+.links a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.links a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+.links .separator {
+    margin: 0 10px;
+    color: #ccc;
+}
+
+/* Utility */
+.hidden {
+    display: none;
+}

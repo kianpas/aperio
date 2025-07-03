@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin/admin}">
+<head>
+  <title>관리자 화면</title>
+  <link rel="stylesheet" th:href="@{/css/admin/main/main-manage.css}">
+</head>
+<body>
+
+<section layout:fragment="admin-content">   <!-- Main Content -->
+
+  <h1 class="main-title">메인 관리 화면</h1>
+  <div class="container">
+    <h1><img src="icon-banner.png" alt="" class="title-icon"> 메인화면 배너 관리</h1>
+
+    <div class="toolbar">
+      <button class="btn btn-primary" id="add-banner-btn">+ 새 배너 등록</button>
+      <!-- Optional: Add search/filter elements here -->
+    </div>
+
+    <div class="banner-list-container">
+      <h2>등록된 배너 목록 (드래그하여 순서 변경)</h2>
+      <table class="banner-list">
+        <thead>
+        <tr>
+          <th class="col-order">순서</th>
+          <th class="col-preview">미리보기</th>
+          <th class="col-title">배너명/대체 텍스트</th>
+          <th class="col-link">링크 URL</th>
+          <th class="col-status">상태</th>
+          <th class="col-actions">관리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Sample Banner Row 1 (Active) -->
+        <tr class="banner-item draggable" data-id="1">
+          <td class="order-handle"><span>↕️</span> 1</td>
+          <td><img src="https://via.placeholder.com/100x30/eee/999?text=Banner1" alt="여름 특별 할인 썸네일" class="banner-thumbnail"></td>
+          <td>여름 특별 할인</td>
+          <td><a href="/event/summer" target="_blank" title="/event/summer">/event/summer</a></td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" checked data-id="1" class="status-toggle">
+              <span class="slider round"></span>
+            </label>
+            <span class="status-text status-active">활성</span>
+          </td>
+          <td class="actions">
+            <button class="btn btn-secondary btn-sm edit-btn" data-id="1">수정</button>
+            <button class="btn btn-danger btn-sm delete-btn" data-id="1">삭제</button>
+          </td>
+        </tr>
+
+        <!-- Sample Banner Row 2 (Inactive) -->
+        <tr class="banner-item draggable" data-id="2">
+          <td class="order-handle"><span>↕️</span> 2</td>
+          <td><img src="https://via.placeholder.com/100x30/eee/999?text=Banner2" alt="신규 회원가입 혜택 썸네일" class="banner-thumbnail"></td>
+          <td>신규 회원가입 혜택</td>
+          <td><a href="/signup" target="_blank" title="/signup">/signup</a></td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" data-id="2" class="status-toggle">
+              <span class="slider round"></span>
+            </label>
+            <span class="status-text status-inactive">비활성</span>
+          </td>
+          <td class="actions">
+            <button class="btn btn-secondary btn-sm edit-btn" data-id="2">수정</button>
+            <button class="btn btn-danger btn-sm delete-btn" data-id="2">삭제</button>
+          </td>
+        </tr>
+
+        <!-- Sample Banner Row 3 (Active) -->
+        <tr class="banner-item draggable" data-id="3">
+          <td class="order-handle"><span>↕️</span> 3</td>
+          <td><img src="https://via.placeholder.com/100x30/eee/999?text=Banner3" alt="가을 신상품 출시 썸네일" class="banner-thumbnail"></td>
+          <td>가을 신상품 출시</td>
+          <td><a href="/products/new?season=fw" target="_blank" title="/products/new?season=fw">/products/new...</a></td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" checked data-id="3" class="status-toggle">
+              <span class="slider round"></span>
+            </label>
+            <span class="status-text status-active">활성</span>
+          </td>
+          <td class="actions">
+            <button class="btn btn-secondary btn-sm edit-btn" data-id="3">수정</button>
+            <button class="btn btn-danger btn-sm delete-btn" data-id="3">삭제</button>
+          </td>
+        </tr>
+        <!-- Add more banner rows dynamically -->
+        </tbody>
+      </table>
+      <div class="list-actions">
+        <button class="btn btn-secondary" id="save-order-btn">순서 저장</button>
+        <small>* 배너 순서를 변경한 후 '순서 저장' 버튼을 눌러주세요.</small>
+      </div>
+    </div>
+
+    <!-- Banner Add/Edit Form (Initially Hidden - Use JS to show/hide) -->
+    <div id="banner-form-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close-btn">×</span>
+        <h2 id="form-title">새 배너 등록</h2>
+        <form id="banner-form">
+          <input type="hidden" id="banner-id" name="bannerId"> <!-- For editing -->
+
+          <div class="form-group">
+            <label for="banner-image">배너 이미지 (권장: 1920x500px):</label>
+            <input type="file" id="banner-image" name="bannerImage" accept="image/*">
+            <img id="image-preview" src="#" alt="이미지 미리보기" class="image-preview" style="display: none;">
+          </div>
+
+          <div class="form-group">
+            <label for="banner-title">배너명 / 대체 텍스트 <span class="required">*</span>:</label>
+            <input type="text" id="banner-title" name="bannerTitle" required>
+            <small>배너를 설명하는 문구 또는 이미지 대체 텍스트 (웹 접근성)</small>
+          </div>
+
+          <div class="form-group">
+            <label for="banner-url">링크 URL:</label>
+            <input type="url" id="banner-url" name="bannerUrl" placeholder="https://example.com/page">
+            <small>배너 클릭 시 이동할 페이지 주소 (선택)</small>
+          </div>
+
+          <div class="form-group">
+            <label>링크 타겟:</label>
+            <label class="radio-label"><input type="radio" name="bannerTarget" value="_blank" checked> 새 창 (_blank)</label>
+            <label class="radio-label"><input type="radio" name="bannerTarget" value="_self"> 현재 창 (_self)</label>
+          </div>
+
+          <div class="form-group">
+            <label>상태:</label>
+            <label class="radio-label"><input type="radio" name="bannerStatus" value="active" checked> 활성</label>
+            <label class="radio-label"><input type="radio" name="bannerStatus" value="inactive"> 비활성</label>
+          </div>
+
+          <div class="form-group date-group">
+            <div>
+              <label for="start-date">노출 시작일:</label>
+              <input type="date" id="start-date" name="startDate">
+            </div>
+            <div>
+              <label for="end-date">노출 종료일:</label>
+              <input type="date" id="end-date" name="endDate">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">저장</button>
+            <button type="button" class="btn btn-secondary cancel-btn">취소</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div> <!-- /container -->
+</section >
+</body>
+</html>

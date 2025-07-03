@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin/admin}">
+<head>
+  <title>관리자 화면</title>
+  <link rel="stylesheet" th:href="@{/css/admin/role-manage.css}">
+</head>
+<body>
+
+<section layout:fragment="admin-content">   <!-- Main Content -->
+
+  <h1 class="main-title">역할 관리 화면</h1>
+
+  <div class="content-container">
+    <!-- 상단 검색 영역 -->
+    <form id="searchForm" class="search-area">
+      <div class="form-group">
+        <label for="searchRoleName">역할 명</label>
+        <input type="text" id="searchRoleName" name="searchRoleName">
+        <button type="submit" id="searchBtn">검색</button> <!-- 2. 검색 버튼 -->
+      </div>
+      <!-- 1. 등록 버튼 (검색 영역 오른쪽에 배치) -->
+      <button type="button" id="registerBtn" class="register-button"
+              onclick="location.href='/admin/roles/regist'">역할 등록</button>
+    </form>
+
+    <!-- 결과 테이블 영역 -->
+    <div class="table-area">
+      <table class="results-table">
+        <thead>
+        <tr>
+          <th scope="col">역할번호</th>
+          <th scope="col">역할코드</th>
+          <th scope="col">역할명</th>
+          <th scope="col">역할설명</th>
+          <th scope="col">등록일</th>
+          <th scope="col">관리</th>
+        </tr>
+        </thead>
+        <tbody id="resultsBody">
+        <!-- 검색 결과가 여기에 동적으로 추가됩니다 -->
+        <!-- 검색 결과가 여기에 동적으로 추가됩니다 -->
+        <tr th:each="role : ${adminRoleList}">
+          <td th:text="${role.roleId}"></td>
+          <td th:text="${role.roleCode}"></td>
+          <td th:text="${role.roleName}"></td>
+          <td th:text="${role.description}"></td>
+          <td th:text="${#temporals.format(role.createDt, 'yyyy.MM.dd HH:mm')}"></td>
+          <td>
+            <a th:href="@{/admin/roles/edit/{id}(id=${role.roleId})}" class="btn-edit">수정</a>
+            <button type="button" class="btn-delete" th:data-role-id="${role.roleId}">삭제</button>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(adminRoleList)}">
+          <td colspan="6" class="no-data">조회된 역할 목록이 없습니다.</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 페이지네이션 영역 -->
+    <div class="pagination-area">
+      <a href="#" class="page-link current-page">1</a>
+      <!-- <a href="#" class="page-link">2</a> -->
+      <!-- <a href="#" class="page-link">3</a> -->
+    </div>
+  </div>
+</section >
+<th:block layout:fragment="page-script">
+  <!-- 커스텀 JavaScript -->
+  <script th:src="@{/js/admin/role/role-manage.js}"></script>
+</th:block>
+</body>
+</html>

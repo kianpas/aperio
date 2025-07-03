@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin/admin}">
+<head>
+  <title>관리자 화면</title>
+  <link rel="stylesheet" th:href="@{/css/admin/dashboard/dashboard.css}">
+</head>
+<body>
+
+<section layout:fragment="admin-content">   <!-- Main Content -->
+
+  <h1 class="main-title">관리자 화면</h1>
+  <!-- 메인 콘텐츠 -->
+  <div class="content">
+    <div class="card">
+      <div class="card-title">총 예약 건수</div>
+      <div th:text="${totalReservations}">42건</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">사용된 쿠폰 수</div>
+      <div th:text="${usedCoupons}">15건</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">신규 회원 수</div>
+      <div th:text="${newUsers}">8명</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">최근 예약 목록</div>
+      <div class="table-responsive">
+        <table class="reservation-table">
+          <thead>
+          <tr>
+            <th>예약 번호</th>
+            <th>예약 일시</th>
+            <th>좌석명</th>
+            <th>이용 시간</th>
+            <th>예약 상태</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr th:each="res : ${recentReservations}">
+              <td th:text="${res.userName}">홍길동</td>
+              <td th:text="${res.roomName}">회의실 A</td>
+              <td th:text="${res.dateTime}">2025-04-30 14:00</td>
+              <td th:text="${res.status}">확정</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section >
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/mypage}">
+<head>
+  <title>마이페이지 화면</title>
+  <link rel="stylesheet" th:href="@{/css/mypage/dashboard.css}">
+</head>
+<body>
+
+<section layout:fragment="mypage-content">   <!-- Main Content -->
+<!--  <h1 class="main-title">회원 정보</h1>-->
+  <!-- Detailed Information Card -->
+  <div class="detail-card" th:object="${userInfo}">
+    <h2 class="card-title">
+      <i class="fa-solid fa-user-circle card-title-icon"></i>
+      <span th:text="*{name}">홍길동</span>님의 상세 정보
+    </h2>
+
+    <hr class="card-divider">
+
+    <section class="info-section">
+      <h3 class="section-title">기본 정보</h3>
+      <div class="info-grid">
+        <p>
+          <i class="fa-solid fa-envelope info-icon"></i>
+          <strong>이메일:</strong>
+          <span th:text="*{email}">user@example.com</span>
+        </p>
+        <p>
+          <i class="fa-solid fa-user info-icon"></i>
+          <strong>이름:</strong>
+          <span th:text="*{name}">홍길동</span>
+        </p>
+        <p>
+          <i class="fa-solid fa-phone info-icon"></i>
+          <strong>휴대폰 번호:</strong>
+          <span th:text="*{phoneNo}">010-****-1234</span>
+        </p>
+        <p>
+          <i class="fa-solid fa-calendar-alt info-icon"></i>
+          <strong>가입일:</strong>
+          <span th:text="*{#temporals.format(createDt, 'yyyy-MM-dd')}">2024-01-15</span>
+        </p>
+
+      </div>
+    </section>
+
+    <hr class="card-divider">
+
+    <section class="info-section">
+      <h3 class="section-title">최근 예약 목록</h3>
+      <div class="table-responsive">
+        <table class="reservation-table">
+          <thead>
+          <tr>
+            <th>예약 번호</th>
+            <th>예약 일시</th>
+            <th>좌석명</th>
+            <th>이용 시간</th>
+            <th>예약 상태</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="card-footer">
+        <button type="button" class="btn btn-secondary" onclick="location.href='/mypage/edit'">정보수정</button>
+        <button type="button" class="btn btn-danger" onclick="location.href='/mypage/confirmAccountDeletion'">회원 탈퇴</button> <!-- 회원 탈퇴 확인 함수 호출 예시 -->
+      </div>
+
+    </section>
+  </div><!-- 유저 객체 마지막 -->
+</section >
+</body>
+</html>
