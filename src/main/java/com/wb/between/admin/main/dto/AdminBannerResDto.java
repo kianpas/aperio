@@ -30,9 +30,9 @@ public class AdminBannerResDto {
 
     public static AdminBannerResDto from(Banner banner) {
             return AdminBannerResDto.builder()
-                .bNo(banner.getBNo())
-                .bTitle(banner.getBTitle())
-                .bImageUrl(banner.getBImageUrl())
+                .bNo(banner.getBannerNo())
+                .bTitle(banner.getBannerTitle())
+                .bImageUrl(banner.getBannerImageUrl())
                 .startDt(banner.getStartDt())
                 .endDt(banner.getEndDt())
                 .register(banner.getRegister())

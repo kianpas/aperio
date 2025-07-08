@@ -13,11 +13,11 @@ public class Banner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bNo;
+    private Long bannerNo;
 
-    private String bTitle;
+    private String bannerTitle;
 
-    private String bImageUrl;
+    private String bannerImageUrl;
 
     private Date startDt;
 
