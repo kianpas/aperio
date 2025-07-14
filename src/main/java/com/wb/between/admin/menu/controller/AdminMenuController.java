@@ -1,6 +1,6 @@
 package com.wb.between.admin.menu.controller;
 
-import com.wb.between.user.domain.User;
+import com.wb.between.common.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

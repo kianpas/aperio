@@ -1,7 +1,6 @@
 package com.wb.between.admin.coupon.dto;
 
-import com.wb.between.coupon.domain.Coupon;
-import jakarta.persistence.Entity;
+import com.wb.between.common.entity.Coupon;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;

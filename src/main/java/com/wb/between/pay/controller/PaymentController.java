@@ -8,7 +8,7 @@ import com.wb.between.pay.service.PaymentService;
 import com.wb.between.reservation.reserve.domain.Reservation;
 import com.wb.between.reservation.reserve.dto.ReservationRequestDto;
 import com.wb.between.reservation.reserve.service.ReservationService;
-import com.wb.between.user.domain.User;
+import com.wb.between.common.entity.User;
 import com.wb.between.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/payment/kakao") // 카카오페이 관련 API 경로

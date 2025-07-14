@@ -1,14 +1,12 @@
 package com.wb.between.admin.coupon.dto;
 
-import com.wb.between.coupon.domain.Coupon;
+import com.wb.between.common.entity.Coupon;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter

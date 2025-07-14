@@ -1,7 +1,7 @@
 package com.wb.between.usercoupon.domain;
 
-import com.wb.between.coupon.domain.Coupon;
-import com.wb.between.user.domain.User;
+import com.wb.between.common.entity.Coupon;
+import com.wb.between.common.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.wb.between.user.domain;
+package com.wb.between.common.entity;
 
 import com.wb.between.usercoupon.domain.UserCoupon;
 import com.wb.between.userrole.domain.UserRole;

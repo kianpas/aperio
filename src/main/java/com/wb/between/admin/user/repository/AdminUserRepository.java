@@ -1,6 +1,6 @@
 package com.wb.between.admin.user.repository;
 
-import com.wb.between.user.domain.User;
+import com.wb.between.common.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

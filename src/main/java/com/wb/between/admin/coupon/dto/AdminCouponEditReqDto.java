@@ -1,6 +1,6 @@
 package com.wb.between.admin.coupon.dto;
 
-import com.wb.between.coupon.domain.Coupon;
+import com.wb.between.common.entity.Coupon;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

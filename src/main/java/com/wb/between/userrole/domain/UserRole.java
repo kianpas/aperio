@@ -1,7 +1,7 @@
 package com.wb.between.userrole.domain;
 
 import com.wb.between.admin.role.domain.Role;
-import com.wb.between.user.domain.User;
+import com.wb.between.common.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

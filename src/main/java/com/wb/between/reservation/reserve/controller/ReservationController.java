@@ -1,12 +1,11 @@
 package com.wb.between.reservation.reserve.controller;
 
-import com.wb.between.pay.domain.Payment;
 import com.wb.between.pay.repository.PaymentRepository;
 import com.wb.between.reservation.reserve.domain.Reservation;
 import com.wb.between.reservation.reserve.repository.ReservationRepository;
 import com.wb.between.reservation.seat.domain.Seat;
 import com.wb.between.reservation.seat.repository.SeatRepository;
-import com.wb.between.user.domain.User;
+import com.wb.between.common.entity.User;
 import com.wb.between.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

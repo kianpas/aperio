@@ -1,7 +1,6 @@
 package com.wb.between.admin.reservation.repository;
 
 import com.wb.between.reservation.reserve.domain.Reservation;
-import com.wb.between.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

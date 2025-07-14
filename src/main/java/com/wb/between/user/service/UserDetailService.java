@@ -1,20 +1,14 @@
 package com.wb.between.user.service;
 
 
-import com.wb.between.admin.role.domain.Role;
-import com.wb.between.user.domain.User;
+import com.wb.between.common.entity.User;
 import com.wb.between.user.repository.UserRepository;
 import com.wb.between.userrole.domain.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor

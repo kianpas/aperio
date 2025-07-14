@@ -4,7 +4,7 @@ import com.wb.between.common.exception.CustomException;
 import com.wb.between.mypage.dto.*;
 import com.wb.between.mypage.service.MyReservationService;
 import com.wb.between.mypage.service.MypageService;
-import com.wb.between.user.domain.User;
+import com.wb.between.common.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

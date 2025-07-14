@@ -5,7 +5,7 @@ import com.wb.between.reservation.reserve.dto.ReservationModificationDetailDto;
 import com.wb.between.reservation.reserve.dto.ReservationRequestDto;
 import com.wb.between.reservation.reserve.dto.ReservationUpdateRequestDto;
 import com.wb.between.reservation.reserve.service.ReservationService;
-import com.wb.between.user.domain.User;
+import com.wb.between.common.entity.User;
 import com.wb.between.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;

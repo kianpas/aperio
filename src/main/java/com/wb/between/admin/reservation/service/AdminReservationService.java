@@ -7,7 +7,7 @@ import com.wb.between.admin.reservation.repository.AdminReservationRepository;
 import com.wb.between.reservation.reserve.domain.Reservation;
 import com.wb.between.reservation.seat.domain.Seat;
 import com.wb.between.reservation.seat.repository.SeatRepository;
-import com.wb.between.user.domain.User;
+import com.wb.between.common.entity.User;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

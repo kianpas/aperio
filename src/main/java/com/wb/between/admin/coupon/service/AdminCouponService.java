@@ -6,14 +6,13 @@ import com.wb.between.admin.coupon.dto.AdminCouponResDto;
 import com.wb.between.admin.coupon.repository.AdminCouponRepository;
 import com.wb.between.common.exception.CustomException;
 import com.wb.between.common.exception.ErrorCode;
-import com.wb.between.coupon.domain.Coupon;
+import com.wb.between.common.entity.Coupon;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 
