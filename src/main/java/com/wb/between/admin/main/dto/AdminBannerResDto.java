@@ -1,10 +1,8 @@
 package com.wb.between.admin.main.dto;
 
-import com.wb.between.banner.domain.Banner;
+import com.wb.between.common.entity.Banner;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.Date;
 

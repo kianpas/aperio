@@ -1,10 +1,7 @@
 package com.wb.between.faq.dto;
 
-import com.wb.between.faq.domain.FaQ;
+import com.wb.between.common.entity.FaQ;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 
 @Getter

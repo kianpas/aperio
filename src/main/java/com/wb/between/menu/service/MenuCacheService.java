@@ -1,6 +1,7 @@
 package com.wb.between.menu.service;
 
-import com.wb.between.menu.domain.Menu;
+import com.wb.between.common.entity.Menu;
+import com.wb.between.menu.dto.MenuListResponseDto;
 import com.wb.between.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;

@@ -1,12 +1,11 @@
 package com.wb.between.admin.menu.dto;
 
 
-import com.wb.between.menu.domain.Menu;
+import com.wb.between.common.entity.Menu;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 

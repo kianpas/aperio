@@ -2,7 +2,6 @@ package com.wb.between.admin.menu.dto;
 
 
 import com.wb.between.admin.role.dto.AdminRoleResDto;
-import com.wb.between.menu.domain.Menu;
 import lombok.Builder;
 import lombok.Getter;
 

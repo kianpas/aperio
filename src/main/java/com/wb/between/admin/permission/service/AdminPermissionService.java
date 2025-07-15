@@ -1,6 +1,6 @@
 package com.wb.between.admin.permission.service;
 
-import com.wb.between.admin.permission.domain.Permission;
+import com.wb.between.common.entity.Permission;
 import com.wb.between.admin.permission.dto.AdminPermissionResDto;
 import com.wb.between.admin.permission.repository.AdminPermissionRepository;
 import lombok.RequiredArgsConstructor;

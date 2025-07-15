@@ -1,10 +1,9 @@
 package com.wb.between.banner.dto;
 
-import com.wb.between.banner.domain.Banner;
+import com.wb.between.common.entity.Banner;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 @Getter

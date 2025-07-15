@@ -1,12 +1,10 @@
-package com.wb.between.menu.domain;
+package com.wb.between.common.entity;
 
-import com.wb.between.menurole.MenuRole;
+import com.wb.between.common.entity.MenuRole;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 

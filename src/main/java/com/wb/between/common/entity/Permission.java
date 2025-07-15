@@ -1,4 +1,4 @@
-package com.wb.between.admin.permission.domain;
+package com.wb.between.common.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

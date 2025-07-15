@@ -1,7 +1,7 @@
-package com.wb.between.menurole;
+package com.wb.between.common.entity;
 
-import com.wb.between.admin.role.domain.Role;
-import com.wb.between.menu.domain.Menu;
+import com.wb.between.common.entity.Role;
+import com.wb.between.common.entity.Menu;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

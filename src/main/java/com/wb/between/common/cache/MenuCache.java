@@ -1,6 +1,5 @@
 package com.wb.between.common.cache;
 
-import com.wb.between.menu.domain.Menu;
 import com.wb.between.menu.dto.MenuListResponseDto;
 import com.wb.between.menu.service.MenuService;
 import jakarta.annotation.PostConstruct;

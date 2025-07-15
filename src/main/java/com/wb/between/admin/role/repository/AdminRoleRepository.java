@@ -1,6 +1,6 @@
 package com.wb.between.admin.role.repository;
 
-import com.wb.between.admin.role.domain.Role;
+import com.wb.between.common.entity.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

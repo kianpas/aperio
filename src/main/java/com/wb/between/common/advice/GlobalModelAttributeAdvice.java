@@ -63,10 +63,10 @@ public class GlobalModelAttributeAdvice {
         }
     }
 
-    @ModelAttribute("headerMenus")
-    public List<MenuListResponseDto> getHeaderMenu(Authentication authentication) {
-        return menuService.getHeaderMenuByRole(authentication);
-    }
+//    @ModelAttribute("headerMenus")
+//    public List<MenuListResponseDto> getHeaderMenu(Authentication authentication) {
+//        return menuService.getHeaderMenuByRole(authentication);
+//    }
 
 
 }

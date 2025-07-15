@@ -1,10 +1,8 @@
 package com.wb.between.banner.service;
 
-import com.wb.between.banner.domain.Banner;
+import com.wb.between.common.entity.Banner;
 import com.wb.between.banner.dto.BannerListResponseDto;
 import com.wb.between.banner.repository.BannerRepository;
-import com.wb.between.common.exception.CustomException;
-import com.wb.between.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;

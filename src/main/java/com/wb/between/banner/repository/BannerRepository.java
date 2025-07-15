@@ -1,11 +1,10 @@
 package com.wb.between.banner.repository;
 
-import com.wb.between.banner.domain.Banner;
+import com.wb.between.common.entity.Banner;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigInteger;
 import java.util.List;
 
 @Repository

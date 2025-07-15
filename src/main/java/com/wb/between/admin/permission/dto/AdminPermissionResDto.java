@@ -1,6 +1,6 @@
 package com.wb.between.admin.permission.dto;
 
-import com.wb.between.admin.permission.domain.Permission;
+import com.wb.between.common.entity.Permission;
 import lombok.Builder;
 import lombok.Getter;
 

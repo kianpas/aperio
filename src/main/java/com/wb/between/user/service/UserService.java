@@ -1,13 +1,13 @@
 package com.wb.between.user.service;
 
-import com.wb.between.admin.role.domain.Role;
+import com.wb.between.common.entity.Role;
 //import com.wb.between.common.util.SmsUtil;
 import com.wb.between.role.repository.RoleRepository;
 import com.wb.between.common.entity.User;
 import com.wb.between.user.dto.SignupReqDto;
 import com.wb.between.user.dto.VerificationResult;
 import com.wb.between.user.repository.UserRepository;
-import com.wb.between.userrole.domain.UserRole;
+import com.wb.between.common.entity.UserRole;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

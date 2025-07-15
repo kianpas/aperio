@@ -1,9 +1,8 @@
-package com.wb.between.banner.domain;
+package com.wb.between.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 @Entity

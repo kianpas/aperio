@@ -1,9 +1,9 @@
 package com.wb.between.admin.role.service;
 
-import com.wb.between.admin.permission.domain.Permission;
+import com.wb.between.common.entity.Permission;
 import com.wb.between.admin.permission.dto.AdminPermissionResDto;
 import com.wb.between.admin.permission.repository.AdminPermissionRepository;
-import com.wb.between.admin.role.domain.Role;
+import com.wb.between.common.entity.Role;
 import com.wb.between.admin.role.dto.AdminRoleEditReqDto;
 import com.wb.between.admin.role.dto.AdminRoleRegistReqDto;
 import com.wb.between.admin.role.dto.AdminRoleResDto;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

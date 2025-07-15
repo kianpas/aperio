@@ -1,11 +1,9 @@
-package com.wb.between.faq.domain;
+package com.wb.between.common.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.jdbc.object.UpdatableSqlQuery;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Table(name = "Faq")
 @Entity

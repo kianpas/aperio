@@ -1,6 +1,6 @@
 package com.wb.between.admin.permission.repository;
 
-import com.wb.between.admin.permission.domain.Permission;
+import com.wb.between.common.entity.Permission;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

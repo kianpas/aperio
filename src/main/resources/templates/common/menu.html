@@ -5,14 +5,41 @@
         <div th:if="${#authorization.expression('isAuthenticated()')}">
             <span th:text="${#authentication.name}">사용자 이메일</span> 님 환영합니다!
         </div>
-        <ul>
-            <li th:each="menu : ${headerMenus}">
-                <a th:href="@{${menu.menuUrl}}" th:text="${menu.menuNm}"></a>
-            </li>
-            <!-- ROLE_ADMIN 권한이 있는 유저에게만 보이기 -->
-            <li sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/admin/dashboard}" th:text="관리"></a>
-            </li>
-        </ul>
+        <!-- 메뉴가 동적으로 추가될 위치 -->
+        <ul id="header-menu-list"></ul>
     </nav>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuList = document.getElementById('header-menu-list');
+
+            fetch('/api/menus')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('메뉴 데이터를 가져오는 데 실패했습니다.');
+                    }
+                    return response.json();
+                })
+                .then(menus => {
+                    menuList.innerHTML = ''; // 기존 내용 비우기
+
+                    menus.forEach(menu => {
+                        const listItem = document.createElement('li');
+                        const link = document.createElement('a');
+                        
+                        // menu.menuUrl이 '/some/path' 와 같은 형태라고 가정
+                        link.href = menu.menuUrl;
+                        link.textContent = menu.menuNm;
+
+                        listItem.appendChild(link);
+                        menuList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching menus:', error);
+                    menuList.innerHTML = '<li>메뉴 로딩 실패</li>';
+                });
+        });
+    </script>
 </div>
+</html>

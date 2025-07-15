@@ -1,6 +1,6 @@
-package com.wb.between.userrole.domain;
+package com.wb.between.common.entity;
 
-import com.wb.between.admin.role.domain.Role;
+import com.wb.between.common.entity.Role;
 import com.wb.between.common.entity.User;
 import jakarta.persistence.*;
 import lombok.*;

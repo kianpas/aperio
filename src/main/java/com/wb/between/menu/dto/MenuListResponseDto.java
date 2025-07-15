@@ -1,11 +1,10 @@
 package com.wb.between.menu.dto;
 
 
-import com.wb.between.menu.domain.Menu;
+import com.wb.between.common.entity.Menu;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.math.BigInteger;
 import java.util.List;
 
 @Getter

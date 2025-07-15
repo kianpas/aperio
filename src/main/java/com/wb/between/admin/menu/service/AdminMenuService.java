@@ -2,12 +2,12 @@ package com.wb.between.admin.menu.service;
 
 import com.wb.between.admin.menu.dto.*;
 import com.wb.between.admin.menu.repository.AdminMenuRepository;
-import com.wb.between.admin.role.domain.Role;
+import com.wb.between.common.entity.Role;
 import com.wb.between.admin.role.dto.AdminRoleResDto;
 import com.wb.between.admin.role.repository.AdminRoleRepository;
 import com.wb.between.common.exception.CustomException;
 import com.wb.between.common.exception.ErrorCode;
-import com.wb.between.menu.domain.Menu;
+import com.wb.between.common.entity.Menu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

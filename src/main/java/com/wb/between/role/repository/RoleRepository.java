@@ -1,6 +1,6 @@
 package com.wb.between.role.repository;
 
-import com.wb.between.admin.role.domain.Role;
+import com.wb.between.common.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

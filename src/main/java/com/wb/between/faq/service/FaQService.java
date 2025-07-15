@@ -1,6 +1,6 @@
 package com.wb.between.faq.service;
 
-import com.wb.between.faq.domain.FaQ;
+import com.wb.between.common.entity.FaQ;
 import com.wb.between.faq.dto.AddFaQRequest;
 import com.wb.between.faq.repository.FnQRepository;
 import lombok.RequiredArgsConstructor;

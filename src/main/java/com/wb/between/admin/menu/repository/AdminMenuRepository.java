@@ -1,8 +1,6 @@
 package com.wb.between.admin.menu.repository;
 
-import com.wb.between.banner.domain.Banner;
-import com.wb.between.menu.domain.Menu;
-import org.springframework.data.domain.Sort;
+import com.wb.between.common.entity.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

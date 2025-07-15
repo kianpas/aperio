@@ -1,6 +1,6 @@
 package com.wb.between.admin.role.dto;
 
-import com.wb.between.admin.role.domain.Role;
+import com.wb.between.common.entity.Role;
 import lombok.Builder;
 import lombok.Getter;
 
