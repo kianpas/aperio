@@ -1,6 +1,6 @@
 package com.wb.between.admin.coupon.repository;
 
-import com.wb.between.common.entity.Coupon;
+import com.wb.between.common.domain.Coupon;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

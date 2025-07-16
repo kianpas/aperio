@@ -1,6 +1,6 @@
 package com.wb.between.common.util.OAuth;
 
-import com.wb.between.common.entity.User;
+import com.wb.between.common.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 

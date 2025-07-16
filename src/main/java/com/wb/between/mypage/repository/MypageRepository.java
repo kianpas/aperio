@@ -1,6 +1,6 @@
 package com.wb.between.mypage.repository;
 
-import com.wb.between.common.entity.User;
+import com.wb.between.common.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

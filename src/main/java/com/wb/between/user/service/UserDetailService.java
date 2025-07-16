@@ -1,9 +1,9 @@
 package com.wb.between.user.service;
 
 
-import com.wb.between.common.entity.User;
+import com.wb.between.common.domain.User;
 import com.wb.between.user.repository.UserRepository;
-import com.wb.between.common.entity.UserRole;
+import com.wb.between.common.domain.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,6 +1,6 @@
 package com.wb.between.mypage.dto;
 
-import com.wb.between.common.entity.User;
+import com.wb.between.common.domain.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;

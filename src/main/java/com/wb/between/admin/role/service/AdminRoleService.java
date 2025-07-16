@@ -1,9 +1,9 @@
 package com.wb.between.admin.role.service;
 
-import com.wb.between.common.entity.Permission;
+import com.wb.between.common.domain.Permission;
 import com.wb.between.admin.permission.dto.AdminPermissionResDto;
 import com.wb.between.admin.permission.repository.AdminPermissionRepository;
-import com.wb.between.common.entity.Role;
+import com.wb.between.common.domain.Role;
 import com.wb.between.admin.role.dto.AdminRoleEditReqDto;
 import com.wb.between.admin.role.dto.AdminRoleRegistReqDto;
 import com.wb.between.admin.role.dto.AdminRoleResDto;

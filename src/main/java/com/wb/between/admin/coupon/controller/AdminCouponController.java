@@ -5,7 +5,7 @@ import com.wb.between.admin.coupon.dto.AdminCouponRegistReqDto;
 import com.wb.between.admin.coupon.dto.AdminCouponResDto;
 import com.wb.between.admin.coupon.service.AdminCouponService;
 import com.wb.between.common.exception.CustomException;
-import com.wb.between.common.entity.User;
+import com.wb.between.common.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

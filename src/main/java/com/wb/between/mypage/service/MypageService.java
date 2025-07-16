@@ -6,7 +6,7 @@ import com.wb.between.mypage.dto.MypageCouponResDto;
 import com.wb.between.mypage.dto.MypageUserInfoResDto;
 import com.wb.between.mypage.dto.UserInfoEditReqDto;
 import com.wb.between.mypage.dto.UserPasswordEditReqDto;
-import com.wb.between.common.entity.User;
+import com.wb.between.common.domain.User;
 import com.wb.between.user.repository.UserRepository;
 import com.wb.between.usercoupon.domain.UserCoupon;
 import com.wb.between.usercoupon.repository.UserCouponRepository;

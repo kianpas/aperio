@@ -1,7 +1,7 @@
 package com.wb.between.admin.menu.dto;
 
 
-import com.wb.between.common.entity.Menu;
+import com.wb.between.common.domain.Menu;
 import lombok.Builder;
 import lombok.Getter;
 

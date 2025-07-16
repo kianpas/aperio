@@ -8,7 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.wb.between"}) // Controller가 있는 패키지 포함
 public class BetweenApplication {
 
 	public static void main(String[] args) {

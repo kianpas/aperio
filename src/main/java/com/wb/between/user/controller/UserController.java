@@ -1,7 +1,7 @@
 package com.wb.between.user.controller;
 
 import com.wb.between.coupon.service.CouponService;
-import com.wb.between.common.entity.User;
+import com.wb.between.common.domain.User;
 import com.wb.between.user.dto.SignupReqDto;
 import com.wb.between.user.dto.VerificationResult;
 import com.wb.between.user.service.UserService;

@@ -4,7 +4,7 @@ import com.wb.between.common.exception.CustomException;
 import com.wb.between.mypage.dto.*;
 import com.wb.between.mypage.service.MyReservationService;
 import com.wb.between.mypage.service.MypageService;
-import com.wb.between.common.entity.User;
+import com.wb.between.common.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

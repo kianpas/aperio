@@ -1,7 +1,5 @@
-package com.wb.between.common.entity;
+package com.wb.between.common.domain;
 
-import com.wb.between.common.entity.Role;
-import com.wb.between.common.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

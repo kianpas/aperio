@@ -6,7 +6,7 @@ import com.wb.between.admin.coupon.dto.AdminCouponResDto;
 import com.wb.between.admin.coupon.repository.AdminCouponRepository;
 import com.wb.between.common.exception.CustomException;
 import com.wb.between.common.exception.ErrorCode;
-import com.wb.between.common.entity.Coupon;
+import com.wb.between.common.domain.Coupon;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package com.wb.between.common.entity;
+package com.wb.between.common.domain;
 
 import com.wb.between.usercoupon.domain.UserCoupon;
 import jakarta.persistence.*;

@@ -1,7 +1,6 @@
-package com.wb.between.common.entity;
+package com.wb.between.common.domain;
 
 import com.wb.between.usercoupon.domain.UserCoupon;
-import com.wb.between.common.entity.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

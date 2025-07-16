@@ -1,6 +1,6 @@
 package com.wb.between.coupon.repository;
 
-import com.wb.between.common.entity.Coupon;
+import com.wb.between.common.domain.Coupon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

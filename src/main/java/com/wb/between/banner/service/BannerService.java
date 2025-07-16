@@ -1,6 +1,6 @@
 package com.wb.between.banner.service;
 
-import com.wb.between.common.entity.Banner;
+import com.wb.between.common.domain.Banner;
 import com.wb.between.banner.dto.BannerListResponseDto;
 import com.wb.between.banner.repository.BannerRepository;
 import lombok.RequiredArgsConstructor;
