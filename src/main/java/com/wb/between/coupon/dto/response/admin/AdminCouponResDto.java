@@ -1,9 +1,10 @@
-package com.wb.between.admin.coupon.dto;
+package com.wb.between.coupon.dto.response.admin;
 
-import com.wb.between.common.domain.Coupon;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.wb.between.coupon.domain.Coupon;
 
 import java.time.LocalDateTime;
 

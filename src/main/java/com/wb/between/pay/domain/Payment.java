@@ -13,7 +13,6 @@ import org.hibernate.annotations.CreationTimestamp;
 @NoArgsConstructor // 기본 생성자
 @AllArgsConstructor // 모든 필드 생성자
 @Builder // 빌더 패턴 사용 (객체 생성 시 편리)
-@Table(name = "Payment") // 실제 테이블명 확인
 public class Payment {
 
     @Id // 기본 키
@@ -35,9 +34,11 @@ public class Payment {
     @Column(length = 255)
     private String payCanclDt; // 결제 취소 시각 (String)
 
+    @Builder.Default
     @Column(nullable = false, length = 255)
     private String errCode = ""; // 오류 코드 (성공 시 빈 문자열)
 
+    @Builder.Default
     @Column(nullable = false, length = 255)
     private String errMsg = ""; // 오류 메시지 (성공 시 빈 문자열)
 
@@ -47,6 +48,7 @@ public class Payment {
     @Column(length = 255)
     private String method; // 결제 수단 ("CARD", "MONEY" 등)
 
+    @Builder.Default
     @Column(length = 255)
     private String payProvider = "KAKAO"; // 결제 제공자
 

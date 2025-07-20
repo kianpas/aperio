@@ -1,4 +1,4 @@
-package com.wb.between.common.domain;
+package com.wb.between.coupon.domain;
 
 import com.wb.between.usercoupon.domain.UserCoupon;
 import jakarta.persistence.*;
@@ -16,7 +16,6 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString(exclude = "usercoupon")
 @EqualsAndHashCode(of = "cpNo")
-@Table(name = "coupon")
 public class Coupon {
 
     @Id
@@ -46,6 +45,7 @@ public class Coupon {
     @Column(length = 1)
     private String activeYn;
 
+    @Builder.Default
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<UserCoupon> usercoupon = new HashSet<>();
 }

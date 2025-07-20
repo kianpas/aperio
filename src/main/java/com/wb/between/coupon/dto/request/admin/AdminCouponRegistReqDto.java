@@ -1,20 +1,20 @@
-package com.wb.between.admin.coupon.dto;
+package com.wb.between.coupon.dto.request.admin;
 
-import com.wb.between.common.domain.Coupon;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.wb.between.coupon.domain.Coupon;
+import com.wb.between.coupon.dto.response.admin.AdminCouponResDto;
+
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class AdminCouponEditReqDto {
-
-    private Long cpNo;
+public class AdminCouponRegistReqDto {
 
     @NotBlank(message = "쿠폰명은 필수 입력 항목입니다.")
     @Size(max = 100, message = "쿠폰명은 최대 100자까지 입력 가능합니다.")

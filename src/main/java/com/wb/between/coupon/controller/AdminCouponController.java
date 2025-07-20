@@ -1,10 +1,10 @@
-package com.wb.between.admin.coupon.controller;
+package com.wb.between.coupon.controller;
 
-import com.wb.between.admin.coupon.dto.AdminCouponEditReqDto;
-import com.wb.between.admin.coupon.dto.AdminCouponRegistReqDto;
-import com.wb.between.admin.coupon.dto.AdminCouponResDto;
-import com.wb.between.admin.coupon.service.AdminCouponService;
 import com.wb.between.common.exception.CustomException;
+import com.wb.between.coupon.dto.request.admin.AdminCouponEditReqDto;
+import com.wb.between.coupon.dto.request.admin.AdminCouponRegistReqDto;
+import com.wb.between.coupon.dto.response.admin.AdminCouponResDto;
+import com.wb.between.coupon.service.AdminCouponService;
 import com.wb.between.common.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
