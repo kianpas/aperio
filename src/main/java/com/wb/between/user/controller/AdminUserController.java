@@ -1,9 +1,10 @@
-package com.wb.between.admin.user.controller;
+package com.wb.between.user.controller;
 
-import com.wb.between.admin.user.dto.UserDetailDto;
-import com.wb.between.admin.user.dto.UserFilterParamsDto;
-import com.wb.between.admin.user.dto.UserListDto;
-import com.wb.between.admin.user.service.AdminUserService;
+import com.wb.between.user.dto.response.admin.UserDetailDto;
+import com.wb.between.user.dto.response.admin.UserFilterParamsDto;
+import com.wb.between.user.dto.response.admin.UserListDto;
+import com.wb.between.user.service.AdminUserService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

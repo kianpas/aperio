@@ -1,15 +1,15 @@
-package com.wb.between.admin.user.service;
+package com.wb.between.user.service;
 
-import com.wb.between.admin.user.dto.UserDetailReservationListDto;
-import com.wb.between.admin.user.dto.UserDetailDto;
-import com.wb.between.admin.user.dto.UserFilterParamsDto;
-import com.wb.between.admin.user.dto.UserListDto;
-import com.wb.between.admin.user.repository.AdminUserRepository;
 import com.wb.between.reservation.reserve.domain.Reservation;
 import com.wb.between.reservation.reserve.repository.ReservationRepository;
 import com.wb.between.reservation.seat.domain.Seat;
 import com.wb.between.reservation.seat.repository.SeatRepository;
 import com.wb.between.user.domain.User;
+import com.wb.between.user.dto.response.admin.UserDetailDto;
+import com.wb.between.user.dto.response.admin.UserDetailReservationListDto;
+import com.wb.between.user.dto.response.admin.UserFilterParamsDto;
+import com.wb.between.user.dto.response.admin.UserListDto;
+import com.wb.between.user.repository.AdminUserRepository;
 import com.wb.between.user.repository.UserRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

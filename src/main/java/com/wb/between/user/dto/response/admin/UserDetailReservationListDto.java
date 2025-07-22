@@ -1,4 +1,4 @@
-package com.wb.between.admin.user.dto;
+package com.wb.between.user.dto.response.admin;
 
 import lombok.Builder;
 import lombok.Data;

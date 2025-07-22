@@ -4,7 +4,8 @@ import com.wb.between.admin.reservation.dto.ReservationFilterParamsDto;
 import com.wb.between.admin.reservation.dto.ReservationListDto;
 import com.wb.between.admin.reservation.dto.SeatDto;
 import com.wb.between.admin.reservation.service.AdminReservationService;
-import com.wb.between.admin.user.service.AdminUserService;
+import com.wb.between.user.service.AdminUserService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

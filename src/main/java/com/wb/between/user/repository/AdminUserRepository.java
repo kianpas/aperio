@@ -1,4 +1,4 @@
-package com.wb.between.admin.user.repository;
+package com.wb.between.user.repository;
 
 import com.wb.between.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
