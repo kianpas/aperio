@@ -1,6 +1,6 @@
 package com.wb.between.banner.repository;
 
-import com.wb.between.common.domain.Banner;
+import com.wb.between.banner.domain.Banner;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

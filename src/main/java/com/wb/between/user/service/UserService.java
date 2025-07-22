@@ -3,7 +3,7 @@ package com.wb.between.user.service;
 import com.wb.between.common.domain.Role;
 //import com.wb.between.common.util.SmsUtil;
 import com.wb.between.role.repository.RoleRepository;
-import com.wb.between.common.domain.User;
+import com.wb.between.user.domain.User;
 import com.wb.between.user.dto.SignupReqDto;
 import com.wb.between.user.dto.VerificationResult;
 import com.wb.between.user.repository.UserRepository;

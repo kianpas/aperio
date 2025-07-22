@@ -1,6 +1,6 @@
 package com.wb.between.mypage.dto;
 
-import com.wb.between.common.domain.User;
+import com.wb.between.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 

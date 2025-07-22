@@ -1,6 +1,6 @@
 package com.wb.between.menu.service;
 
-import com.wb.between.common.domain.Menu;
+import com.wb.between.menu.domain.Menu;
 import com.wb.between.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;

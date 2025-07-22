@@ -7,7 +7,7 @@ import com.wb.between.admin.role.dto.AdminRoleResDto;
 import com.wb.between.admin.role.repository.AdminRoleRepository;
 import com.wb.between.common.exception.CustomException;
 import com.wb.between.common.exception.ErrorCode;
-import com.wb.between.common.domain.Menu;
+import com.wb.between.menu.domain.Menu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

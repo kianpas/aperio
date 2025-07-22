@@ -4,7 +4,7 @@ import com.wb.between.common.exception.CustomException;
 import com.wb.between.common.exception.ErrorCode;
 import com.wb.between.coupon.domain.Coupon;
 import com.wb.between.coupon.repository.CouponRepository;
-import com.wb.between.common.domain.User;
+import com.wb.between.user.domain.User;
 import com.wb.between.usercoupon.domain.UserCoupon;
 import com.wb.between.usercoupon.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;

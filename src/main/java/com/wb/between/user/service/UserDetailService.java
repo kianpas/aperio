@@ -1,7 +1,7 @@
 package com.wb.between.user.service;
 
 
-import com.wb.between.common.domain.User;
+import com.wb.between.user.domain.User;
 import com.wb.between.user.repository.UserRepository;
 import com.wb.between.common.domain.UserRole;
 import lombok.RequiredArgsConstructor;

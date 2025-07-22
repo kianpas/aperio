@@ -1,6 +1,6 @@
 package com.wb.between.banner.dto;
 
-import com.wb.between.common.domain.Banner;
+import com.wb.between.banner.domain.Banner;
 import lombok.Builder;
 import lombok.Getter;
 

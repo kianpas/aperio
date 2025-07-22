@@ -3,7 +3,7 @@ package com.wb.between.menu.service;
 import com.wb.between.common.domain.Role;
 import com.wb.between.common.exception.CustomException;
 import com.wb.between.common.exception.ErrorCode;
-import com.wb.between.common.domain.Menu;
+import com.wb.between.menu.domain.Menu;
 import com.wb.between.menu.dto.MenuListResponseDto;
 import com.wb.between.menu.repository.MenuRepository;
 import com.wb.between.common.domain.MenuRole;

@@ -1,6 +1,6 @@
 package com.wb.between.menu.repository;
 
-import com.wb.between.common.domain.Menu;
+import com.wb.between.menu.domain.Menu;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

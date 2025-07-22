@@ -1,4 +1,4 @@
-package com.wb.between.common.domain;
+package com.wb.between.faq.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

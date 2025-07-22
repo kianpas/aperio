@@ -1,5 +1,6 @@
-package com.wb.between.common.domain;
+package com.wb.between.user.domain;
 
+import com.wb.between.common.domain.UserRole;
 import com.wb.between.usercoupon.domain.UserCoupon;
 import jakarta.persistence.*;
 import lombok.*;

@@ -9,7 +9,7 @@ import com.wb.between.reservation.reserve.domain.Reservation;
 import com.wb.between.reservation.reserve.repository.ReservationRepository;
 import com.wb.between.reservation.seat.domain.Seat;
 import com.wb.between.reservation.seat.repository.SeatRepository;
-import com.wb.between.common.domain.User;
+import com.wb.between.user.domain.User;
 import com.wb.between.user.repository.UserRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

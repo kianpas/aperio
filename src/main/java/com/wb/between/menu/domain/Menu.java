@@ -1,5 +1,6 @@
-package com.wb.between.common.domain;
+package com.wb.between.menu.domain;
 
+import com.wb.between.common.domain.MenuRole;
 import jakarta.persistence.*;
 import lombok.*;
 

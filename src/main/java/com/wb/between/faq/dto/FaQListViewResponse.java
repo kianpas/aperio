@@ -1,6 +1,6 @@
 package com.wb.between.faq.dto;
 
-import com.wb.between.common.domain.FaQ;
+import com.wb.between.faq.domain.FaQ;
 import lombok.Getter;
 
 

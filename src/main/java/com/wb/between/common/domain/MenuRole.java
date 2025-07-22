@@ -1,5 +1,6 @@
 package com.wb.between.common.domain;
 
+import com.wb.between.menu.domain.Menu;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

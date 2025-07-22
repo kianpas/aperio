@@ -2,7 +2,7 @@ package com.wb.between.admin.permission.controller;
 
 import com.wb.between.admin.permission.dto.AdminPermissionResDto;
 import com.wb.between.admin.permission.service.AdminPermissionService;
-import com.wb.between.common.domain.User;
+import com.wb.between.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -6,7 +6,7 @@ import com.wb.between.admin.role.dto.AdminRoleRegistReqDto;
 import com.wb.between.admin.role.dto.AdminRoleResDto;
 import com.wb.between.admin.role.service.AdminRoleService;
 import com.wb.between.common.exception.CustomException;
-import com.wb.between.common.domain.User;
+import com.wb.between.user.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

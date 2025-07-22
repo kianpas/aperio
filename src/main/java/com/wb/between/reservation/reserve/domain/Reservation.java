@@ -1,7 +1,7 @@
 package com.wb.between.reservation.reserve.domain;
 
 import com.wb.between.reservation.seat.domain.Seat;
-import com.wb.between.common.domain.User;
+import com.wb.between.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

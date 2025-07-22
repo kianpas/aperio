@@ -1,5 +1,6 @@
 package com.wb.between.common.domain;
 
+import com.wb.between.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
