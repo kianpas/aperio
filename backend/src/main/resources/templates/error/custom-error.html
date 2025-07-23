@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <title th:text="'에러 - '+ ${code}">에러</title>
+  <link rel="stylesheet" th:href="@{/css/error/custom-error.css}">
+</head>
+
+<body>
+
+<main class="notfound-container">
+  <div class="text-center">
+    <p th:text="${code}" class="status-code"></p>
+    <h2 th:text="${status}" class="title"></h2>
+    <p th:text="${message}" class="description"></p>
+    <div class="button-group">
+      <a href="/static" class="btn-primary">Go back home</a>
+      <a href="/support" class="btn-link">Contact support →</a>
+    </div>
+  </div>
+</main>
+</body>
+
+
+</html>
