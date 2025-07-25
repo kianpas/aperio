@@ -150,7 +150,7 @@ public class MenuService {
                 .sortOrder(adminMenuRegistReqDto.getSortOrder())
                 .build();
 
-        adminMenuRepository.save(menu);
+        menuRepository.save(menu);
     }
 
     /**
@@ -160,7 +160,7 @@ public class MenuService {
      */
     @Transactional
     public void editMenu(Long menuNo, AdminMenuEditReqDto adminMenuEditReqDto) {
-        Menu menu = adminMenuRepository.findById(menuNo).orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+        Menu menu = menuRepository.findById(menuNo).orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         menu.setMenuNm(adminMenuEditReqDto.getMenuNm());
         menu.setMenuDsc(adminMenuEditReqDto.getMenuDsc());

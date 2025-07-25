@@ -9,7 +9,7 @@ import com.wb.between.pay.domain.Payment;
 import com.wb.between.pay.dto.KakaoPayApproveResponseDto;
 import com.wb.between.pay.repository.PaymentRepository;
 import com.wb.between.reservation.reserve.domain.Reservation;
-import com.wb.between.reservation.reserve.repository.ReservationRepository;
+import com.wb.between.reservation.reserve.repository.ReservationRepositoryOld;
 import jakarta.persistence.EntityNotFoundException; // JPA 예외
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class PaymentService {
     private PaymentRepository paymentRepository;
 
     @Autowired
-    private ReservationRepository reservationRepository;
+    private ReservationRepositoryOld reservationRepository;
 
     // 카카오페이 취소 로직이 필요하다면 KakaoPayService 주입
     // @Autowired

@@ -1,7 +1,7 @@
 package com.wb.between.user.service;
 
 import com.wb.between.reservation.reserve.domain.Reservation;
-import com.wb.between.reservation.reserve.repository.ReservationRepository;
+import com.wb.between.reservation.reserve.repository.ReservationRepositoryOld;
 import com.wb.between.reservation.seat.domain.Seat;
 import com.wb.between.reservation.seat.repository.SeatRepository;
 import com.wb.between.user.domain.User;
@@ -41,7 +41,7 @@ public class AdminUserService {
 
     private final AdminUserRepository adminUserRepository; // 관리자_회원 관리 레포지토리 주입
     private final UserRepository userRepository; // 사용자 레포지토리 주입
-    private final ReservationRepository reservationRepository; // 예약 레포지토리 주입
+    private final ReservationRepositoryOld reservationRepository; // 예약 레포지토리 주입
     private final SeatRepository seatRepository; // 좌석 리포지토리 주입
     private static final int RECENT_RESERVATION_COUNT = 5; // 보여줄 최근 예약 개수
 

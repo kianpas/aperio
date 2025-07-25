@@ -7,7 +7,7 @@ import com.wb.between.reservation.reserve.domain.Reservation;
 import com.wb.between.reservation.reserve.dto.ReservationModificationDetailDto;
 import com.wb.between.reservation.reserve.dto.ReservationRequestDto;
 import com.wb.between.reservation.reserve.dto.ReservationUpdateRequestDto;
-import com.wb.between.reservation.reserve.repository.ReservationRepository;
+import com.wb.between.reservation.reserve.repository.ReservationRepositoryOld;
 import com.wb.between.reservation.seat.domain.Seat;
 import com.wb.between.reservation.seat.repository.SeatRepository;
 import com.wb.between.user.domain.User;
@@ -27,14 +27,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-@Service
+//@Service
 public class ReservationService {
 
     @Autowired
     private StringRedisTemplate redisTemplate; // Redis 사용 위해 주입
 
     @Autowired
-    private ReservationRepository reservationRepository;
+    private ReservationRepositoryOld reservationRepository;
 
     @Autowired
     private SeatRepository seatRepository; // 좌석 정보 확인 등에 필요시 주입

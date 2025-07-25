@@ -2,7 +2,7 @@ package com.wb.between.reservation.reserve.controller;
 
 import com.wb.between.pay.repository.PaymentRepository;
 import com.wb.between.reservation.reserve.domain.Reservation;
-import com.wb.between.reservation.reserve.repository.ReservationRepository;
+import com.wb.between.reservation.reserve.repository.ReservationRepositoryOld;
 import com.wb.between.reservation.seat.domain.Seat;
 import com.wb.between.reservation.seat.repository.SeatRepository;
 import com.wb.between.user.domain.User;
@@ -23,12 +23,12 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@Controller
+//@Controller
 @RequiredArgsConstructor
 public class ReservationController {
 
     @Autowired
-    private ReservationRepository reservationRepository;
+    private ReservationRepositoryOld reservationRepository;
 
     @Autowired
     private PaymentRepository paymentRepository;

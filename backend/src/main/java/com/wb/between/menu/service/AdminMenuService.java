@@ -130,35 +130,17 @@ public class AdminMenuService {
 
     /**
      * 메뉴 상세 정보 조회
+     *
      * @param menuId
      */
     @Transactional(readOnly = true)
     public MenuDetailResDto getMenuDetail(Long menuNo) {
-
-        //1. 선택 메뉴 조회
-        Menu menu = adminMenuRepository.findByMenuNo(menuNo).orElseThrow(()-> new CustomException(ErrorCode.INVALID_INPUT));
-
-        //2. 전체 역할 조회
-        List<Role> allRoles = adminRoleRepository.findAll();
-
-        //3. 현재 메뉴에 할당된 역할 Id조회
-        Set<Long> assignRoleIds = menu.getMenuRoles().stream()
-                .map(menuRole -> menuRole.getRole().getRoleId())
-                .collect(Collectors.toSet());
-
-        //4. dto처리
-        AdminMenuResDto adminMenuResDto = AdminMenuResDto.from(menu);
-        List<AdminRoleResDto> allRoleDto = allRoles.stream()
-                .map(AdminRoleResDto::from)
-                .toList();
-
-        MenuDetailResDto menuDetailResDto = MenuDetailResDto.builder()
-                .adminMenuResDto(adminMenuResDto)
-                .allRoleDto(allRoleDto)
-                .assignedRoleIds(assignRoleIds)
-                .build();
-
-        return menuDetailResDto;
+        return null;
     }
 
+    public void registMenu(AdminMenuRegistReqDto adminMenuRegistReqDto) {
+    }
+
+    public void editMenu(Long menuNo, AdminMenuEditReqDto adminMenuEditReqDto) {
+    }
 }

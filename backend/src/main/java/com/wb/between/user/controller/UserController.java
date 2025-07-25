@@ -1,5 +1,6 @@
 package com.wb.between.user.controller;
 
+import com.wb.between.coupon.service.CouponIssueService;
 import com.wb.between.coupon.service.CouponService;
 import com.wb.between.user.domain.User;
 import com.wb.between.user.dto.SignupReqDto;
@@ -26,12 +27,12 @@ public class UserController {
     private UserService userService;
     private static final String OTP_PREFIX = "OTP_";
 
-    private CouponService couponService;
+    private CouponIssueService couponIssueService;
 
     @Autowired
-    public UserController(UserService userService, CouponService couponService) {
+    public UserController(UserService userService, CouponIssueService couponService) {
         this.userService = userService;
-        this.couponService = couponService;
+        this.couponIssueService = couponIssueService;
     }
 
     // 회원가입 페이지 호출
@@ -98,7 +99,7 @@ public class UserController {
             //쿠폰발급 진행, 쿠폰발급은 회원가입 흐름에 영향을 주지 않아야함
             if(user != null) {
                 try {
-                    couponService.signUpCoupon(user);
+                    couponIssueService.issueSignUpCoupon(user);
                 } catch (Exception e) {
                     log.error("회원가입 성공 후 쿠폰 발급 실패. 사용자: {}, 에러: {}", user.getUserNo(), e.getMessage(), e);
                 }

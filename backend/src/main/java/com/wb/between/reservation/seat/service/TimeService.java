@@ -1,7 +1,7 @@
 package com.wb.between.reservation.seat.service;
 
 import com.wb.between.reservation.reserve.domain.Reservation;
-import com.wb.between.reservation.reserve.repository.ReservationRepository;
+import com.wb.between.reservation.reserve.repository.ReservationRepositoryOld;
 import com.wb.between.reservation.seat.dto.TimeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.Set;
 public class TimeService {
 
     @Autowired
-    private ReservationRepository reservationRepository;
+    private ReservationRepositoryOld reservationRepository;
 
     private static final LocalTime OPEN_TIME = LocalTime.of(9, 0);
     private static final LocalTime CLOSE_TIME = LocalTime.of(22, 0);

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+public interface ReservationRepositoryOld extends JpaRepository<Reservation, Long> {
 
     /**
      * 특정 좌석, 특정 날짜에 시작하는 확정된(resStatus=true) 예약을 조회합니다.

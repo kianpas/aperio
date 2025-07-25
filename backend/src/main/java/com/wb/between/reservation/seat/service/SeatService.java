@@ -2,7 +2,7 @@ package com.wb.between.reservation.seat.service; // 패키지명 확인
 
 
 import com.wb.between.reservation.reserve.domain.Reservation;
-import com.wb.between.reservation.reserve.repository.ReservationRepository;
+import com.wb.between.reservation.reserve.repository.ReservationRepositoryOld;
 import com.wb.between.reservation.seat.domain.Seat;
 import com.wb.between.reservation.seat.dto.SeatDto;
 import com.wb.between.reservation.seat.repository.SeatRepository;
@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.Set; // Set 사용 위해 import 추가
 import java.util.stream.Collectors;
 
-@Service
+//@Service
 public class SeatService {
 
     @Autowired
@@ -24,7 +24,7 @@ public class SeatService {
 
 
     @Autowired
-    private ReservationRepository reservationRepository;
+    private ReservationRepositoryOld reservationRepository;
 
 
     /**
