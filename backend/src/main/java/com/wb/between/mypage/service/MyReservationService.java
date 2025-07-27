@@ -4,9 +4,9 @@ import com.wb.between.common.exception.CustomException;
 import com.wb.between.mypage.dto.MyReservationDetailDto;
 import com.wb.between.mypage.dto.MyReservationDto; // Import DTO
 import com.wb.between.mypage.repository.MyReservationRepository;
-import com.wb.between.reservation.reserve.domain.Reservation;
-import com.wb.between.reservation.seat.domain.Seat;
-import com.wb.between.reservation.seat.repository.SeatRepository;
+import com.wb.between.reservation.domain.Reservation;
+import com.wb.between.seat.domain.Seat;
+import com.wb.between.seat.repository.SeatRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page; // Import Page

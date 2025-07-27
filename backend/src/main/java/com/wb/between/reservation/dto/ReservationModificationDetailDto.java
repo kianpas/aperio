@@ -1,27 +1,26 @@
-package com.wb.between.reservation.reserve.dto;
+package com.wb.between.reservation.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+@Getter
 @Builder
 public class ReservationModificationDetailDto {
     private Long resNo;
-    private String planType; // HOURLY, DAILY, MONTHLY
-    private String reservationDate; // "YYYY-MM-DD"
+    private String planType;
+    private String reservationDate;
     private SeatInfo seatInfo;
     private List<String> selectedTimes;
-    private String couponId;
-    private String status; // 예약 상태 (예: CONFIRMED)
+    private String status;
     private String originalTotalPrice;
 
-    @Data
+    @Getter
     @Builder
     public static class SeatInfo {
         private Long id;
         private String name;
-        private String type; // SEAT, ROOM 등
+        private String type;
     }
 }

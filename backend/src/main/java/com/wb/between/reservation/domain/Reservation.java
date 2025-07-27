@@ -1,115 +1,77 @@
 package com.wb.between.reservation.domain;
 
+import com.wb.between.seat.domain.Seat;
+import com.wb.between.user.domain.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
-/**
- * 예약 엔티티
- * 사용자의 좌석 예약 정보를 관리하는 도메인 객체
- */
 @Entity
-@Table(name = "reservations")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@Table(name = "Reservation")
 public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long resNo; // 예약 번호 (PK)
 
-    /** 예약한 사용자 ID */
+    @Column(nullable = false, insertable = true, updatable = true)
+    private Long userNo; // 예약한 사용자 번호
+
+    @Column(nullable = false, insertable = true, updatable = true)
+    private Long seatNo; // 예약된 좌석 번호 (Seat 테이블의 PK 타입과 일치해야 함)
+
+    @Column(nullable = false, length = 10)
+    private String totalPrice; // 최종 결제 금액
+
+    @Column(nullable = false, length = 10)
+    private String resPrice; // 쿠폰/할인 전 좌석 가격 (String)
+
+    @Column(length = 10)
+    private String dcPrice; // 할인 금액 (String)
+
+    private Long userCpNo; // 사용된 사용자 쿠폰 번호/ID
+
+    @CreationTimestamp // 레코드 생성 시 자동 입력
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime resDt; // 예약 요청/생성 시각
+
+    @UpdateTimestamp // 레코드 수정 시 자동 업데이트
+    private LocalDateTime moDt; // 예약 변경/취소 시각
+
+    @Column // nullable = true 기본값
+    private Boolean resStatus; // 예약 상태 (null: 보류, 1: 완료 (true), 0 : 취소 (false))
+
     @Column(nullable = false)
-    private Long userId;
+    private LocalDateTime resStart; // 예약 시작 시각 (날짜 + 시간)
 
-    /** 예약된 좌석 ID */
     @Column(nullable = false)
-    private Long seatId;
+    private LocalDateTime resEnd; // 예약 종료 시각 (날짜 + 시간)
 
-    /** 예약 시작 시간 */
     @Column(nullable = false)
-    private LocalDateTime reservationDateTime;
+    private String planType; // 요금제
 
-    /** 예약 시간 (분 단위) */
-    @Column(nullable = false)
-    private Integer duration;
+    // @JoinColumn의 name 속성을 실제 DB의 외래키 컬럼 이름(userNo)으로 정확히 지정
+    // 이 관계를 통해 JPA가 외래 키를 관리 (insert/update)
+    @ManyToOne(fetch = FetchType.LAZY) // User 엔티티와 다대일 관계
+    @JoinColumn(name = "userNo", nullable = false, insertable = false, updatable = false)
+    private User user;
 
-    /** 예약 상태 */
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ReservationStatus status;
+    // @JoinColumn의 name 속성을 실제 DB의 외래키 컬럼 이름(seatNo)으로 정확히 지정
+    // 이 관계를 통해 JPA가 외래 키를 관리 (insert/update)
+    @ManyToOne(fetch = FetchType.LAZY) // Seat 엔티티와 다대일 관계
+    @JoinColumn(name = "seatNo", nullable = false, insertable = false, updatable = false)
+    private Seat seat;
 
-    private LocalDateTime createdDt;
+    public Reservation() {
+    } // 기본 생성자
 
-    private LocalDateTime updatedDt;
-
-    /** 예약 메모 */
-    @Column(length = 500)
-    private String memo;
-
-    /**
-     * 예약 생성자
-     * @param userId 사용자 ID
-     * @param seatId 좌석 ID
-     * @param reservationDateTime 예약 시작 시간
-     * @param duration 예약 시간 (분)
-     * @param memo 예약 메모
-     */
-    @Builder
-    public Reservation(Long userId, Long seatId, LocalDateTime reservationDateTime, 
-                      Integer duration, String memo) {
-        this.userId = userId;
-        this.seatId = seatId;
-        this.reservationDateTime = reservationDateTime;
-        this.duration = duration;
-        this.status = ReservationStatus.CONFIRMED;
-        this.memo = memo;
+    public Reservation(
+            long l, LocalDateTime localDateTime, String s, LocalDateTime localDateTime1,
+            LocalDateTime localDateTime2, String number, String 예약완료, boolean b) {
     }
-
-    /**
-     * 예약 정보 수정
-     * @param reservationDateTime 새로운 예약 시간
-     * @param duration 새로운 예약 시간 (분)
-     * @param memo 새로운 메모
-     */
-    public void updateReservation(LocalDateTime reservationDateTime, Integer duration, String memo) {
-        this.reservationDateTime = reservationDateTime;
-        this.duration = duration;
-        this.memo = memo;
-    }
-
-    /**
-     * 예약 취소
-     */
-    public void cancel() {
-        this.status = ReservationStatus.CANCELLED;
-    }
-
-    /**
-     * 예약 완료 처리
-     */
-    public void complete() {
-        this.status = ReservationStatus.COMPLETED;
-    }
-
-    /**
-     * 예약이 활성 상태인지 확인
-     * @return 확정 상태인 경우 true
-     */
-    public boolean isActive() {
-        return status == ReservationStatus.CONFIRMED;
-    }
-
-    /**
-     * 예약 종료 시간 계산
-     * @return 예약 종료 시간
-     */
-    public LocalDateTime getEndDateTime() {
-        return reservationDateTime.plusMinutes(duration);
-    }
-
 }

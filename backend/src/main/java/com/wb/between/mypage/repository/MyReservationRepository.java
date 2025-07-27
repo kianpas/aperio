@@ -1,7 +1,7 @@
 package com.wb.between.mypage.repository;
 
 import com.wb.between.mypage.dto.MyReservationDto;
-import com.wb.between.reservation.reserve.domain.Reservation;
+import com.wb.between.reservation.domain.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

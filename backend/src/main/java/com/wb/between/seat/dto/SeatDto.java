@@ -1,4 +1,4 @@
-package com.wb.between.reservation.seat.dto;
+package com.wb.between.seat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

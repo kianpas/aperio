@@ -1,91 +1,51 @@
 package com.wb.between.seat.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.YesNoConverter;
 
 import java.time.LocalDateTime;
 
-/**
- * 좌석 엔티티
- * 카페나 스터디룸의 좌석 정보를 관리하는 도메인 객체
- */
 @Entity
-@Table(name = "seats")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@Table(name = "seat")
 public class Seat {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    // @GeneratedValue(strategy = GenerationType.IDENTITY) // DB에서 자동 증가 시 사용
+    private Long seatNo; // PK, Long 타입
 
-    /** 좌석 번호 (고유) */
-    @Column(nullable = false, unique = true)
-    private String seatNumber;
+    @Column(nullable = false, length = 100)
+    private String seatNm; // 좌석 이름
 
-    /** 좌석 타입 */
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private SeatType seatType;
+    @CreationTimestamp // 엔티티 생성 시 자동으로 현재 시간 입력
+    @Column(nullable = false, updatable = false) // 수정 불가
+    private LocalDateTime createDt;
 
-    /** 좌석 활성화 여부 */
-    @Column(nullable = false)
-    private Boolean isActive;
+    @UpdateTimestamp // 엔티티 수정 시 자동으로 현재 시간 입력
+    private LocalDateTime updateDt;
 
-    /** 좌석 설명 */
-    @Column(length = 200)
-    private String description;
+    @Column(nullable = false, length = 100)
+    private String register; // 등록자 정보
 
-    private LocalDateTime createdDt;
+    // --- !!! useAt 필드 수정 !!! ---
+    @Column(name = "useAt", nullable = false, length = 1)
+    @Convert(converter = YesNoConverter.class) // !!! 이 줄 추가 !!!
+    private boolean useAt;
 
-    private LocalDateTime updatedDt;
+    @Column(length = 100)
+    private String seatSort; // 좌석 종류 (DB 컬럼명 그대로 사용)
 
-    /**
-     * 좌석 생성자
-     * @param seatNumber 좌석 번호
-     * @param seatType 좌석 타입
-     * @param description 좌석 설명
-     */
-    @Builder
-    public Seat(String seatNumber, SeatType seatType, String description) {
-        this.seatNumber = seatNumber;
-        this.seatType = seatType;
-        this.isActive = true;
-        this.description = description;
-    }
+    // --- 위치 정보 필드 추가 ---
+    @Column(name = "gridRow" ,length = 50)
+    private String gridRow;
 
-    /**
-     * 좌석 비활성화
-     */
-    public void deactivate() {
-        this.isActive = false;
-    }
+    @Column(name = "gridColumn", length = 50)
+    private String gridColumn;
 
-    /**
-     * 좌석 활성화
-     */
-    public void activate() {
-        this.isActive = true;
-    }
-
-    /**
-     * 좌석 정보 수정
-     * @param seatType 새로운 좌석 타입
-     * @param description 새로운 설명
-     */
-    public void updateSeat(SeatType seatType, String description) {
-        this.seatType = seatType;
-        this.description = description;
-    }
-
-    /**
-     * 좌석이 사용 가능한지 확인
-     * @return 활성화된 좌석인 경우 true
-     */
-    public boolean isAvailable() {
-        return this.isActive;
-    }
+    // 기본 생성자, 다른 생성자 등 필요시 추가
+    public Seat() {} // JPA는 기본 생성자가 필요할 수 있음
 }

@@ -5,9 +5,9 @@ import com.wb.between.pay.dto.KakaoPayReadyRequestDto;
 import com.wb.between.pay.dto.KakaoPayReadyResponseDto;
 import com.wb.between.pay.service.KakaoPayService;
 import com.wb.between.pay.service.PaymentService;
-import com.wb.between.reservation.reserve.domain.Reservation;
-import com.wb.between.reservation.reserve.dto.ReservationRequestDto;
-import com.wb.between.reservation.reserve.service.ReservationService;
+import com.wb.between.reservation.domain.Reservation;
+import com.wb.between.reservation.dto.ReservationRequestDto;
+import com.wb.between.reservation.service.ReservationService;
 import com.wb.between.user.domain.User;
 import com.wb.between.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -71,7 +71,7 @@ public class PaymentController {
             reserveDto.setReservationDate(requestDto.getReservationDate());
             reserveDto.setSelectedTimes(requestDto.getSelectedTimes());
             reserveDto.setCouponId(requestDto.getCouponId());
-            reserveDto.setUserId(Long.parseLong(partnerUserId)); // 서비스는 Long 타입 userId 기대
+            // userId는 서비스에서 username으로 처리하므로 제거
             
             // 임직원이면 카카오페이 생략하게 처리
             pendingReservation = reservationService.createReservationWithLock(reserveDto, username);

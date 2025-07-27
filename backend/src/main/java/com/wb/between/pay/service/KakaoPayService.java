@@ -5,7 +5,7 @@ import com.wb.between.pay.dto.KakaoPayReadyRequestDto;
 import com.wb.between.pay.dto.KakaoPayReadyResponseDto;
 
 import com.wb.between.pay.repository.PaymentRepository;
-import com.wb.between.reservation.reserve.repository.ReservationRepositoryOld;
+import com.wb.between.reservation.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -27,7 +27,7 @@ public class KakaoPayService {
     private PaymentRepository paymentRepository;
 
     @Autowired
-    private ReservationRepositoryOld reservationRepository;
+    private ReservationRepository reservationRepository;
 
 
     @Value("${kakao.pay.admin-key}")

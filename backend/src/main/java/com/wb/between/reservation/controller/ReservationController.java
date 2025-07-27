@@ -1,107 +1,149 @@
 package com.wb.between.reservation.controller;
 
-import com.wb.between.reservation.dto.request.ReservationCreateRequest;
-import com.wb.between.reservation.dto.request.ReservationUpdateRequest;
-import com.wb.between.reservation.dto.response.ReservationResponse;
-import com.wb.between.reservation.dto.response.ReservationListResponse;
-import com.wb.between.reservation.service.ReservationService;
-import com.wb.between.reservation.service.ReservationQueryService;
+import com.wb.between.reservation.domain.Reservation;
+import com.wb.between.reservation.repository.ReservationRepository;
+import com.wb.between.seat.domain.Seat;
+import com.wb.between.seat.repository.SeatRepository;
+import com.wb.between.user.domain.User;
+import com.wb.between.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
-/**
- * 예약 관리 REST API 컨트롤러
- * CQRS 패턴을 적용하여 Command와 Query 서비스를 분리하여 사용
- */
-@RestController
-@RequestMapping("/api/reservations")
+@Controller
 @RequiredArgsConstructor
 public class ReservationController {
 
-    private final ReservationService reservationService;
-    private final ReservationQueryService reservationQueryService;
+    @Autowired
+    private ReservationRepository reservationRepository;
 
-    // ========== Command Operations (CUD) ==========
-    
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private SeatRepository seatRepository;
+
     /**
-     * 새로운 예약 생성
-     * @param request 예약 생성 요청 정보
-     * @return 생성된 예약 정보
+     * 좌석 예약 페이지를 보여주는 메소드.
+     * 예약 변경 모드 파라미터가 있으면 기존 예약 정보를 조회하여 모델에 추가합니다.
      */
-    @PostMapping
-    public ResponseEntity<ReservationResponse> createReservation(
-            @RequestBody ReservationCreateRequest request) {
-        ReservationResponse response = reservationService.createReservation(request);
-        return ResponseEntity.ok(response);
+    @GetMapping("/reservation")
+    public String showReservationPage(
+            @RequestParam(required = false) String mode,
+            @RequestParam(required = false) Long resNo,
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model
+    ) {
+        boolean isModificationMode = false;
+        Map<String, Object> originalReservationData = null;
+
+        if (userDetails == null) {
+            System.out.println("로그인되지 않은 사용자 접근 시도 -> 로그인 페이지로 리다이렉트");
+            return "redirect:/login";
+        }
+
+        Long currentUserId;
+        String currentUserAuth = null;
+        try {
+            String username = userDetails.getUsername();
+            User user = userRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("DB 사용자 정보 없음: " + username));
+            currentUserId = user.getUserNo();
+            if (currentUserId == null) throw new IllegalStateException("userNo 없음");
+            currentUserAuth = user.getAuthCd();
+        } catch (Exception e) {
+            System.err.println("사용자 ID 처리 실패: " + e.getMessage());
+            model.addAttribute("errorMessage", "사용자 정보 처리 오류");
+            return "error/custom-error";
+        }
+
+        if ("modify".equalsIgnoreCase(mode) && resNo != null) {
+            System.out.println("[Controller] 예약 변경 모드 진입 시도: resNo=" + resNo);
+            try {
+                Reservation reservation = reservationRepository.findById(resNo)
+                        .orElseThrow(() -> new EntityNotFoundException("원본 예약 정보 없음: " + resNo));
+
+                if (!reservation.getUserNo().equals(currentUserId)) {
+                    System.err.println("예약 변경 권한 없음: 요청자=" + currentUserId + ", 예약자=" + reservation.getUserNo());
+                    model.addAttribute("errorMessage", "본인의 예약만 변경할 수 있습니다.");
+                    return "error/custom-error";
+                }
+
+                String seatName = "좌석 이름";
+                try {
+                    seatName = seatRepository.findById(reservation.getSeatNo())
+                            .map(Seat::getSeatNm)
+                            .orElse("삭제된 좌석?");
+                } catch (Exception seatEx) {
+                    System.err.println("좌석 이름 조회 중 오류: " + seatEx.getMessage());
+                }
+
+                isModificationMode = true;
+                originalReservationData = new HashMap<>();
+                originalReservationData.put("resNo", reservation.getResNo());
+                originalReservationData.put("itemId", reservation.getSeatNo());
+                originalReservationData.put("seatName", seatName);
+
+                String planType = reservation.getPlanType();
+                if (planType == null || planType.isBlank()) {
+                    System.err.println("!!! CRITICAL: Reservation resNo=" + resNo + " has missing or blank planType! !!!");
+                    throw new IllegalStateException("DB에 저장된 예약 정보(planType)가 올바르지 않습니다.");
+                }
+                originalReservationData.put("planType", planType);
+                System.out.println("DB에서 가져온 planType: " + planType);
+
+                originalReservationData.put("reservationDate", reservation.getResStart().toLocalDate().toString());
+
+                if ("HOURLY".equals(planType)) {
+                    originalReservationData.put("selectedTimes", extractOriginalTimes(reservation));
+                } else {
+                    originalReservationData.put("selectedTimes", List.of());
+                }
+                System.out.println("[Controller] 원본 예약 정보 준비 완료: " + originalReservationData);
+
+            } catch (Exception e) {
+                System.err.println("예약 변경 모드 진입 중 오류: " + e.getMessage());
+                e.printStackTrace();
+                model.addAttribute("errorMessage", "예약 정보를 불러오는 중 오류가 발생했습니다.");
+                isModificationMode = false;
+                originalReservationData = null;
+            }
+        }
+
+        model.addAttribute("isModificationMode", isModificationMode);
+        model.addAttribute("originalReservation", originalReservationData);
+        model.addAttribute("currentUserId", currentUserId);
+        model.addAttribute("currentUserAuth", currentUserAuth);
+
+        System.out.println("isModificationMode = " + model.getAttribute("isModificationMode"));
+        System.out.println("originalReservation = " + model.getAttribute("originalReservation"));
+
+        return "reservation/reservation";
     }
 
-    /**
-     * 기존 예약 정보 수정
-     * @param reservationId 수정할 예약 ID
-     * @param request 수정할 예약 정보
-     * @return 수정된 예약 정보
-     */
-    @PutMapping("/{reservationId}")
-    public ResponseEntity<ReservationResponse> updateReservation(
-            @PathVariable Long reservationId,
-            @RequestBody ReservationUpdateRequest request) {
-        ReservationResponse response = reservationService.updateReservation(reservationId, request);
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * 예약 취소
-     * @param reservationId 취소할 예약 ID
-     * @return 204 No Content
-     */
-    @DeleteMapping("/{reservationId}")
-    public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId) {
-        reservationService.cancelReservation(reservationId);
-        return ResponseEntity.noContent().build();
-    }
-
-    // ========== Query Operations (Read) ==========
-    
-    /**
-     * 예약 상세 정보 조회
-     * @param reservationId 조회할 예약 ID
-     * @return 예약 상세 정보
-     */
-    @GetMapping("/{reservationId}")
-    public ResponseEntity<ReservationResponse> getReservation(@PathVariable Long reservationId) {
-        ReservationResponse response = reservationQueryService.getReservation(reservationId);
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * 조건에 따른 예약 목록 조회
-     * @param date 조회할 날짜 (선택사항)
-     * @param userId 사용자 ID (선택사항)
-     * @return 예약 목록
-     */
-    @GetMapping
-    public ResponseEntity<List<ReservationListResponse>> getReservations(
-            @RequestParam(required = false) LocalDate date,
-            @RequestParam(required = false) Long userId) {
-        List<ReservationListResponse> responses = reservationQueryService.getReservations(date, userId);
-        return ResponseEntity.ok(responses);
-    }
-
-    /**
-     * 캘린더용 예약 목록 조회
-     * @param startDate 시작 날짜
-     * @param endDate 종료 날짜
-     * @return 기간 내 예약 목록
-     */
-    @GetMapping("/calendar")
-    public ResponseEntity<List<ReservationListResponse>> getCalendarReservations(
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
-        List<ReservationListResponse> responses = reservationQueryService.getCalendarReservations(startDate, endDate);
-        return ResponseEntity.ok(responses);
+    private List<String> extractOriginalTimes(Reservation reservation){
+        List<String> originalTimes = new ArrayList<>();
+        if (reservation.getResStart() == null || reservation.getResEnd() == null) {
+            System.err.println("Warning: Reservation resNo=" + reservation.getResNo() + " has null start or end time.");
+            return originalTimes;
+        }
+        LocalDateTime current = reservation.getResStart();
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        while (current.isBefore(reservation.getResEnd())) {
+            originalTimes.add(current.toLocalTime().format(timeFormatter));
+            current = current.plusHours(1);
+        }
+        return originalTimes;
     }
 }

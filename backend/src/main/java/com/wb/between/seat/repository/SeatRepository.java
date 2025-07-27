@@ -1,6 +1,6 @@
-package com.wb.between.reservation.seat.repository;
+package com.wb.between.seat.repository;
 
-import com.wb.between.reservation.seat.domain.Seat;
+import com.wb.between.seat.domain.Seat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

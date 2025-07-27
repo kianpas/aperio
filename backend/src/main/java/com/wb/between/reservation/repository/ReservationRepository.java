@@ -1,7 +1,7 @@
 package com.wb.between.reservation.repository;
 
 import com.wb.between.reservation.domain.Reservation;
-import com.wb.between.reservation.domain.ReservationStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,22 +13,26 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    List<Reservation> findByUserIdAndStatus(Long userId, ReservationStatus status);
+    // AdminUserService에서 사용하는 메서드
+    List<Reservation> findByUserNoOrderByResDtDesc(Long userNo, Pageable pageable);
 
-    List<Reservation> findBySeatIdAndStatus(Long seatId, ReservationStatus status);
-
-    @Query("SELECT r FROM Reservation r WHERE r.seatId = :seatId " +
-           "AND r.status = 'CONFIRMED' " +
-           "AND ((r.reservationDateTime <= :endTime AND r.reservationDateTime >= :startTime) " +
-           "OR (r.reservationDateTime <= :startTime AND r.reservationDateTime + INTERVAL r.duration MINUTE > :startTime))")
-    List<Reservation> findConflictingReservations(
-            @Param("seatId") Long seatId,
+    // ReservationService에서 사용하는 메서드
+    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.seatNo = :seatNo " +
+           "AND r.resStatus = true " +
+           "AND ((r.resStart < :endTime AND r.resEnd > :startTime))")
+    long countOverlappingReservations(
+            @Param("seatNo") Long seatNo,
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime);
 
-    @Query("SELECT r FROM Reservation r WHERE r.reservationDateTime BETWEEN :startDate AND :endDate " +
-           "ORDER BY r.reservationDateTime")
-    List<Reservation> findByDateRange(
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate);
+    // 자기 자신을 제외한 중복 예약 확인
+    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.seatNo = :seatNo " +
+           "AND r.resStatus = true " +
+           "AND r.resNo != :excludeResNo " +
+           "AND ((r.resStart < :endTime AND r.resEnd > :startTime))")
+    long countOverlappingReservationsExcludingSelf(
+            @Param("seatNo") Long seatNo,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime,
+            @Param("excludeResNo") Long excludeResNo);
 }
