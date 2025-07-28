@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:63342") // !!! 중요: 실제 프론트엔드 주소로 변경 !!!
 public class SeatController {
 
     @Autowired

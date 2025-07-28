@@ -1,45 +1,54 @@
 package com.wb.between.menu.controller;
 
-import com.wb.between.common.cache.MenuCache;
-import com.wb.between.menu.dto.response.user.MenuListResponseDto;
-import com.wb.between.menu.service.MenuCacheService;
-import com.wb.between.menu.service.MenuService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-@Slf4j
 @RestController
-@RequestMapping("/api/menus")
-@RequiredArgsConstructor
+@RequestMapping("/api")
 public class MenuApiController {
 
-    private final MenuCache menuCache;
-
-    private final MenuCacheService menuCacheService;
-    private final MenuService menuService;
-
-    @GetMapping
-    public ResponseEntity<List<MenuListResponseDto>> getAllMenus() {
-        // 현재 사용자의 인증 정보를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        List<MenuListResponseDto> headerMenus = menuService.getHeaderMenuByRole(authentication);
-
-        return ResponseEntity.ok(headerMenus);
-    }
-
-    @GetMapping("/menu-test")
-    public String menuTest(Model model) {
-        menuCache.reload();
-        return "menu reloaded";
+    /**
+     * 프론트엔드용 메뉴 목록 API
+     * @return 메뉴 목록 JSON 응답
+     */
+    @GetMapping("/menus")
+    public ResponseEntity<List<Map<String, Object>>> getMenus() {
+        try {
+            // 임시 메뉴 데이터 (실제로는 DB에서 조회)
+            List<Map<String, Object>> menus = Arrays.asList(
+                Map.of(
+                    "menuNo", 1,
+                    "menuNm", "예약하기",
+                    "menuUrl", "/reservation",
+                    "menuSort", 1,
+                    "useAt", "Y"
+                ),
+                Map.of(
+                    "menuNo", 2,
+                    "menuNm", "요금안내",
+                    "menuUrl", "#pricing-section",
+                    "menuSort", 2,
+                    "useAt", "Y"
+                ),
+                Map.of(
+                    "menuNo", 3,
+                    "menuNm", "문의하기",
+                    "menuUrl", "/contact",
+                    "menuSort", 3,
+                    "useAt", "Y"
+                )
+            );
+            
+            return ResponseEntity.ok(menus);
+        } catch (Exception e) {
+            System.err.println("메뉴 목록 조회 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

@@ -32,18 +32,15 @@ public class MainController {
         return "user/login";
     }
 
-
     @GetMapping("/user/join")
     public String join(Model model) {
 
         return "user/join";
     }
 
-
     @GetMapping("/custom-error")
     public String error(Model model) {
         throw new CustomException(ErrorCode.INTERNAL_ERROR);
     }
-
 
 }

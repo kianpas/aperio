@@ -1,4 +1,4 @@
-package com.wb.between.admin.dashboard;
+package com.wb.between.admin.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

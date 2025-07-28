@@ -1,4 +1,4 @@
-package com.wb.between.admin.main.dto;
+package com.wb.between.banner.dto.response.admin;
 
 import com.wb.between.banner.domain.Banner;
 import lombok.Builder;

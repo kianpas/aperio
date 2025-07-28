@@ -1,7 +1,5 @@
 package com.wb.between.config;
 
-import org.jetbrains.annotations.NotNull;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -17,12 +15,15 @@ public class CorsConfig implements WebMvcConfigurer  {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                        "http://localhost:3000",           // 개발 환경
-                        "https://your-app.vercel.app"      // 프로덕션 환경
+                        "http://localhost:3000",           // React 개발 서버
+                        "http://localhost:3001",           // 추가 개발 포트
+                        "http://localhost:63342",          // IntelliJ 내장 서버
+                        "https://your-app.vercel.app"      // 프로덕션 환경 (실제 도메인으로 변경 필요)
                 )
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowCredentials(true)
+                .maxAge(3600); // preflight 요청 캐시 시간 (1시간)
     }
 
 

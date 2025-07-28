@@ -1,7 +1,8 @@
-package com.wb.between.admin.main.service;
+package com.wb.between.banner.service;
 
-import com.wb.between.admin.main.dto.AdminBannerResDto;
-import com.wb.between.admin.main.repository.AdminMainRepository;
+import com.wb.between.banner.dto.response.admin.AdminBannerResDto;
+import com.wb.between.banner.repository.AdminBannerRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +10,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdminMainService {
+public class AdminBannerService {
 
-    private final AdminMainRepository adminMainRepository;
+    private final AdminBannerRepository adminMainRepository;
 
     /**
      * 관리자 > 배너 조회

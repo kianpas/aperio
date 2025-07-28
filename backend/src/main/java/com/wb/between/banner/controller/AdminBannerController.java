@@ -1,7 +1,8 @@
-package com.wb.between.admin.main.controller;
+package com.wb.between.banner.controller;
 
-import com.wb.between.admin.main.dto.AdminBannerResDto;
-import com.wb.between.admin.main.service.AdminMainService;
+import com.wb.between.banner.dto.response.admin.AdminBannerResDto;
+import com.wb.between.banner.service.AdminBannerService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/main")
+@RequestMapping("/admin/banner")
 @RequiredArgsConstructor
-public class AdminMainController {
+public class AdminBannerController {
 
-    private final AdminMainService adminMainService;
+    private final AdminBannerService adminMainService;
 
     /**
      * 관리자 > 메인관리
