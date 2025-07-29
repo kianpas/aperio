@@ -1,4 +1,4 @@
-package com.wb.between.admin.reservation.repository;
+package com.wb.between.reservation.repository;
 
 import com.wb.between.reservation.domain.Reservation;
 import org.springframework.data.domain.Page;

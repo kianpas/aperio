@@ -17,8 +17,7 @@ import {
   FaBus,
   FaParking
 } from 'react-icons/fa';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+
 
 interface Banner {
   bNo: number;
@@ -94,10 +93,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <Header />
-      
+    <div className="bg-white">
       {/* Hero Section - Banner Slider */}
       <section className="relative h-[500px] overflow-hidden">
         {banners.map((banner, index) => (
@@ -417,9 +413,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

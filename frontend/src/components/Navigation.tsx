@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { FaUser, FaBars, FaTimes } from 'react-icons/fa';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { FaUser, FaBars, FaTimes } from "react-icons/fa";
 
 interface Menu {
   menuNo: number;
@@ -25,26 +25,44 @@ export default function Navigation() {
 
   useEffect(() => {
     // 메뉴 데이터 가져오기 (Next.js 프록시 사용)
-    fetch('/api/menus')
-      .then(response => {
-        console.log('Menu API Response Status:', response.status);
+    fetch("/api/menus")
+      .then((response) => {
+        console.log("Menu API Response Status:", response.status);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
       })
       .then((data: Menu[]) => {
-        console.log('Menu data received:', data);
+        console.log("Menu data received:", data);
         setMenus(data);
       })
-      .catch(error => {
-        console.error('Error fetching menus:', error);
-        console.log('Using fallback menu data');
+      .catch((error) => {
+        console.error("Error fetching menus:", error);
+        console.log("Using fallback menu data");
         // 기본 메뉴 설정
         setMenus([
-          { menuNo: 1, menuNm: '예약하기', menuUrl: '/reservation', menuSort: 1, useAt: 'Y' },
-          { menuNo: 2, menuNm: '요금안내', menuUrl: '#pricing-section', menuSort: 2, useAt: 'Y' },
-          { menuNo: 3, menuNm: '문의하기', menuUrl: '/contact', menuSort: 3, useAt: 'Y' }
+          {
+            menuNo: 1,
+            menuNm: "예약하기",
+            menuUrl: "/reservation",
+            menuSort: 1,
+            useAt: "Y",
+          },
+          {
+            menuNo: 2,
+            menuNm: "요금안내",
+            menuUrl: "#pricing-section",
+            menuSort: 2,
+            useAt: "Y",
+          },
+          {
+            menuNo: 3,
+            menuNm: "문의하기",
+            menuUrl: "/contact",
+            menuSort: 3,
+            useAt: "Y",
+          },
         ]);
       })
       .finally(() => {
@@ -53,12 +71,12 @@ export default function Navigation() {
 
     // 사용자 인증 상태 확인 (실제 구현 시 인증 API 호출)
     // 임시로 localStorage나 쿠키에서 사용자 정보 확인
-    const userInfo = localStorage.getItem('user');
+    const userInfo = localStorage.getItem("user");
     if (userInfo) {
       try {
         setUser(JSON.parse(userInfo));
       } catch (error) {
-        console.error('사용자 정보 파싱 오류:', error);
+        console.error("사용자 정보 파싱 오류:", error);
       }
     }
   }, []);
@@ -69,14 +87,14 @@ export default function Navigation() {
 
   const handleLogin = () => {
     // 로그인 페이지로 이동
-    window.location.href = '/login';
+    window.location.href = "/login";
   };
 
   const handleLogout = () => {
     // 로그아웃 처리
-    localStorage.removeItem('user');
+    localStorage.removeItem("user");
     setUser(null);
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   if (loading) {
@@ -136,7 +154,11 @@ export default function Navigation() {
           onClick={toggleMenu}
           className="text-gray-700 hover:text-blue-600 transition-colors duration-200"
         >
-          {isMenuOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
+          {isMenuOpen ? (
+            <FaTimes className="w-6 h-6" />
+          ) : (
+            <FaBars className="w-6 h-6" />
+          )}
         </button>
       </div>
 
@@ -154,7 +176,7 @@ export default function Navigation() {
                 {menu.menuNm}
               </Link>
             ))}
-            
+
             <div className="border-t border-gray-200 pt-4">
               {user ? (
                 <div className="space-y-2">

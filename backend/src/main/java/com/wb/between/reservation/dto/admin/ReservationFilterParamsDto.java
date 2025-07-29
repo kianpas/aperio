@@ -1,4 +1,4 @@
-package com.wb.between.admin.reservation.dto;
+package com.wb.between.reservation.dto.admin;
 
 import lombok.Data;
 

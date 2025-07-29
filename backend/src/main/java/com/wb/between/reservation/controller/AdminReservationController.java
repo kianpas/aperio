@@ -1,9 +1,9 @@
-package com.wb.between.admin.reservation.controller;
+package com.wb.between.reservation.controller;
 
-import com.wb.between.admin.reservation.dto.ReservationFilterParamsDto;
-import com.wb.between.admin.reservation.dto.ReservationListDto;
-import com.wb.between.admin.reservation.dto.SeatDto;
-import com.wb.between.admin.reservation.service.AdminReservationService;
+import com.wb.between.reservation.dto.admin.ReservationFilterParamsDto;
+import com.wb.between.reservation.dto.admin.ReservationListDto;
+import com.wb.between.reservation.dto.admin.SeatDto;
+import com.wb.between.reservation.service.AdminReservationService;
 import com.wb.between.user.service.AdminUserService;
 
 import lombok.RequiredArgsConstructor;
