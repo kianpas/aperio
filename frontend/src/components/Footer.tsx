@@ -1,6 +1,6 @@
-import Link from 'next/link';
+import Link from "next/link";
 
-export default function Footer() {
+const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -20,17 +20,26 @@ export default function Footer() {
             <h4 className="text-lg font-semibold mb-4">서비스</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/reservation" className="text-gray-400 hover:text-white transition-colors duration-200">
+                <Link
+                  href="/reservation"
+                  className="text-gray-400 hover:text-white transition-colors duration-200"
+                >
                   예약하기
                 </Link>
               </li>
               <li>
-                <Link href="#pricing-section" className="text-gray-400 hover:text-white transition-colors duration-200">
+                <Link
+                  href="#pricing-section"
+                  className="text-gray-400 hover:text-white transition-colors duration-200"
+                >
                   요금안내
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-400 hover:text-white transition-colors duration-200">
+                <Link
+                  href="/contact"
+                  className="text-gray-400 hover:text-white transition-colors duration-200"
+                >
                   문의하기
                 </Link>
               </li>
@@ -41,22 +50,34 @@ export default function Footer() {
             <h4 className="text-lg font-semibold mb-4">회사정보</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/about" className="text-gray-400 hover:text-white transition-colors duration-200">
+                <Link
+                  href="/about"
+                  className="text-gray-400 hover:text-white transition-colors duration-200"
+                >
                   회사소개
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-gray-400 hover:text-white transition-colors duration-200">
+                <Link
+                  href="/terms"
+                  className="text-gray-400 hover:text-white transition-colors duration-200"
+                >
                   이용약관
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors duration-200">
+                <Link
+                  href="/privacy"
+                  className="text-gray-400 hover:text-white transition-colors duration-200"
+                >
                   개인정보처리방침
                 </Link>
               </li>
               <li>
-                <Link href="/support" className="text-gray-400 hover:text-white transition-colors duration-200">
+                <Link
+                  href="/support"
+                  className="text-gray-400 hover:text-white transition-colors duration-200"
+                >
                   고객센터
                 </Link>
               </li>
@@ -79,4 +100,6 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

@@ -17,7 +17,7 @@ interface User {
   name?: string;
 }
 
-export default function Navigation() {
+const Navigation = () => {
   const [menus, setMenus] = useState<Menu[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -207,4 +207,6 @@ export default function Navigation() {
       )}
     </nav>
   );
-}
+};
+
+export default Navigation;
