@@ -68,15 +68,20 @@ const Navigation = () => {
       .finally(() => {
         setLoading(false);
       });
+  }, []);
 
+  // 클라이언트에서만 localStorage 접근
+  useEffect(() => {
     // 사용자 인증 상태 확인 (실제 구현 시 인증 API 호출)
     // 임시로 localStorage나 쿠키에서 사용자 정보 확인
-    const userInfo = localStorage.getItem("user");
-    if (userInfo) {
-      try {
-        setUser(JSON.parse(userInfo));
-      } catch (error) {
-        console.error("사용자 정보 파싱 오류:", error);
+    if (typeof window !== 'undefined') {
+      const userInfo = localStorage.getItem("user");
+      if (userInfo) {
+        try {
+          setUser(JSON.parse(userInfo));
+        } catch (error) {
+          console.error("사용자 정보 파싱 오류:", error);
+        }
       }
     }
   }, []);
