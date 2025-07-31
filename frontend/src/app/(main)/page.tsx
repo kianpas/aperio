@@ -43,7 +43,7 @@ export default function Home() {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const response = await fetch("/api/main");
+        const response = await fetch("/api/v1/main");
         if (response.ok) {
           const data: MainDataResponse = await response.json();
           setBanners(data.bannerList);

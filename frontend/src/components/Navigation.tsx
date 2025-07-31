@@ -25,7 +25,7 @@ const Navigation = () => {
 
   useEffect(() => {
     // 메뉴 데이터 가져오기 (Next.js 프록시 사용)
-    fetch("/api/menus")
+    fetch("/api/v1/menus")
       .then((response) => {
         console.log("Menu API Response Status:", response.status);
         if (!response.ok) {
@@ -61,6 +61,13 @@ const Navigation = () => {
             menuNm: "문의하기",
             menuUrl: "/contact",
             menuSort: 3,
+            useAt: "Y",
+          },
+          {
+            menuNo: 4,
+            menuNm: "FaQ",
+            menuUrl: "/faq",
+            menuSort: 4,
             useAt: "Y",
           },
         ]);

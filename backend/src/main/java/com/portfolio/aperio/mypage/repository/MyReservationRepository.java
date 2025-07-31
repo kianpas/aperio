@@ -24,7 +24,7 @@ public interface MyReservationRepository extends JpaRepository<Reservation, Long
      * @return 페이징 처리된 MyReservationDto 리스트
      */
     @Query(
-            "SELECT NEW com.wb.between.mypage.dto.MyReservationDto(" +
+            "SELECT NEW com.portfolio.aperio.mypage.dto.MyReservationDto(" +
             "r.resNo, r.resDt, s.seatNm, r.resStart, r.resEnd, r.totalPrice, r.resPrice, r.dcPrice, " +
             "CASE " +
             "  WHEN r.resStatus = true AND r.resEnd > :now THEN '1' " +     // 예약완료 & 종료시간 미래 -> '1' (예정)

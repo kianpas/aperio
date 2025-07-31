@@ -10,14 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/menus")  // 리소스 기반 + 버전 관리
 public class MenuApiController {
 
     /**
      * 프론트엔드용 메뉴 목록 API
+     * GET /api/v1/menus
      * @return 메뉴 목록 JSON 응답
      */
-    @GetMapping("/menus")
+    @GetMapping
     public ResponseEntity<List<Map<String, Object>>> getMenus() {
         try {
             // 임시 메뉴 데이터 (실제로는 DB에서 조회)

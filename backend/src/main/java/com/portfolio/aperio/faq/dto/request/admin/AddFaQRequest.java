@@ -1,6 +1,6 @@
 package com.portfolio.aperio.faq.dto.request.admin;
 
-import com.portfolio.aperio.faq.domain.FaQ;
+import com.portfolio.aperio.faq.domain.Faq;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class AddFaQRequest {
+public class AddFaqRequest {
 
     private  String question;
     private  String answer;
     private LocalDateTime createDt;
 
-    public FaQ toEntity(){
-        return FaQ.builder()
+    public Faq toEntity(){
+        return Faq.builder()
                 .question(question)
                 .answer(answer)
                 .createDt(createDt)

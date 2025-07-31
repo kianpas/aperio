@@ -1,8 +1,8 @@
 package com.portfolio.aperio.faq.service;
 
-import com.portfolio.aperio.faq.domain.FaQ;
-import com.portfolio.aperio.faq.dto.request.admin.AddFaQRequest;
-import com.portfolio.aperio.faq.repository.FnQRepository;
+import com.portfolio.aperio.faq.domain.Faq;
+import com.portfolio.aperio.faq.dto.request.admin.AddFaqRequest;
+import com.portfolio.aperio.faq.repository.FaqRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,15 +10,15 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class FaQService {
+public class FaqService {
 
-    private final FnQRepository fnQRepository;
+    private final FaqRepository faqRepository;
 
-    public FaQ save(AddFaQRequest request){
-        return fnQRepository.save(request.toEntity());
+    public Faq save(AddFaqRequest request){
+        return faqRepository.save(request.toEntity());
     }
 
-    public List<FaQ> findAll(){
-        return fnQRepository.findAll();
+    public List<Faq> findAll(){
+        return faqRepository.findAll();
     }
 }

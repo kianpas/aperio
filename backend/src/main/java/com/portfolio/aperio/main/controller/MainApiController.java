@@ -5,7 +5,7 @@ import com.portfolio.aperio.banner.service.BannerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/main")  // 리소스 기반 + 버전 관리
 @RequiredArgsConstructor
 public class MainApiController {
 
@@ -22,11 +22,11 @@ public class MainApiController {
 
     /**
      * 프론트엔드 메인 화면용 API
-     * 기존 MainController의 "/" 경로와 동일한 데이터를 JSON으로 반환
+     * GET /api/v1/main
      * 
      * @return 배너 목록과 메인 화면에 필요한 데이터
      */
-    @GetMapping("/main")
+    @GetMapping
     public ResponseEntity<?> getMainData() {
         try {
             List<BannerListResponseDto> bannerList = bannerService.findBannerList();

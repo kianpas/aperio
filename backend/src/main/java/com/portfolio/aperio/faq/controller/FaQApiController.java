@@ -1,42 +1,74 @@
 package com.portfolio.aperio.faq.controller;
 
-import com.portfolio.aperio.faq.domain.FaQ;
-import com.portfolio.aperio.faq.dto.request.admin.AddFaQRequest;
-import com.portfolio.aperio.faq.dto.response.user.FaQListViewResponse;
-import com.portfolio.aperio.faq.service.FaQService;
+import com.portfolio.aperio.faq.domain.Faq;
+import com.portfolio.aperio.faq.service.FaqService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+@Slf4j
 @RestController
-public class FaQApiController {
+@RequestMapping("/api/v1/faqs")  // 리소스 기반 + 버전 관리
+@RequiredArgsConstructor
+public class FaqApiController {
 
-    private final FaQService faQService;
+    private final FaqService faqService;
 
-    @PostMapping("/api/addFaQ")
-    public ResponseEntity<FaQ> addFaQ(@RequestBody AddFaQRequest request){
-        FaQ saveFaQ = faQService.save(request);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(saveFaQ);
+    /**
+     * FAQ 목록 조회 API
+     * GET /api/v1/faqs
+     * 
+     * @return FAQ 목록 JSON 응답
+     */
+    @GetMapping
+    public ResponseEntity<List<Faq>> getFaqs() {
+        try {
+            List<Faq> faqs = faqService.findAll();
+            return ResponseEntity.ok(faqs);
+        } catch (Exception e) {
+            log.error("FAQ 목록 조회 중 오류 발생: {}", e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
+    /**
+     * FAQ 목록 조회 API (응답 DTO 포함)
+     * GET /api/v1/faqs/list
+     * 
+     * @return FAQ 목록과 메타데이터를 포함한 JSON 응답
+     */
+    @GetMapping("/list")
+    public ResponseEntity<?> getFaqList() {
+        try {
+            List<Faq> faqs = faqService.findAll();
+            
+            FaqListResponse response = FaqListResponse.builder()
+                    .faqs(faqs)
+                    .count(faqs.size())
+                    .message("FAQ 목록 조회 성공")
+                    .build();
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("FAQ 목록 조회 중 오류 발생: {}", e.getMessage());
+            return ResponseEntity.internalServerError()
+                    .body("FAQ 목록 조회 중 오류가 발생했습니다.");
+        }
+    }
 
-    @GetMapping("/api/FaQList")
-    public ResponseEntity<List<FaQListViewResponse>> findAllFaQ(){
-        List<FaQListViewResponse> faqList = faQService.findAll()
-                .stream()
-                .map(FaQListViewResponse::new)
-                .toList();
-
-        return ResponseEntity.ok()
-                .body(faqList);
+    /**
+     * FAQ 목록 응답 DTO
+     */
+    @lombok.Builder
+    @lombok.Getter
+    public static class FaqListResponse {
+        private List<Faq> faqs;
+        private int count;
+        private String message;
     }
 }
