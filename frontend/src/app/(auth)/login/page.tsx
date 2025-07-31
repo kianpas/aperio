@@ -66,7 +66,7 @@ const Login = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4">
             <FaBuilding className="text-white text-2xl" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">BetWeen</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Aperio</h1>
           <p className="text-gray-600">공유오피스 로그인</p>
         </div>
 
@@ -215,7 +215,7 @@ const Login = () => {
 
         {/* 푸터 */}
         <div className="mt-8 text-center text-sm text-gray-500">
-          <p>© 2024 BetWeen. All rights reserved.</p>
+          <p>© 2025 Aperio. All rights reserved.</p>
           <div className="mt-2 space-x-4">
             <Link href="/terms" className="hover:text-gray-700">이용약관</Link>
             <Link href="/privacy" className="hover:text-gray-700">개인정보처리방침</Link>

@@ -73,7 +73,7 @@ const SignUp = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4">
             <FaBuilding className="text-white text-2xl" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">BetWeen</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Aperio</h1>
           <p className="text-gray-600">새로운 계정을 만들어보세요</p>
         </div>
 
@@ -301,7 +301,7 @@ const SignUp = () => {
 
         {/* 푸터 */}
         <div className="mt-8 text-center text-sm text-gray-500">
-          <p>© 2024 BetWeen. All rights reserved.</p>
+          <p>© 2025 Aperio. All rights reserved.</p>
         </div>
       </div>
     </div>

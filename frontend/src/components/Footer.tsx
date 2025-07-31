@@ -8,9 +8,9 @@ const Footer = () => {
           {/* 로고 및 설명 */}
           <div className="lg:col-span-2">
             <div className="mb-4">
-              <h3 className="text-2xl font-bold text-blue-400">BetWeen</h3>
+              <h3 className="text-2xl font-bold text-blue-400">Aperio</h3>
               <p className="text-gray-400 mt-2">
-                당신과 고객 사이의 연결을 돕는 플랫폼
+                아이디어와 가능성을 열어주는 공간, 투명한 협업이 이루어지는 플랫폼
               </p>
             </div>
           </div>
@@ -89,11 +89,11 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 text-sm mb-4 md:mb-0">
-              <p>(주)비트윈 | 대표: 홍길동 | 사업자등록번호: 123-45-67890</p>
+              <p>(주)아페리오 | 대표: 홍길동 | 사업자등록번호: 123-45-67890</p>
               <p>서울특별시 강남구 테헤란로 123, 8층</p>
             </div>
             <div className="text-gray-400 text-sm">
-              © 2025 BetWeen. All rights reserved.
+              © 2025 Aperio. All rights reserved.
             </div>
           </div>
         </div>

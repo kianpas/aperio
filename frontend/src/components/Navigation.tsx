@@ -74,7 +74,7 @@ const Navigation = () => {
   useEffect(() => {
     // 사용자 인증 상태 확인 (실제 구현 시 인증 API 호출)
     // 임시로 localStorage나 쿠키에서 사용자 정보 확인
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const userInfo = localStorage.getItem("user");
       if (userInfo) {
         try {

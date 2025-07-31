@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BetWeen - 공유 오피스 플랫폼",
+  title: "Aperio - 공유 오피스 플랫폼",
   description:
-    "강남 중심가의 프리미엄 공유 오피스 공간. 유연한 멤버십과 최적의 업무 환경을 제공합니다.",
+    "아이디어와 가능성을 열어주는 공유 오피스 공간. 투명한 협업과 유연한 멤버십으로 최적의 업무 환경을 제공합니다.",
 };
 
 export default function RootLayout({

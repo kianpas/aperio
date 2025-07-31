@@ -66,7 +66,7 @@ const SERVICES_DATA = [
 
 const CONTACT_DATA = [
   { icon: FaPhone, text: "02-123-4567" },
-  { icon: FaEnvelope, text: "support@between.com" },
+  { icon: FaEnvelope, text: "support@aperio.com" },
   { icon: FaMap, text: "서울시 강남구 테헤란로 123" },
 ] as const;
 
@@ -246,10 +246,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              BetWeen을 선택해야 하는 이유
+              Aperio를 선택해야 하는 이유
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              단순한 공간을 넘어, 당신의 성공을 위한 최적의 환경을 제공합니다.
+              아이디어와 가능성을 열어주는 공간에서 당신의 성공을 위한 최적의 환경을 제공합니다.
             </p>
           </div>
 
@@ -299,7 +299,7 @@ export default function Home() {
                 당신의 비즈니스를 위한 최고의 공간
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed">
-                BetWeen은 단순한 오피스를 넘어 창의적이고 유연한 업무 환경을
+                Aperio는 단순한 오피스를 넘어 창의적이고 유연한 업무 환경을
                 제공합니다.
                 <br />
                 스타트업, 프리랜서, 크리에이터 모두를 위한 맞춤형 공유
