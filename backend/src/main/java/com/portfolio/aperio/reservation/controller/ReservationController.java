@@ -59,9 +59,9 @@ public class ReservationController {
             String username = userDetails.getUsername();
             User user = userRepository.findByEmail(username)
                     .orElseThrow(() -> new UsernameNotFoundException("DB 사용자 정보 없음: " + username));
-            currentUserId = user.getUserNo();
+            currentUserId = user.getUserId();
             if (currentUserId == null) throw new IllegalStateException("userNo 없음");
-            currentUserAuth = user.getAuthCd();
+
         } catch (Exception e) {
             System.err.println("사용자 ID 처리 실패: " + e.getMessage());
             model.addAttribute("errorMessage", "사용자 정보 처리 오류");

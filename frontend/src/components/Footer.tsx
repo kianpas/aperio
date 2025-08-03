@@ -8,8 +8,8 @@ const Footer = () => {
           {/* 로고 및 설명 */}
           <div className="lg:col-span-2">
             <div className="mb-4">
-              <h3 className="text-2xl font-bold text-blue-400">Aperio</h3>
-              <p className="text-gray-400 mt-2">
+              <h3 className="text-2xl font-brand-bold text-blue-400">Aperio</h3>
+              <p className="text-gray-400 mt-2 font-body">
                 아이디어와 가능성을 열어주는 공간, 투명한 협업이 이루어지는 플랫폼
               </p>
             </div>

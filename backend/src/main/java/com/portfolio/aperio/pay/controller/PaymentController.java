@@ -58,7 +58,7 @@ public class PaymentController {
 
             User user = userRepository.findByEmail(username) // 이메일로 사용자 조회
                     .orElseThrow(() -> new UsernameNotFoundException("예약 서비스에서 사용자를 찾을 수 없습니다: " + username));
-            Long userNo = user.getUserNo(); // User Entity에서 userNo 가져오기 (getUserNo() 메소드 필요)
+            Long userNo = user.getUserId(); // User Entity에서 userNo 가져오기 (getUserNo() 메소드 필요)
             String partnerUserId = String.valueOf(userNo);
             if (partnerUserId == null) {
                 throw new IllegalStateException("사용자 번호(userNo)를 가져올 수 없습니다.");

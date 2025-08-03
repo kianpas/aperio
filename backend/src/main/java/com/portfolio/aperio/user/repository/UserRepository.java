@@ -13,10 +13,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String eamil);   // email로 사용자 정보 가지고 옴
 
-    Optional<User> findByUserNo(Long userNo);   // userNo로 사용자 정보 가지고 옴
+    Optional<User> findByUserId(Long userNo);   // userNo로 사용자 정보 가지고 옴
 
     // 이메일과 휴대번호로 사용자 정보 조회
-    Optional<User> findByEmailAndPhoneNo(String email, String phoneNo);
+    Optional<User> findByEmailAndPhoneNumber(String email, String phoneNo);
 
     // 방법1. User 엔티티에 선언된 변수명을 기반으로 메소드명 짓기
     boolean existsByEmail(String email);
@@ -30,7 +30,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param phoneNo '-'가 제거된 순수 숫자 형태의 휴대폰 번호
      * @return 사용자 정보 Optional 객체
      */
-    Optional<User> findByPhoneNo(String phoneNo);
+    Optional<User> findByPhoneNumber(String phoneNo);
 
     // Fetch Join을 사용하여 연관된 모든 정보를 한 번에 조회
     @Query("SELECT DISTINCT u FROM User u " +

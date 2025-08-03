@@ -11,10 +11,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 */
 public interface AdminUserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
-    // 사용자 이메일로 사용자 조회
-    User findByEmail(String email);
-
-    // 사용자 전화번호로 사용자 조회
-    User findByPhoneNo(String phoneNo);
 
 }

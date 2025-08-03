@@ -64,7 +64,7 @@ public class MypageService {
 
         //전화번호
         if(userInfoEditReqDto.getPhoneNo() != null) {
-            user.setPhoneNo(userInfoEditReqDto.getPhoneNo());
+            user.setPhoneNumber(userInfoEditReqDto.getPhoneNo());
         }
 
         return MypageUserInfoResDto.from(user);
@@ -133,14 +133,14 @@ public class MypageService {
         //사용 가능
         if ("available".equalsIgnoreCase(tab)) {
             //2. 회원의 쿠폰 목록 조회
-            userCouponList = userCouponRepository.findByUserCoupon(user.getUserNo(),
+            userCouponList = userCouponRepository.findByUserCoupon(user.getUserId(),
                     "N",
                     startDateTime,
                     endDateTimePlusOne);
 
         } else if ("expired".equalsIgnoreCase(tab)) {
             //만료
-            userCouponList = userCouponRepository.findExpiredCouponsWithDateFilter(user.getUserNo(),
+            userCouponList = userCouponRepository.findExpiredCouponsWithDateFilter(user.getUserId(),
                     "Y",
                     startDateTime,
                     endDateTimePlusOne);
@@ -177,7 +177,7 @@ public class MypageService {
         //사용 가능
         if ("available".equalsIgnoreCase(tab)) {
             //2. 회원의 쿠폰 목록 조회
-            userCouponList = userCouponRepository.findByUserCouponPage(user.getUserNo(),
+            userCouponList = userCouponRepository.findByUserCouponPage(user.getUserId(),
                     "N",
                     now,
                     startDateTime,
@@ -186,7 +186,7 @@ public class MypageService {
 
         } else if ("expired".equalsIgnoreCase(tab)) {
             //만료
-            userCouponList = userCouponRepository.findExpiredCouponsWithDateFilterPage(user.getUserNo(),
+            userCouponList = userCouponRepository.findExpiredCouponsWithDateFilterPage(user.getUserId(),
                     now,
                     startDateTime,
                     endDateTimePlusOne,

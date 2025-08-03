@@ -134,16 +134,16 @@ public class AdminUserService {
 
     private UserListDto mapToUserListDto(User user) {
 
-        String mappedStatus = "일반".equals(user.getUserStts()) ? "정상" : user.getUserStts();
+        String mappedStatus = "일반".equals(user.getUserStatus()) ? "정상" : String.valueOf(user.getUserStatus());
 
         return UserListDto.builder()
-                .userNo(user.getUserNo())
+                .userNo(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .phoneNo(PhoneNumber(user.getPhoneNo()))
-                .createDt(user.getCreateDt())
+                .phoneNo(PhoneNumber(user.getPhoneNumber()))
+                .createDt(user.getCreatedAt())
                 .userStts(mappedStatus)
-                .authCd(user.getAuthCd())
+                .authCd("임직원")
                 .build();
     }
 
@@ -156,7 +156,7 @@ public class AdminUserService {
      */
     public UserDetailDto getUserDetail(Long userNo) {
         // 1. 사용자 조회
-        User user = userRepository.findByUserNo(userNo)
+        User user = userRepository.findByUserId(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다. userNo: " + userNo));
 
         // 2. 최근 예약 5개 조회
@@ -176,16 +176,16 @@ public class AdminUserService {
 // --- 데이터 변환 메소드 ---
     private UserDetailDto mapToUserDetailDTO(User user, List<UserDetailReservationListDto> reservations) {
         // DB 상태값("일반") -> 화면 표시값("정상") 매핑
-        String mappedStatus = "일반".equals(user.getUserStts()) ? "정상" : user.getUserStts();
+        String mappedStatus = "일반".equals(user.getUserStatus()) ? "정상" : String.valueOf(user.getUserStatus());
 
         return UserDetailDto.builder()
-                .userNo(user.getUserNo())
+                .userNo(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .phoneNo(PhoneNumber(user.getPhoneNo())) // - 적용
-                .authCd(user.getAuthCd()) // 등급은 DB값 그대로 사용
+                .phoneNo(PhoneNumber(user.getPhoneNumber())) // - 적용
+                .authCd("임직원") // 등급은 DB값 그대로 사용
                 .userStts(mappedStatus) // 매핑된 상태값 사용
-                .createDt(user.getCreateDt())
+                .createDt(user.getCreatedAt())
                 .recentReservations(reservations)
                 .build();
     }

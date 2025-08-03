@@ -1,48 +1,38 @@
 package com.portfolio.aperio.user.controller;
 
+import com.portfolio.aperio.common.dto.ErrorResponse;
 import com.portfolio.aperio.coupon.service.CouponIssueService;
-import com.portfolio.aperio.coupon.service.CouponService;
 import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.user.dto.SignupReqDto;
+import com.portfolio.aperio.user.dto.request.user.RegisterUserRequest;
 import com.portfolio.aperio.user.dto.VerificationResult;
+import com.portfolio.aperio.user.dto.response.user.RegisterUserResponse;
 import com.portfolio.aperio.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @Slf4j
-@Controller
+@RestController
+@RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
+
     private static final String OTP_PREFIX = "OTP_";
 
-    private CouponIssueService couponIssueService;
-
-    @Autowired
-    public UserController(UserService userService, CouponIssueService couponService) {
-        this.userService = userService;
-        this.couponIssueService = couponIssueService;
-    }
-
-    // 회원가입 페이지 호출
-    @GetMapping("/signup")
-    public String singupForm(Model model) {
-
-        model.addAttribute("user", new User());
-
-        return "login/signup";
-    }
+    private final CouponIssueService couponIssueService;
 
     // 회원정보(email/pwd) 확인 페이지 호출
     @GetMapping("/findUserInfo")
@@ -53,85 +43,42 @@ public class UserController {
         return "login/findUserInfo";
     }
 
-// 회원가입
+    // 회원가입
     @PostMapping("/signup")
-    public String registerUser(
+    public ResponseEntity<?> registerUser(
             // @Valid : SignupRequest 객체에서 설정한 유효성 검사 실행
-            // signupRequest : 회원가입 정보를 담는 객체
             // BindingResult : 유효성 검사 결과를 담는 객체
-            @Valid @ModelAttribute("user") SignupReqDto signupReqDto,
-            BindingResult result, Model model
+            @Valid @RequestBody RegisterUserRequest request
     ) {
 
-        System.out.println("UserController|registerUser|signupRequest = " + signupReqDto);
+//        try {
 
-        // SignupRequest 유효성 검사 실패 시 로그 출력
-        System.out.println("유효성 검사|result.hasErrors() = " + result.hasErrors());
-        if (result.hasErrors()) {
-
-            result.getAllErrors().forEach(error -> {
-
-                if (error instanceof FieldError) {
-
-                    FieldError fieldError = (FieldError) error;
-                    String fieldName = fieldError.getField();
-                    String errorMessage = fieldError.getDefaultMessage();
-                    String rejectedValue = String.valueOf(fieldError.getRejectedValue());
-
-                    System.out.println("유효성 검사 실패: 필드=" + fieldName +
-                            ", 값=" + rejectedValue +
-                            ", 메시지=" + errorMessage);
-                } else {
-                    System.out.println("유효성 검사 실패: " + error.getDefaultMessage());
-                }
-            });
-
-            return "redirect:/";
-        }
-
-        try {
+            log.debug("request = {}", request);
 
             // 회원가입 진행
-            System.out.println("UserController|registerUser|회원가입 진행 전");
-            User user = userService.registerUser(signupReqDto);
-            System.out.println("UserController|registerUser|회원가입 진행 후 | user = " + user);
+            User user = userService.registerUser(request);
 
+            log.debug("user = {}", user);
             //쿠폰발급 진행, 쿠폰발급은 회원가입 흐름에 영향을 주지 않아야함
-            if(user != null) {
-                try {
-                    couponIssueService.issueSignUpCoupon(user);
-                } catch (Exception e) {
-                    log.error("회원가입 성공 후 쿠폰 발급 실패. 사용자: {}, 에러: {}", user.getUserNo(), e.getMessage(), e);
-                }
-            }
+//            if(user != null) {
+//                try {
+//                    couponIssueService.issueSignUpCoupon(user);
+//                } catch (Exception e) {
+//                    log.error("회원가입 성공 후 쿠폰 발급 실패. 사용자: {}, 에러: {}", user.getUserId(), e.getMessage(), e);
+//                }
+//            }
 
 
-            return "redirect:/";
+            RegisterUserResponse response = RegisterUserResponse.success(user);
 
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "/signup";
-        }
+
+            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(ErrorResponse.of("SERVER_ERROR", "서버 오류가 발생했습니다"));
+//        }
     }
 
-/*
-    getMapping으로 이메일 중복 체크
-
-    @GetMapping("/checkEmail")
-    @ResponseBody
-    public Map<String, Boolean> checkEmail(@RequestParam("email") String email) {
-
-        System.out.println("UserController|checkEmail|inputValue|email = " + email);
-        boolean isAvailable = userService.checkEmail(email);
-        System.out.println("UserController|checkEmail|isAvailable = " + isAvailable);
-
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("available", isAvailable);
-
-        return response;
-
-    }
-*/
 /*
     PostMapping으로 이메일 중복 체크
  */

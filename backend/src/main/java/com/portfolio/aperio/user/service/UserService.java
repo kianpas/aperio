@@ -3,13 +3,17 @@ package com.portfolio.aperio.user.service;
 import com.portfolio.aperio.role.domain.Role;
 //import com.portfolio.aperio.common.util.SmsUtil;
 import com.portfolio.aperio.role.repository.RoleRepository;
+import com.portfolio.aperio.user.domain.LoginMethod;
 import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.user.dto.SignupReqDto;
+import com.portfolio.aperio.user.domain.UserStatus;
+import com.portfolio.aperio.user.dto.request.user.RegisterUserRequest;
 import com.portfolio.aperio.user.dto.VerificationResult;
 import com.portfolio.aperio.user.repository.UserRepository;
 import com.portfolio.aperio.role.domain.UserRole;
+import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -18,11 +22,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Enumeration;
 import java.util.Optional;
 import java.util.Random;
 
+@lombok.extern.slf4j.Slf4j
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
@@ -43,34 +51,21 @@ public class UserService {
     private static final String DEFAULT_ROLE_CODE = "ROLE_USER"; // 일반 사용자 역할 코드
     private static final String STAFF_ROLE_CODE = "ROLE_STAFF";   // 임직원 역할 코드 (예시)
 
-    // 생성자 주입
-    @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-//        this.smsUtil = smsUtil;
-        this.mailSender = mailSender;
-    }
-
-// 1. 회원가입
+ 
+    // 1. 회원가입
     @Transactional  // 트랜잭션 처리
-    public User registerUser(SignupReqDto signupReqDto) {
-        System.out.println("UserService|registerUser|회원가입|시작 ==========> ");
-
+    public User registerUser(RegisterUserRequest  request) {
+        log.debug("service = {}", request);
         // 이메일 중복 확인
-        if (!checkEmail(signupReqDto.getEmail())) {
+        if (!checkEmail(request.getEmail())) {
             throw new RuntimeException("이미 사용 중인 이메일입니다.");
         }
 
-        // authCd 값 설정 (기본값: 일반)
-        String authCd = "일반";
+        System.out.println("request1 ->" + request);
+
         // 이메일 도메인 확인
-        String email = signupReqDto.getEmail();
+        String email = request.getEmail();
         String domain = email.substring(email.indexOf("@") + 1); // @ 뒤의 도메인 추출
-        if ("winbit.kr".equalsIgnoreCase(domain)) {
-            authCd = "임직원";
-        }
 
                 // 1. 부여할 역할 코드 결정
         String targetRoleCode = DEFAULT_ROLE_CODE; // 기본값: 일반 사용자
@@ -85,20 +80,20 @@ public class UserService {
                 .orElseThrow(() -> new IllegalStateException("역할을 찾을 수 없습니다. 시스템 설정 오류입니다."));
 //        // 실제로는 RoleNotFoundException 같은 커스텀 예외 처리 권장
 
+        System.out.println("request2 ->" + request);
+
         // 비밀번호 암호화
-        System.out.println("UserService|registerUser|비밀번호 암호화 전|signupRequest.getPassword() = " + signupReqDto.getPassword());
-        String encodedPassword = passwordEncoder.encode(signupReqDto.getPassword());
-        System.out.println("UserService|registerUser|비밀번호 암호화 후|encodedPassword = " + encodedPassword);
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         // User 엔티티 생성(DB 저장을 위한 객체)
         User user = User.builder()
-                .email(signupReqDto.getEmail())
+                .email(request.getEmail())
                 .password(encodedPassword)
-                .name(signupReqDto.getName())
-                .phoneNo(signupReqDto.getPhoneNo().replaceAll("-", "")) // 하이픈 제거
-                .userStts("일반")
-                .authCd(authCd)
-                .loginM("일반")
+                .name(request.getName())
+                .phoneNumber(request.getPhoneNumber().replaceAll("-", "")) // 하이픈 제거
+                .userStatus(UserStatus.ACTIVE)
+                .loginMethod(LoginMethod.EMAIL)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         // 3) UserRole 조인 엔티티 생성 & 연결
@@ -199,7 +194,7 @@ public class UserService {
                     System.out.println("=================================================");
 
             // 3. DB에서 해당 전화번호 사용자 조회
-            Optional<User> userOptional = userRepository.findByPhoneNo(phoneNo);
+            Optional<User> userOptional = userRepository.findByPhoneNumber(phoneNo);
 
             // 사용자 정보가 존재하는 경우
             if(userOptional.isPresent()) {

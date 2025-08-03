@@ -124,7 +124,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         System.out.println("CustomOAuth2UserService|saveOrUpdate|Start ===========> attributes = " + attributes);
 
         // 1. 이메일로 사용자 조회(없으면 null 리턴)
-        Optional<User> optionalUser = userRepository.findByEmailAndPhoneNo(attributes.getEmail(), attributes.getMobile().replaceAll("-", ""));
+        Optional<User> optionalUser = userRepository.findByEmailAndPhoneNumber(attributes.getEmail(), attributes.getMobile().replaceAll("-", ""));
 
         User user; // 최종적으로 저장할 User 객체를 담을 변수
 

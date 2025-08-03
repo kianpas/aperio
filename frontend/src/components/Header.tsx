@@ -12,7 +12,7 @@ const Header= () => {
           <div className="flex-shrink-0">
             <Link 
               href="/" 
-              className="text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors duration-200"
+              className="text-2xl brand-logo hover:scale-105 transition-all duration-300"
             >
               Aperio
             </Link>

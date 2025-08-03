@@ -44,7 +44,7 @@ export default function AdminLayout({
             </div>
             <div className="ml-4">
               <h2 className="text-white font-bold text-lg">관리자</h2>
-              <p className="text-slate-400 text-sm">Aperio Admin</p>
+              <p className="text-slate-400 text-sm font-brand-light">Aperio Admin</p>
             </div>
           </div>
 
@@ -102,7 +102,7 @@ export default function AdminLayout({
                 관리자 대시보드
               </h1>
               <p className="text-gray-600 mt-1">
-                Aperio 공유오피스 관리 시스템
+                <span className="font-brand text-blue-600">Aperio</span> 공유오피스 관리 시스템
               </p>
             </div>
             <div className="flex items-center space-x-4">

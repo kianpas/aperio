@@ -90,7 +90,7 @@ const Admin = () => {
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-2xl shadow-lg">
         <h1 className="text-3xl font-bold mb-2">안녕하세요, 관리자님! 👋</h1>
         <p className="text-blue-100 text-lg">
-          오늘도 Aperio 관리 시스템에 오신 것을 환영합니다.
+          오늘도 <span className="font-brand text-blue-200">Aperio</span> 관리 시스템에 오신 것을 환영합니다.
         </p>
       </div>
 

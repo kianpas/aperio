@@ -42,7 +42,7 @@ public class MypageController {
     ) {
 
         log.debug("user = {}", user);
-        MypageUserInfoResDto mypageUserInfoResDto = mypageService.findUserbyId(user.getUserNo());
+        MypageUserInfoResDto mypageUserInfoResDto = mypageService.findUserbyId(user.getUserId());
         log.debug("mypageResponseDto.getName = {}", mypageUserInfoResDto.getName());
 
         model.addAttribute("userInfo", mypageUserInfoResDto);
@@ -58,7 +58,7 @@ public class MypageController {
 
         log.debug("user = {}", user);
         //1. 회원정보 조회
-        MypageUserInfoResDto mypageUserInfoResDto = mypageService.findUserbyId(user.getUserNo());
+        MypageUserInfoResDto mypageUserInfoResDto = mypageService.findUserbyId(user.getUserId());
 
         model.addAttribute("userInfo", mypageUserInfoResDto);
 
@@ -82,7 +82,7 @@ public class MypageController {
             log.debug("editProfile|userName = {}", user.getName());
             log.debug("editProfile|userInfoEditReqDto = {}", userInfoEditReqDto);
             //정보 수정
-            MypageUserInfoResDto mypageUserInfoResDto = mypageService.updateUserInfo(user.getUserNo(), userInfoEditReqDto);
+            MypageUserInfoResDto mypageUserInfoResDto = mypageService.updateUserInfo(user.getUserId(), userInfoEditReqDto);
             model.addAttribute("userInfo", mypageUserInfoResDto);
 
             return "redirect:/mypage/edit";
@@ -127,7 +127,7 @@ public class MypageController {
         }
 
         try {
-            mypageService.changePassword(user.getUserNo(),
+            mypageService.changePassword(user.getUserId(),
                     userPasswordEditReqDto);
             model.addAttribute("result", "success");
             return "redirect:/mypage";
@@ -167,7 +167,7 @@ public class MypageController {
         }
 
         //비밀번호 일치 여부
-        boolean passwordMatches = mypageService.verifyPassword(user.getUserNo(), currentPassword);
+        boolean passwordMatches = mypageService.verifyPassword(user.getUserId(), currentPassword);
 
         if (passwordMatches) {
             return "redirect:/mypage/accountDeletion";
@@ -207,7 +207,7 @@ public class MypageController {
 
         try {
             //탈퇴 요청
-            mypageService.accountDeletion(user.getUserNo());
+            mypageService.accountDeletion(user.getUserId());
 
             return "redirect:/";
         } catch (Exception e) {
@@ -242,7 +242,7 @@ public class MypageController {
 //                );
 
         Page<MypageCouponResDto> userCouponList = mypageService.findCouponListByIdPage(
-                user.getUserNo(),
+                user.getUserId(),
                 tab,
                 startDate,
                 endDate,
@@ -299,7 +299,7 @@ public class MypageController {
 
     // 예약 내역 조회
             Page<MyReservationDto> reservationsPage = myReservationService.findMyReservations(
-                    user.getUserNo(), // 현재 사용자 번호
+                    user.getUserId(), // 현재 사용자 번호
                     tab,              // 선택된 탭
                     currentStartDate, // 조회 시작일
                     currentEndDate,   // 조회 종료일
@@ -361,7 +361,7 @@ public class MypageController {
         try {
 
             // Service 호출하여 예약 상세 정보 DTO 조회
-            MyReservationDetailDto reservationDetail = myReservationService.findMyReservationDetail(user.getUserNo(), resNo);
+            MyReservationDetailDto reservationDetail = myReservationService.findMyReservationDetail(user.getUserId(), resNo);
 
             if (reservationDetail == null) {
                 log.error("Reservation not found or access denied for resNo: {}", resNo);

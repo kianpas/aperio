@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,7 +20,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Configuration
 public class WebSecurityConfig {
 
-    private final UserDetailService userDetailService;
     private final CustomOAuth2UserService customOAuth2UserService;
 
     // 스프링 시큐리티 기능 비활성화
@@ -39,10 +37,11 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/css/**", "/js/**", "/img/**",
                                 "/", "/main",
-                                "/signup", "/findUserInfo","/checkEmail", "/send-verification",
+                                "/signup", "/api/v1/auth/signup", "/findUserInfo","/checkEmail", "/send-verification",
+                                "/login", "/api/v1/auth/login",
                                 "/signup/verify-code", "/findUserInfo/verify-code",
                                 "/findUserInfo/reqSendEmail", "/findUserInfo/verifyPwdCode", "/api/resetPwd",
-                                "/login", "/faqList", "/error", "/favicon.ico",  "/api/**",
+                                 "/faqList", "/error", "/favicon.ico",  "/api/**",
                                 "/oauth2/**", "/**"
                         ).permitAll() // "/login" 누구나 접근 가능하게
                         .anyRequest().authenticated()             // 나머지 요청은 인증 필요

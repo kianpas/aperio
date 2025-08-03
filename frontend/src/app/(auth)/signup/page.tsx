@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
 import {
   FaEye,
   FaEyeSlash,
@@ -11,57 +11,74 @@ import {
   FaPhone,
   FaBuilding,
   FaArrowRight,
-  FaCheck
-} from 'react-icons/fa';
-import { SiKakao, SiNaver } from 'react-icons/si';
+  FaCheck,
+} from "react-icons/fa";
+import { SiKakao, SiNaver } from "react-icons/si";
+import { authAPI } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 const SignUp = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    confirmPassword: "",
     agreeTerms: false,
     agreePrivacy: false,
-    agreeMarketing: false
+    agreeMarketing: false,
   });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다.');
+      alert("비밀번호가 일치하지 않습니다.");
       return;
     }
 
     if (!formData.agreeTerms || !formData.agreePrivacy) {
-      alert('필수 약관에 동의해주세요.');
+      alert("필수 약관에 동의해주세요.");
       return;
     }
 
     setIsLoading(true);
-    
+
     // TODO: 회원가입 API 연동
-    console.log('SignUp attempt:', formData);
-    
-    setTimeout(() => {
+    console.log("SignUp attempt:", formData);
+
+    try {
+      const signUpData = {
+        name: formData.name,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        password: formData.password,
+      };
+      const response = await authAPI.signUp(signUpData);
+
+      alert("회원가입이 완료되었습니다!");
+      router.push("/login"); // 로그인 페이지로 이동
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+      alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
-  const handleOAuthSignUp = (provider: 'kakao' | 'naver' | 'google') => {
+  const handleOAuthSignUp = (provider: "kakao" | "naver" | "google") => {
     console.log(`${provider} signup attempt`);
   };
 
@@ -73,7 +90,7 @@ const SignUp = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4">
             <FaBuilding className="text-white text-2xl" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Aperio</h1>
+          <h1 className="text-3xl brand-logo mb-2">Aperio</h1>
           <p className="text-gray-600">새로운 계정을 만들어보세요</p>
         </div>
 
@@ -82,7 +99,10 @@ const SignUp = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* 이름 입력 */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 이름 *
               </label>
               <div className="relative">
@@ -93,7 +113,7 @@ const SignUp = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black placeholder-gray-400"
                   placeholder="이름을 입력하세요"
                   required
                 />
@@ -102,7 +122,10 @@ const SignUp = () => {
 
             {/* 이메일 입력 */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 이메일 *
               </label>
               <div className="relative">
@@ -113,7 +136,7 @@ const SignUp = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black placeholder-gray-400"
                   placeholder="이메일을 입력하세요"
                   required
                 />
@@ -122,18 +145,21 @@ const SignUp = () => {
 
             {/* 전화번호 입력 */}
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="phoneNumber"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 전화번호 *
               </label>
               <div className="relative">
                 <FaPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
                   type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black placeholder-gray-400"
                   placeholder="010-0000-0000"
                   required
                 />
@@ -142,18 +168,21 @@ const SignUp = () => {
 
             {/* 비밀번호 입력 */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 비밀번호 *
               </label>
               <div className="relative">
                 <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black placeholder-gray-400"
                   placeholder="비밀번호를 입력하세요"
                   required
                 />
@@ -169,18 +198,21 @@ const SignUp = () => {
 
             {/* 비밀번호 확인 */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 비밀번호 확인 *
               </label>
               <div className="relative">
                 <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
-                  type={showConfirmPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? "text" : "password"}
                   id="confirmPassword"
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black placeholder-gray-400"
                   placeholder="비밀번호를 다시 입력하세요"
                   required
                 />
@@ -205,9 +237,15 @@ const SignUp = () => {
                   onChange={handleInputChange}
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <label htmlFor="agreeTerms" className="ml-2 text-sm text-gray-600">
+                <label
+                  htmlFor="agreeTerms"
+                  className="ml-2 text-sm text-gray-600"
+                >
                   <span className="text-red-500">*</span> 이용약관에 동의합니다
-                  <Link href="/terms" className="text-blue-600 hover:text-blue-800 ml-1">
+                  <Link
+                    href="/terms"
+                    className="text-blue-600 hover:text-blue-800 ml-1"
+                  >
                     (보기)
                   </Link>
                 </label>
@@ -222,9 +260,16 @@ const SignUp = () => {
                   onChange={handleInputChange}
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <label htmlFor="agreePrivacy" className="ml-2 text-sm text-gray-600">
-                  <span className="text-red-500">*</span> 개인정보처리방침에 동의합니다
-                  <Link href="/privacy" className="text-blue-600 hover:text-blue-800 ml-1">
+                <label
+                  htmlFor="agreePrivacy"
+                  className="ml-2 text-sm text-gray-600"
+                >
+                  <span className="text-red-500">*</span> 개인정보처리방침에
+                  동의합니다
+                  <Link
+                    href="/privacy"
+                    className="text-blue-600 hover:text-blue-800 ml-1"
+                  >
                     (보기)
                   </Link>
                 </label>
@@ -239,7 +284,10 @@ const SignUp = () => {
                   onChange={handleInputChange}
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <label htmlFor="agreeMarketing" className="ml-2 text-sm text-gray-600">
+                <label
+                  htmlFor="agreeMarketing"
+                  className="ml-2 text-sm text-gray-600"
+                >
                   마케팅 정보 수신에 동의합니다 (선택)
                 </label>
               </div>
@@ -272,7 +320,7 @@ const SignUp = () => {
           {/* 소셜 회원가입 */}
           <div className="space-y-3">
             <button
-              onClick={() => handleOAuthSignUp('kakao')}
+              onClick={() => handleOAuthSignUp("kakao")}
               className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 transform hover:scale-105"
             >
               <SiKakao className="text-xl" />
@@ -280,7 +328,7 @@ const SignUp = () => {
             </button>
 
             <button
-              onClick={() => handleOAuthSignUp('naver')}
+              onClick={() => handleOAuthSignUp("naver")}
               className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 transform hover:scale-105"
             >
               <SiNaver className="text-xl" />
@@ -291,8 +339,11 @@ const SignUp = () => {
           {/* 로그인 링크 */}
           <div className="mt-8 text-center">
             <p className="text-gray-600">
-              이미 계정이 있으신가요?{' '}
-              <Link href="/login" className="text-blue-600 hover:text-blue-800 font-semibold">
+              이미 계정이 있으신가요?{" "}
+              <Link
+                href="/login"
+                className="text-blue-600 hover:text-blue-800 font-semibold"
+              >
                 로그인
               </Link>
             </p>

@@ -1,6 +1,8 @@
 package com.portfolio.aperio.common.util.OAuth;
 
+import com.portfolio.aperio.user.domain.LoginMethod;
 import com.portfolio.aperio.user.domain.User;
+import com.portfolio.aperio.user.domain.UserStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -111,13 +113,11 @@ public class OAuthAttributes {
         return User.builder()
                 .name(name)
                 .email(email)
-                .phoneNo(cleanMobile) // - 제거한 휴대폰 번호
+                .phoneNumber(cleanMobile) // - 제거한 휴대폰 번호
                 .password("NAVER_USER_PASSWORD_" + System.currentTimeMillis()) // 소셜 로그인 사용자는 비밀번호 불필요. 임의 값 또는 Null 처리 필요 (DB 제약조건 확인)
-                .userStts("일반") // 예: 활성 상태 (Active)
-                .authCd("일반") // 예: 일반 사용자 권한
-                .loginM("NAVER") // 어떤 소셜 로그인을 통해 가입했는지 구분
-                .createDt(LocalDateTime.now())
-                // updateDt는 @PreUpdate 등으로 자동 관리되므로 여기선 설정 불필요
+                .userStatus(UserStatus.ACTIVE) // 예: 활성 상태 (Active)
+                .loginMethod(LoginMethod.NAVER) // 어떤 소셜 로그인을 통해 가입했는지 구분
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

@@ -10,6 +10,9 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-brand: var(--font-poppins);
+  --font-brand-alt: var(--font-montserrat);
+  --font-body: var(--font-inter);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -61,4 +64,57 @@ body {
 .hover-lift:hover {
   transform: translateY(-5px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* 브랜드 폰트 클래스 */
+.font-brand {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.font-brand-light {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+
+.font-brand-bold {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.font-brand-alt {
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* 브랜드 로고 스타일 */
+.brand-logo {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+
+.brand-logo::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.brand-logo:hover::after {
+  transform: scaleX(1);
 }

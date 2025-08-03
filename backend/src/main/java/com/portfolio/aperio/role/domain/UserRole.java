@@ -32,8 +32,7 @@ public class UserRole {
     @CreationTimestamp
     @Column(name = "createDt",
             nullable = false,
-            updatable = false,
-            insertable = false)    // ← INSERT 시 컬럼 제외
+            updatable = false)    // ← INSERT 시 컬럼 제외
     private LocalDateTime createDt;
 
 }

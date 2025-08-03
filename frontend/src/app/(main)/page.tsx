@@ -84,13 +84,14 @@ export default function Home() {
       <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="mb-8">
-            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6">
+            <h1 className="text-5xl md:text-7xl font-brand-bold text-gray-900 mb-6">
               당신의 <span className="text-blue-600">아이디어</span>가
               <br />
               현실이 되는 공간
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Aperio에서 창의성과 생산성을 극대화하세요.
+            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto font-body">
+              <span className="font-brand text-blue-600">Aperio</span>에서
+              창의성과 생산성을 극대화하세요.
               <br />
               당신만의 완벽한 워크스페이스를 찾아보세요.
             </p>
@@ -141,9 +142,9 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              왜 <span className="text-blue-600">Aperio</span>를 선택해야
-              할까요?
+            <h2 className="text-4xl font-brand-bold text-gray-900 mb-4">
+              왜 <span className="text-blue-600 font-brand-bold">Aperio</span>를
+              선택해야 할까요?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               최고의 업무 환경을 위한 모든 것이 준비되어 있습니다
@@ -580,7 +581,8 @@ export default function Home() {
             지금 바로 시작하세요
           </h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            당신의 아이디어가 현실이 되는 순간을 경험해보세요. Aperio에서 새로운
+            당신의 아이디어가 현실이 되는 순간을 경험해보세요.{" "}
+            <span className="font-brand text-blue-200">Aperio</span>에서 새로운
             가능성을 발견하세요.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

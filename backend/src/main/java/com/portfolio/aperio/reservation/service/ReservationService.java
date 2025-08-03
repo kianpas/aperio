@@ -54,8 +54,9 @@ public class ReservationService {
 
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("예약 서비스에서 사용자를 찾을 수 없습니다: " + username));
-        Long userNo = user.getUserNo();
-        String authCd = user.getAuthCd();
+        Long userNo = user.getUserId();
+        //TODO: 임시 코드
+        String authCd = "임직원";
         if (userNo == null) {
             throw new IllegalStateException("사용자 번호(userNo)를 가져올 수 없습니다.");
         }

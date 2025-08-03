@@ -22,11 +22,11 @@ public class MypageUserInfoResDto {
 
     public static MypageUserInfoResDto from(User user) {
         return MypageUserInfoResDto.builder()
-                .userNo(user.getUserNo())
+                .userNo(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .phoneNo(user.getPhoneNo())
-                .createDt(user.getCreateDt())
+                .phoneNo(user.getPhoneNumber())
+                .createDt(user.getCreatedAt())
                 .build();
     }
 
