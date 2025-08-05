@@ -33,7 +33,7 @@ public interface AdminMenuRepository extends JpaRepository<Menu, Long> {
      */
     @Query("SELECT m FROM Menu m " +
             "LEFT JOIN FETCH m.menuRoles mr " +
-            "WHERE m.menuNo = :menuNo")
+            "WHERE m.menuId = :menuNo")
     Optional<Menu> findByMenuNo(@Param("menuNo") Long menuNo);
 
 }

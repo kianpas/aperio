@@ -8,38 +8,58 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "menu")
+@Table(name = "menus")
 @ToString(exclude = {"menuRoles"})
-@EqualsAndHashCode(of = "menuNo")
+@EqualsAndHashCode(of = "menuId")
+@EntityListeners(AuditingEntityListener.class)
 public class Menu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long menuNo;
+    private Long menuId;
 
-    private Long upperMenuNo;
+    private Long upperMenuId;
 
-    private String menuNm;
+    @Column(nullable = false, length = 100)
+    private String name;
 
-    private String menuDsc;
-
+    @Column(length = 500)
+    private String description;
+    
+    @Column(length = 255)
     private String menuUrl;
 
-    @Column(name = "useAt", length = 10)
-    private String useAt;
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean isActive = true;
 
-    private LocalDateTime createDt;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 30)
+    @Builder.Default
+    private MenuType menuType = MenuType.MAIN_MENU;  // 기본값 설정
 
-    private int sortOrder;
+    @Column(nullable = false)
+    private Integer sortOrder;
 
-    @Column(name = "menuType", length = 30)
-    private String menuType;
+    // Audit 필드
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt; 
+
+
 
     // --- 새로운 @OneToMany 관계 추가 ---
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

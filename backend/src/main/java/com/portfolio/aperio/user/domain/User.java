@@ -19,8 +19,8 @@ import java.util.*;
 @Builder // 빌더 패턴 클래스 생성
 @NoArgsConstructor // 인자가 없는 생성자 생성
 @AllArgsConstructor // 모든 필드를 인자로 받는 생성자 생성
-@EqualsAndHashCode(exclude = "usercoupon") // 양방향 연관관계 시 순환 참조 방지 위해 추가 권장
 @Table(name = "users")
+@EqualsAndHashCode(exclude = "usercoupon") // 양방향 연관관계 시 순환 참조 방지 위해 추가 권장
 public class User implements UserDetails, OAuth2User {
 
     @Id

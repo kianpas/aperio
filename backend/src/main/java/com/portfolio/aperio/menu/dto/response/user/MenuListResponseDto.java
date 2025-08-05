@@ -29,12 +29,12 @@ public class MenuListResponseDto {
 
     public static MenuListResponseDto from(Menu menu) {
         return MenuListResponseDto.builder()
-                .menuNo(menu.getMenuNo())
-                .upperMenuNo(menu.getUpperMenuNo())
-                .menuNm(menu.getMenuNm())
-                .menuDsc(menu.getMenuDsc())
+                .menuNo(menu.getMenuId())
+                .upperMenuNo(menu.getUpperMenuId())
+                .menuNm(menu.getName())
+                .menuDsc(menu.getDescription())
                 .menuUrl(menu.getMenuUrl())
-                .useAt(menu.getUseAt())
+                // .useAt(menu.getUseAt())
                 .sortOrder(menu.getSortOrder())
                 .build();
     }

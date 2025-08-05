@@ -6,6 +6,7 @@ import com.portfolio.aperio.role.domain.Role;
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.common.exception.ErrorCode;
 import com.portfolio.aperio.menu.domain.Menu;
+import com.portfolio.aperio.menu.domain.MenuType;
 import com.portfolio.aperio.menu.dto.response.user.MenuListResponseDto;
 import com.portfolio.aperio.menu.repository.MenuRepository;
 import com.portfolio.aperio.role.domain.MenuRole;
@@ -41,7 +42,7 @@ public class MenuService {
     public List<MenuListResponseDto> findMenuList() {
 
         //메뉴목록 조회
-        List<Menu> menuList = menuRepository.findByUseAt("Y", Sort.by(Sort.Direction.ASC, "menuNo"));
+        List<Menu> menuList = menuRepository.findByIsActive(true, Sort.by(Sort.Direction.ASC, "menuId"));
         log.debug("menuList: {}", menuList);
 
         //결과 없을 경우
@@ -57,7 +58,7 @@ public class MenuService {
      * @return
      */
     public List<MenuListResponseDto> findByUseAt() {
-        List<Menu> menuList = menuRepository.findByUseAt("Y", Sort.by(Sort.Direction.ASC, "menuNo"));
+        List<Menu> menuList = menuRepository.findByIsActive(true, Sort.by(Sort.Direction.ASC, "menuId"));
 
         return menuList.stream()
                 .map(MenuListResponseDto::from).toList();
@@ -69,7 +70,7 @@ public class MenuService {
      * @return
      */
     public List<MenuListResponseDto> findByRole(String roles) {
-        List<Menu> menuList = menuRepository.findByUseAt("Y", Sort.by(Sort.Direction.ASC, "menuNo"));
+        List<Menu> menuList = menuRepository.findByIsActive(true, Sort.by(Sort.Direction.ASC, "menuId"));
 
         return menuList.stream()
                 .map(MenuListResponseDto::from).toList();
@@ -141,12 +142,11 @@ public class MenuService {
     public void registMenu(AdminMenuRegistReqDto adminMenuRegistReqDto) {
         Menu menu = Menu.builder()
                 .menuUrl(adminMenuRegistReqDto.getMenuUrl())
-                .menuType(adminMenuRegistReqDto.getMenuType())
-                .upperMenuNo(adminMenuRegistReqDto.getUpperMenuNo())
-                .useAt(adminMenuRegistReqDto.getUseAt())
-                .menuNm(adminMenuRegistReqDto.getMenuNm())
-                .menuDsc(adminMenuRegistReqDto.getMenuDsc())
-                .createDt(LocalDateTime.now())
+                .menuType(MenuType.MAIN_MENU)
+                .upperMenuId(adminMenuRegistReqDto.getUpperMenuNo())
+                // .isActive(adminMenuRegistReqDto.getUseAt())
+                .name(adminMenuRegistReqDto.getMenuNm())
+                .description(adminMenuRegistReqDto.getMenuDsc())
                 .sortOrder(adminMenuRegistReqDto.getSortOrder())
                 .build();
 
@@ -162,12 +162,12 @@ public class MenuService {
     public void editMenu(Long menuNo, AdminMenuEditReqDto adminMenuEditReqDto) {
         Menu menu = menuRepository.findById(menuNo).orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
-        menu.setMenuNm(adminMenuEditReqDto.getMenuNm());
-        menu.setMenuDsc(adminMenuEditReqDto.getMenuDsc());
+        menu.setName(adminMenuEditReqDto.getMenuNm());
+        menu.setDescription(adminMenuEditReqDto.getMenuDsc());
         menu.setSortOrder(adminMenuEditReqDto.getSortOrder());
-        menu.setUseAt(adminMenuEditReqDto.getUseAt());
-        menu.setUpperMenuNo(adminMenuEditReqDto.getUpperMenuNo());
-        menu.setMenuType(adminMenuEditReqDto.getMenuType());
+        // menu.setIsActive(adminMenuEditReqDto.getUseAt());
+        menu.setUpperMenuId(adminMenuEditReqDto.getUpperMenuNo());
+        menu.setMenuType(MenuType.MAIN_MENU);
         menu.setMenuUrl(adminMenuEditReqDto.getMenuUrl());
 
     }

@@ -31,14 +31,14 @@ public class AdminMenuEditReqDto {
 
     public static AdminMenuEditReqDto from(Menu menu) {
         return AdminMenuEditReqDto.builder()
-                .menuNo(menu.getMenuNo())
-                .upperMenuNo(menu.getUpperMenuNo())
-                .menuNm(menu.getMenuNm())
-                .menuDsc(menu.getMenuDsc())
+                .menuNo(menu.getMenuId())
+                .upperMenuNo(menu.getUpperMenuId())
+                .menuNm(menu.getName())
+                .menuDsc(menu.getDescription())
                 .menuUrl(menu.getMenuUrl())
-                .useAt(menu.getUseAt())
+                // .useAt(menu.getUseAt())
                 .sortOrder(menu.getSortOrder())
-                .menuType(menu.getMenuType())
+                // .menuType(menu.getMenuType())
                 .build();
     }
 
