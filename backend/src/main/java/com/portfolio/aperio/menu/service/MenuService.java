@@ -57,7 +57,7 @@ public class MenuService {
      * 메뉴 목록 전체 조회
      * @return
      */
-    public List<MenuListResponseDto> findByUseAt() {
+    public List<MenuListResponseDto> findByIsActive() {
         List<Menu> menuList = menuRepository.findByIsActive(true, Sort.by(Sort.Direction.ASC, "menuId"));
 
         return menuList.stream()

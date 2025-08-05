@@ -1,5 +1,8 @@
 package com.portfolio.aperio.menu.domain;
 
+import lombok.Getter;
+
+@Getter
 public enum MenuType {
     MAIN_MENU("메인 메뉴"),
     SUB_MENU("서브 메뉴"), 

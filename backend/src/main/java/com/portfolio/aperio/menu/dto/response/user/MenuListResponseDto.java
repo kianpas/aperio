@@ -1,7 +1,8 @@
 package com.portfolio.aperio.menu.dto.response.user;
 
-
 import com.portfolio.aperio.menu.domain.Menu;
+import com.portfolio.aperio.menu.domain.MenuType;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,33 +12,41 @@ import java.util.List;
 @Builder
 public class MenuListResponseDto {
 
-    private Long menuNo;
+    // 기본 정보
+    private Long menuId;
 
-    private Long upperMenuNo;
+    private Long upperMenuId;
 
-    private String menuNm;
+    private String name;
 
-    private String menuDsc;
+    private String description;
 
     private String menuUrl;
 
-    private String useAt;
+    // 상태 정보
+    private Boolean isActive;
 
-    private int sortOrder;
+    private MenuType menuType;
 
-    private List<String> roleName;
+    private Integer sortOrder;
 
+    // 권한 정보
+    private List<String> roleNames;
+
+    /**
+     * Menu 엔티티를 MenuListResponseDto로 변환
+     */
     public static MenuListResponseDto from(Menu menu) {
         return MenuListResponseDto.builder()
-                .menuNo(menu.getMenuId())
-                .upperMenuNo(menu.getUpperMenuId())
-                .menuNm(menu.getName())
-                .menuDsc(menu.getDescription())
+                .menuId(menu.getMenuId())
+                .upperMenuId(menu.getUpperMenuId())
+                .name(menu.getName())
+                .description(menu.getDescription())
                 .menuUrl(menu.getMenuUrl())
-                // .useAt(menu.getUseAt())
+                .isActive(menu.getIsActive())
+                .menuType(menu.getMenuType())
                 .sortOrder(menu.getSortOrder())
                 .build();
     }
-
 
 }

@@ -37,7 +37,11 @@ public class MenuCache {
     //메뉴 호출 메소드
     public void loadMenus() {
         // 1.전체 목록 조회
-        List<MenuListResponseDto> menuListResponseDtoList = menuService.findByUseAt();
+        List<MenuListResponseDto> menuListResponseDtoList = menuService.findByIsActive();
+        for(MenuListResponseDto dto : menuListResponseDtoList) {
+            System.out.println("dto => " + dto.getName());
+            System.out.println("dto => " + dto.getName());
+        }
 
         // 2. 메뉴별 역할 정보 조회 (추후)
 
@@ -50,15 +54,15 @@ public class MenuCache {
             List<MenuListResponseDto> menusForRole = menuListResponseDtoList.stream()
                     .filter(menu -> {
                         if("user".equals(role) || "일반".equals(role) || "ROLE_USER".equals(role)) {
-                            return !menu.getMenuNm().equals("로그인") &&
-                                    !menu.getMenuNm().equals("회원가입") &&
-                                    !menu.getMenuNm().equals("관리");
+                            return !menu.getName().equals("로그인") &&
+                                    !menu.getName().equals("회원가입") &&
+                                    !menu.getName().equals("관리");
                         } else if("admin".equals(role) || "관리자".equals(role) || "ROLE_ADMIN".equals(role)) {
-                            return !menu.getMenuNm().equals("로그인") &&
-                                    !menu.getMenuNm().equals("회원가입");
+                            return !menu.getName().equals("로그인") &&
+                                    !menu.getName().equals("회원가입");
                         } else {
-                            return !menu.getMenuNm().equals("마이페이지") &&
-                                    !menu.getMenuNm().equals("로그아웃");
+                            return !menu.getName().equals("마이페이지") &&
+                                    !menu.getName().equals("로그아웃");
                         }
                     })
                     .toList();

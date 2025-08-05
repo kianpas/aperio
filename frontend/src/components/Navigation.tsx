@@ -5,11 +5,11 @@ import Link from "next/link";
 import { FaUser, FaBars, FaTimes } from "react-icons/fa";
 
 interface Menu {
-  menuNo: number;
-  menuNm: string;
+  menuId: number;
+  name: string;
   menuUrl: string;
-  menuSort: number;
-  useAt: string;
+  sortOrder: number;
+  isActive: boolean;
 }
 
 interface User {
@@ -24,57 +24,54 @@ const Navigation = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 메뉴 데이터 가져오기 (Next.js 프록시 사용)
-    fetch("/api/v1/menus")
-      .then((response) => {
-        console.log("Menu API Response Status:", response.status);
-        if (!response.ok) {
+    const fetchMenus = async () => {
+      try {
+        const response = await fetch("/api/v1/menus");
+        if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data: Menu[]) => {
-        console.log("Menu data received:", data);
-        setMenus(data);
-      })
-      .catch((error) => {
+
+        const data: Menu[] = await response.json();
+        // DB에서 가져온 메뉴만 설정 (로그인 관련 메뉴 제외)
+        setMenus(data.filter((menu) => menu.isActive));
+      } catch (error) {
         console.error("Error fetching menus:", error);
-        console.log("Using fallback menu data");
-        // 기본 메뉴 설정
+        // 기본 콘텐츠 메뉴만 설정 (시스템 메뉴 제외)
         setMenus([
           {
-            menuNo: 1,
-            menuNm: "예약하기",
+            menuId: 1,
+            name: "예약하기",
             menuUrl: "/reservation",
-            menuSort: 1,
-            useAt: "Y",
+            sortOrder: 1,
+            isActive: true,
           },
           {
-            menuNo: 2,
-            menuNm: "요금안내",
+            menuId: 2,
+            name: "요금안내",
             menuUrl: "#pricing-section",
-            menuSort: 2,
-            useAt: "Y",
+            sortOrder: 2,
+            isActive: true,
           },
           {
-            menuNo: 3,
-            menuNm: "문의하기",
+            menuId: 3,
+            name: "문의하기",
             menuUrl: "/contact",
-            menuSort: 3,
-            useAt: "Y",
+            sortOrder: 3,
+            isActive: true,
           },
           {
-            menuNo: 4,
-            menuNm: "FaQ",
+            menuId: 4,
+            name: "FaQ",
             menuUrl: "/faq",
-            menuSort: 4,
-            useAt: "Y",
+            sortOrder: 4,
+            isActive: true,
           },
         ]);
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchMenus();
   }, []);
 
   // 클라이언트에서만 localStorage 접근
@@ -93,14 +90,18 @@ const Navigation = () => {
     }
   }, []);
 
+  // 하드코딩 시스템 메뉴
+  const systemMenus = {
+    auth: user
+      ? { type: "logout", label: "로그아웃" }
+      : { type: "login", label: "로그인" },
+  };
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleLogin = () => {
-    // 로그인 페이지로 이동
-    window.location.href = "/login";
-  };
+  // handleLogin 함수 제거 (Link 컴포넌트 사용으로 불필요)
 
   const handleLogout = () => {
     // 로그아웃 처리
@@ -124,18 +125,19 @@ const Navigation = () => {
       <div className="hidden md:flex items-center space-x-8">
         {menus.map((menu) => (
           <Link
-            key={menu.menuNo}
+            key={menu.menuId}
             href={menu.menuUrl}
             className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
           >
-            {menu.menuNm}
+            {menu.name}
           </Link>
         ))}
       </div>
 
-      {/* 사용자 정보 / 로그인 버튼 */}
+      {/* 시스템 메뉴 (인증 관련) */}
       <div className="hidden md:flex items-center space-x-4">
         {user ? (
+          // 로그인된 사용자 메뉴
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <FaUser className="w-4 h-4 text-gray-600" />
@@ -143,6 +145,12 @@ const Navigation = () => {
                 {user.name || user.email} 님
               </span>
             </div>
+            <Link
+              href="/mypage"
+              className="text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200"
+            >
+              마이페이지
+            </Link>
             <button
               onClick={handleLogout}
               className="text-sm text-gray-600 hover:text-gray-800 transition-colors duration-200"
@@ -151,12 +159,21 @@ const Navigation = () => {
             </button>
           </div>
         ) : (
-          <button
-            onClick={handleLogin}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
-          >
-            로그인
-          </button>
+          // 비로그인 사용자 메뉴
+          <div className="flex items-center space-x-3">
+            <Link
+              href="/login"
+              className="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200"
+            >
+              로그인
+            </Link>
+            <Link
+              href="/signup"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+            >
+              회원가입
+            </Link>
+          </div>
         )}
       </div>
 
@@ -180,38 +197,59 @@ const Navigation = () => {
           <div className="px-4 py-6 space-y-4">
             {menus.map((menu) => (
               <Link
-                key={menu.menuNo}
+                key={menu.menuId}
                 href={menu.menuUrl}
                 className="block text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {menu.menuNm}
+                {menu.name}
               </Link>
             ))}
 
+            {/* 모바일 시스템 메뉴 */}
             <div className="border-t border-gray-200 pt-4">
               {user ? (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center space-x-2">
                     <FaUser className="w-4 h-4 text-gray-600" />
                     <span className="text-sm text-gray-700">
                       {user.name || user.email} 님
                     </span>
                   </div>
+                  <Link
+                    href="/mypage"
+                    className="block text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    마이페이지
+                  </Link>
                   <button
-                    onClick={handleLogout}
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
                     className="block text-sm text-gray-600 hover:text-gray-800 transition-colors duration-200"
                   >
                     로그아웃
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={handleLogin}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
-                >
-                  로그인
-                </button>
+                <div className="space-y-2">
+                  <Link
+                    href="/login"
+                    className="block w-full text-center bg-white border border-blue-600 text-blue-600 px-4 py-2 rounded-lg font-medium transition-colors duration-200 hover:bg-blue-50"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    로그인
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    회원가입
+                  </Link>
+                </div>
               )}
             </div>
           </div>
