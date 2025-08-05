@@ -13,6 +13,13 @@ import {
   FaBell,
   FaSignOutAlt,
   FaUserShield,
+  FaBars,
+  FaUserCog,
+  FaShieldAlt,
+  FaImage,
+  FaWindowMaximize,
+  FaTicketAlt,
+  FaLifeRing,
 } from "react-icons/fa";
 
 export default function AdminLayout({
@@ -24,11 +31,28 @@ export default function AdminLayout({
 
   const menuItems = [
     { href: "/admin", label: "대시보드", icon: FaTachometerAlt },
+
+    // 사용자 관리
     { href: "/admin/users", label: "사용자 관리", icon: FaUsers },
+
+    // 예약/좌석 관리
     { href: "/admin/reservations", label: "예약 관리", icon: FaCalendarAlt },
     { href: "/admin/seats", label: "좌석 관리", icon: FaChair },
-    { href: "/admin/analytics", label: "통계 분석", icon: FaChartBar },
+
+    // 콘텐츠 관리
+    { href: "/admin/content", label: "콘텐츠 관리", icon: FaImage },
+    { href: "/admin/menus", label: "메뉴 관리", icon: FaBars },
+    { href: "/admin/banners", label: "배너 관리", icon: FaImage },
+    { href: "/admin/popups", label: "팝업 관리", icon: FaWindowMaximize },
+
+    // 고객 서비스
+    { href: "/admin/support", label: "고객 지원", icon: FaQuestionCircle },
+    { href: "/admin/coupons", label: "쿠폰 관리", icon: FaTicketAlt },
+    { href: "/admin/faq", label: "FAQ 관리", icon: FaLifeRing },
     { href: "/admin/inquiries", label: "문의 관리", icon: FaQuestionCircle },
+
+    // 시스템
+    { href: "/admin/analytics", label: "통계 분석", icon: FaChartBar },
     { href: "/admin/settings", label: "시스템 설정", icon: FaCog },
   ];
 
@@ -44,7 +68,9 @@ export default function AdminLayout({
             </div>
             <div className="ml-4">
               <h2 className="text-white font-bold text-lg">관리자</h2>
-              <p className="text-slate-400 text-sm font-brand-light">Aperio Admin</p>
+              <p className="text-slate-400 text-sm font-brand-light">
+                Aperio Admin
+              </p>
             </div>
           </div>
 
@@ -102,7 +128,8 @@ export default function AdminLayout({
                 관리자 대시보드
               </h1>
               <p className="text-gray-600 mt-1">
-                <span className="font-brand text-blue-600">Aperio</span> 공유오피스 관리 시스템
+                <span className="font-brand text-blue-600">Aperio</span>{" "}
+                공유오피스 관리 시스템
               </p>
             </div>
             <div className="flex items-center space-x-4">
