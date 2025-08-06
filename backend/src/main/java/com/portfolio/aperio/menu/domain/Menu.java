@@ -96,13 +96,13 @@ public class Menu {
         role.setMenu(null);
     }
 
-        // 비즈니스 메서드로 상태 변경
-        public void updateBasicInfo(String name, String description, String url) {
-            if (name == null || name.trim().isEmpty()) {
-                throw new IllegalArgumentException("메뉴명은 필수입니다.");
-            }
-            this.name = name;
-            this.description = description;
-            this.url = url;
+    // 비즈니스 메서드로 상태 변경
+    public void updateBasicInfo(String name, String description, String url) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("메뉴명은 필수입니다.");
         }
+        this.name = name;
+        this.description = description;
+        this.url = url;
+    }
 }

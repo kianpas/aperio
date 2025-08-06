@@ -5,7 +5,6 @@ import {
   FaCalendarAlt,
   FaClock,
   FaMapMarkerAlt,
-  FaFilter,
   FaSearch,
   FaEye,
   FaTimes,
@@ -144,7 +143,7 @@ const Reservations = () => {
             ].map((tab) => (
               <button
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key as any)}
+                onClick={() => setActiveTab(tab.key as 'all' | 'upcoming' | 'completed' | 'cancelled')}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   activeTab === tab.key
                     ? 'bg-white text-blue-600 shadow-sm'

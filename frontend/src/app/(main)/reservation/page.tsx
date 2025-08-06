@@ -4,21 +4,14 @@ import { useState, useEffect } from "react";
 import {
   FaCalendarAlt,
   FaChair,
-  FaClock,
-  FaClipboardList,
-  FaTicketAlt,
-  FaTags,
   FaCreditCard,
   FaCheck,
-  FaCalendarDay,
   FaUsers,
   FaPhone,
   FaWifi,
   FaCoffee,
   FaDesktop,
   FaArrowRight,
-  FaFilter,
-  FaSearch,
 } from "react-icons/fa";
 
 // 타입 정의
@@ -249,7 +242,7 @@ const ReservationPage = () => {
     }
 
     setTotalPrice(Math.floor(price));
-  }, [selectedSeat, planType, selectedTimes, selectedCoupon]);
+  }, [selectedSeat, planType, selectedTimes, selectedCoupon, sampleCoupons]);
 
   // 좌석 타입별 아이콘 반환
   const getSeatIcon = (type: string) => {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import {
   FaUser,
   FaEnvelope,
@@ -75,9 +76,11 @@ const Profile = () => {
             <div className="relative">
               <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-blue-600 text-3xl font-bold shadow-lg">
                 {profileData.profileImage ? (
-                  <img
+                  <Image
                     src={profileData.profileImage}
                     alt="프로필"
+                    width={96}
+                    height={96}
                     className="w-full h-full rounded-full object-cover"
                   />
                 ) : (

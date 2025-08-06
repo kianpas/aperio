@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
   FaEye,
   FaEyeSlash,
@@ -49,11 +48,11 @@ const Login = () => {
     console.log(`${provider} login attempt`);
 
     // 실제 구현 시 사용할 URL 예시
-    const oauthUrls = {
-      kakao: "/oauth2/authorization/kakao",
-      naver: "/oauth2/authorization/naver",
-      google: "/oauth2/authorization/google",
-    };
+    // const oauthUrls = {
+    //   kakao: "/oauth2/authorization/kakao",
+    //   naver: "/oauth2/authorization/naver",
+    //   google: "/oauth2/authorization/google",
+    // };
 
     // window.location.href = oauthUrls[provider];
   };

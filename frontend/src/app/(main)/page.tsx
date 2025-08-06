@@ -9,14 +9,11 @@ import {
   FaUser,
   FaCheckCircle,
   FaPhone,
-  FaEnvelope,
   FaArrowRight,
-  FaStar,
   FaWifi,
   FaDesktop,
   FaCalendarAlt,
   FaShieldAlt,
-  FaPlay,
   FaCog,
 } from "react-icons/fa";
 
@@ -37,7 +34,6 @@ interface MainDataResponse {
 }
 
 export default function Home() {
-  const [banners, setBanners] = useState<Banner[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,22 +42,10 @@ export default function Home() {
         const response = await fetch("/api/v1/main");
         if (response.ok) {
           const data: MainDataResponse = await response.json();
-          setBanners(data.bannerList);
+          console.log("Banner data loaded:", data.bannerList);
         }
       } catch (error) {
         console.error("메인 데이터 조회 실패:", error);
-        setBanners([
-          {
-            bNo: 1,
-            bTitle: "Welcome to Aperio",
-            bImageUrl: "/img/slide1.jpg",
-            startDt: "2025-01-01",
-            endDt: "2025-12-31",
-            register: "관리자",
-            createDt: "2025-01-28",
-            useAt: "Y",
-          },
-        ]);
       } finally {
         setLoading(false);
       }
