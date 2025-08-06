@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import {
   FaMapMarkerAlt,
   FaUsers,
@@ -65,9 +63,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-1 bg-white">
+    <div className="bg-white">
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -305,7 +301,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-center text-sm text-gray-600">
                     <FaCheckCircle className="text-green-500 mr-2" />
-                    개인 공간
+                    개인 사물함
                   </li>
                 </ul>
                 <div className="flex items-center justify-between">
@@ -591,8 +587,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-      </main>
-      <Footer />
     </div>
   );
 }
