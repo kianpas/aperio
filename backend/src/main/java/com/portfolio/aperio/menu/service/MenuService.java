@@ -42,7 +42,7 @@ public class MenuService {
     public List<MenuListResponseDto> findMenuList() {
 
         //메뉴목록 조회
-        List<Menu> menuList = menuRepository.findByIsActive(true, Sort.by(Sort.Direction.ASC, "menuId"));
+        List<Menu> menuList = menuRepository.findByActive(true, Sort.by(Sort.Direction.ASC, "sortOrder"));
         log.debug("menuList: {}", menuList);
 
         //결과 없을 경우
@@ -57,8 +57,8 @@ public class MenuService {
      * 메뉴 목록 전체 조회
      * @return
      */
-    public List<MenuListResponseDto> findByIsActive() {
-        List<Menu> menuList = menuRepository.findByIsActive(true, Sort.by(Sort.Direction.ASC, "menuId"));
+    public List<MenuListResponseDto> findByActive() {
+        List<Menu> menuList = menuRepository.findByActive(true, Sort.by(Sort.Direction.ASC, "sortOrder"));
 
         return menuList.stream()
                 .map(MenuListResponseDto::from).toList();
@@ -70,7 +70,7 @@ public class MenuService {
      * @return
      */
     public List<MenuListResponseDto> findByRole(String roles) {
-        List<Menu> menuList = menuRepository.findByIsActive(true, Sort.by(Sort.Direction.ASC, "menuId"));
+        List<Menu> menuList = menuRepository.findByActive(true, Sort.by(Sort.Direction.ASC, "sortOrder"));
 
         return menuList.stream()
                 .map(MenuListResponseDto::from).toList();
@@ -121,10 +121,10 @@ public class MenuService {
      * (Menu 엔티티가 MenuRole Set을 가지고 있고, MenuRole이 Role을 참조한다고 가정)
      */
     private Set<String> getMenuAllowedRoleNames(Menu menu) {
-        if (menu == null || menu.getMenuRoles() == null || menu.getMenuRoles().isEmpty()) {
+        if (menu == null || menu.getRoles() == null || menu.getRoles().isEmpty()) {
             return Collections.emptySet();
         }
-        return menu.getMenuRoles().stream()
+        return menu.getRoles().stream()
                 .map(MenuRole::getRole)      // MenuRole -> Role 추출
                 .filter(Objects::nonNull)    // null Role 객체 필터링
                 .map(Role::getRoleCode)      // Role -> 역할 이름(String) 추출
@@ -141,10 +141,10 @@ public class MenuService {
     @Transactional
     public void registMenu(AdminMenuRegistReqDto adminMenuRegistReqDto) {
         Menu menu = Menu.builder()
-                .menuUrl(adminMenuRegistReqDto.getMenuUrl())
-                .menuType(MenuType.MAIN_MENU)
-                .upperMenuId(adminMenuRegistReqDto.getUpperMenuNo())
-                // .isActive(adminMenuRegistReqDto.getUseAt())
+                .url(adminMenuRegistReqDto.getMenuUrl())
+                .type(MenuType.MAIN_MENU)
+                .parentId(adminMenuRegistReqDto.getUpperMenuNo())
+                .active("Y".equals(adminMenuRegistReqDto.getUseAt()))
                 .name(adminMenuRegistReqDto.getMenuNm())
                 .description(adminMenuRegistReqDto.getMenuDsc())
                 .sortOrder(adminMenuRegistReqDto.getSortOrder())
@@ -161,15 +161,11 @@ public class MenuService {
     @Transactional
     public void editMenu(Long menuNo, AdminMenuEditReqDto adminMenuEditReqDto) {
         Menu menu = menuRepository.findById(menuNo).orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
-
-        menu.setName(adminMenuEditReqDto.getMenuNm());
-        menu.setDescription(adminMenuEditReqDto.getMenuDsc());
-        menu.setSortOrder(adminMenuEditReqDto.getSortOrder());
-        // menu.setIsActive(adminMenuEditReqDto.getUseAt());
-        menu.setUpperMenuId(adminMenuEditReqDto.getUpperMenuNo());
-        menu.setMenuType(MenuType.MAIN_MENU);
-        menu.setMenuUrl(adminMenuEditReqDto.getMenuUrl());
-
+        menu.updateBasicInfo(
+            adminMenuEditReqDto.getMenuNm(),
+            adminMenuEditReqDto.getMenuDsc(),
+            adminMenuEditReqDto.getMenuUrl()
+        );
     }
 
 

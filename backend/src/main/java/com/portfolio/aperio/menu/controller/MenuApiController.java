@@ -30,7 +30,7 @@ public class MenuApiController {
     public ResponseEntity<List<MenuListResponseDto>> getMenus() {
         try {
 
-            List<MenuListResponseDto> menus = menuService.findByIsActive();
+            List<MenuListResponseDto> menus = menuService.findByActive();
 
             // 임시 메뉴 데이터 (실제로는 DB에서 조회)
             // List<Map<String, Object>> menus = Arrays.asList(

@@ -96,7 +96,7 @@ public class AdminMenuService {
         for (Menu menu : menuTypeList) {
             JsTreeNodeDto node = JsTreeNodeDto.builder()
                     // 1. 고유 ID 생성 (가상 노드 식별용)
-                    .id(menu.getMenuId().toString())
+                    .id(menu.getId().toString())
                     // 2. 부모는 최상위 루트 '#'
                     .parent(nodeId)
                     // 3. 화면에 표시될 텍스트 (타입 코드 -> 사용자 친화적 이름 변환)

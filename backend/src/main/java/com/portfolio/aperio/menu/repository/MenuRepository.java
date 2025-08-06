@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
-    List<Menu> findByIsActive(boolean isActive, Sort sort);
+    List<Menu> findByActive(boolean active, Sort sort);
 }

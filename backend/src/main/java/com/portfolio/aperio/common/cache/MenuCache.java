@@ -37,7 +37,7 @@ public class MenuCache {
     //메뉴 호출 메소드
     public void loadMenus() {
         // 1.전체 목록 조회
-        List<MenuListResponseDto> menuListResponseDtoList = menuService.findByIsActive();
+        List<MenuListResponseDto> menuListResponseDtoList = menuService.findByActive();
         for(MenuListResponseDto dto : menuListResponseDtoList) {
             System.out.println("dto => " + dto.getName());
             System.out.println("dto => " + dto.getName());

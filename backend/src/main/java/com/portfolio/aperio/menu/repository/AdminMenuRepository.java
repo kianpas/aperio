@@ -16,14 +16,14 @@ public interface AdminMenuRepository extends JpaRepository<Menu, Long> {
      * 메뉴 타입 조회
      * @return
      */
-    @Query("SELECT DISTINCT m.menuType FROM Menu m")
+    @Query("SELECT DISTINCT m.type FROM Menu m")
     List<String> findDistinctByMenuType();
 
     /**
      * 메뉴 타입 조회
      * @return
      */
-    @Query("SELECT m FROM Menu m WHERE m.menuType = :id")
+    @Query("SELECT m FROM Menu m WHERE m.type = :id")
     List<Menu> findDistinctByMenuType(@Param("id") String id);
 
     /**
@@ -32,8 +32,8 @@ public interface AdminMenuRepository extends JpaRepository<Menu, Long> {
      * @return
      */
     @Query("SELECT m FROM Menu m " +
-            "LEFT JOIN FETCH m.menuRoles mr " +
-            "WHERE m.menuId = :menuNo")
+            "LEFT JOIN FETCH m.roles mr " +
+            "WHERE m.id = :menuNo")
     Optional<Menu> findByMenuNo(@Param("menuNo") Long menuNo);
 
 }

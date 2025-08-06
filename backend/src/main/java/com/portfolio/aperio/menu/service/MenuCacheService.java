@@ -22,7 +22,7 @@ public class MenuCacheService {
      */
     @Cacheable(cacheNames = "headerMenus", key = "'global'")
     public List<Menu> getAllHeaderMenu() {
-        return menuRepository.findByIsActive(true, Sort.by(Sort.Direction.ASC, "menuNo"));
+        return menuRepository.findByActive(true, Sort.by(Sort.Direction.ASC, "sortOrder"));
     }
 
     /** 메뉴가 변경됐을 때(관리자 수정 등) 캐시를 비우고 새로 로딩 */

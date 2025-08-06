@@ -14,52 +14,51 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA 요구사항 + 무분별한 생성 방지
+@AllArgsConstructor(access = AccessLevel.PRIVATE) // 빌더 전용
 @Getter
-@Setter
 @Table(name = "menus")
-@ToString(exclude = {"menuRoles"})
-@EqualsAndHashCode(of = "menuId")
+@ToString(exclude = { "roles" })
+@EqualsAndHashCode(of = "id")
 @EntityListeners(AuditingEntityListener.class)
 public class Menu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long menuId;
+    private Long id;
 
-    private Long upperMenuId;
+    @Column(name = "parent_id")
+    private Long parentId;
 
     @Column(nullable = false, length = 100)
     private String name;
 
     @Column(length = 500)
     private String description;
-    
+
     @Column(length = 255)
-    private String menuUrl;
+    private String url;
 
     @Builder.Default
-    @Column(nullable = false)
-    private Boolean isActive = true;
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 30)
+    @Column(name = "type", length = 30)
     @Builder.Default
-    private MenuType menuType = MenuType.MAIN_MENU;  // 기본값 설정
+    private MenuType type = MenuType.MAIN_MENU; // 기본값 설정
 
-    @Column(nullable = false)
+    @Column(name = "sort_order", nullable = false)
     private Integer sortOrder;
 
     // Audit 필드
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updatedAt; 
-
-
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     // --- 새로운 @OneToMany 관계 추가 ---
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -68,5 +67,42 @@ public class Menu {
     // orphanRemoval: menu.getMenuRoles().remove(menuRole) 시 DB에서도 삭제
     // fetch: LAZY 로딩 권장
     @Builder.Default
-    private Set<MenuRole> menuRoles = new HashSet<>();
+    private Set<MenuRole> roles = new HashSet<>();
+
+    // 비즈니스 메서드들
+    public boolean hasParent() {
+        return parentId != null;
+    }
+
+    public boolean isActive() {
+        return Boolean.TRUE.equals(active);
+    }
+
+    public void activate() {
+        this.active = true;
+    }
+
+    public void deactivate() {
+        this.active = false;
+    }
+
+    public void addRole(MenuRole role) {
+        roles.add(role);
+        role.setMenu(this);
+    }
+
+    public void removeRole(MenuRole role) {
+        roles.remove(role);
+        role.setMenu(null);
+    }
+
+        // 비즈니스 메서드로 상태 변경
+        public void updateBasicInfo(String name, String description, String url) {
+            if (name == null || name.trim().isEmpty()) {
+                throw new IllegalArgumentException("메뉴명은 필수입니다.");
+            }
+            this.name = name;
+            this.description = description;
+            this.url = url;
+        }
 }

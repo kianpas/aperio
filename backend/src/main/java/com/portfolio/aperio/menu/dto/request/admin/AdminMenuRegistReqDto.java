@@ -1,6 +1,5 @@
 package com.portfolio.aperio.menu.dto.request.admin;
 
-
 import com.portfolio.aperio.menu.domain.Menu;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,16 +30,15 @@ public class AdminMenuRegistReqDto {
 
     public static AdminMenuRegistReqDto from(Menu menu) {
         return AdminMenuRegistReqDto.builder()
-                .menuNo(menu.getMenuId())
-                .upperMenuNo(menu.getUpperMenuId())
+                .menuNo(menu.getId())
+                .upperMenuNo(menu.getParentId())
                 .menuNm(menu.getName())
                 .menuDsc(menu.getDescription())
-                .menuUrl(menu.getMenuUrl())
-                // .useAt(menu.getUseAt())
+                .menuUrl(menu.getUrl())
+                .useAt(menu.getActive() != null && menu.getActive() ? "Y" : "N")
                 .sortOrder(menu.getSortOrder())
-                // .menuType(menu.getMenuType())
+                .menuType(menu.getType() != null ? menu.getType().name() : "")
                 .build();
     }
-
 
 }

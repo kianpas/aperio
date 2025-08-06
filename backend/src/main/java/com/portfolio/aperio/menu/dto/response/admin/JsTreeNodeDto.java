@@ -30,12 +30,12 @@ public class JsTreeNodeDto {
 
         // 추가 데이터를 담을 Map 생성
         Map<String, Object> nodeData = new HashMap<>();
-        nodeData.put("url", Optional.ofNullable(menu.getMenuUrl()).orElse(""));
+        nodeData.put("url", Optional.ofNullable(menu.getUrl()).orElse(""));
         nodeData.put("description", Optional.ofNullable(menu.getDescription()).orElse(""));
-        nodeData.put("type", menu.getMenuType());
+        nodeData.put("type", menu.getType());
 
         return JsTreeNodeDto.builder()
-                .id(String.valueOf(menu.getMenuId())) // menuNo를 String으로 변환
+                .id(String.valueOf(menu.getId())) // id를 String으로 변환
                 .parent(nodeId) // JSTree 요청 context 상의 부모 ID
                 .text(menu.getName())
                 .data(nodeData) // 위에서 만든 추가 데이터 Map 설정
