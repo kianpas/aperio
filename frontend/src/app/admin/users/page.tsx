@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { 
   FaSearch, 
-  FaPlus, 
   FaEdit, 
   FaTrash, 
   FaEye, 
@@ -11,7 +10,6 @@ import {
   FaShieldAlt, 
   FaChartBar,
   FaArrowRight,
-  FaUsers,
   FaUserPlus,
   FaFilter
 } from 'react-icons/fa';

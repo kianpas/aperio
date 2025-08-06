@@ -90,12 +90,12 @@ const Navigation = () => {
     }
   }, []);
 
-  // 하드코딩 시스템 메뉴
-  const systemMenus = {
-    auth: user
-      ? { type: "logout", label: "로그아웃" }
-      : { type: "login", label: "로그인" },
-  };
+  // 하드코딩 시스템 메뉴 (현재 사용하지 않음 - 향후 확장용)
+  // const systemMenus = {
+  //   auth: user
+  //     ? { type: "logout", label: "로그아웃" }
+  //     : { type: "login", label: "로그인" },
+  // };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

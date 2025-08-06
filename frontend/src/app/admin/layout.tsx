@@ -14,8 +14,6 @@ import {
   FaSignOutAlt,
   FaUserShield,
   FaBars,
-  FaUserCog,
-  FaShieldAlt,
   FaImage,
   FaWindowMaximize,
   FaTicketAlt,

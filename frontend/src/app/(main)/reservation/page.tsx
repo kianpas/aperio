@@ -159,6 +159,7 @@ const ReservationPage = () => {
     { time: "18:00", available: true, selected: false, price: 1800 },
   ];
 
+  // 샘플 쿠폰 데이터 (실제로는 API에서 가져올 데이터)
   const sampleCoupons: Coupon[] = [
     {
       id: "WELCOME10",
@@ -242,7 +243,7 @@ const ReservationPage = () => {
     }
 
     setTotalPrice(Math.floor(price));
-  }, [selectedSeat, planType, selectedTimes, selectedCoupon, sampleCoupons]);
+  }, [selectedSeat, planType, selectedTimes, selectedCoupon]);
 
   // 좌석 타입별 아이콘 반환
   const getSeatIcon = (type: string) => {
@@ -606,7 +607,7 @@ const ReservationPage = () => {
                             name="planType"
                             value={plan.value}
                             checked={planType === plan.value}
-                            onChange={(e) => setPlanType(e.target.value as any)}
+                            onChange={(e) => setPlanType(e.target.value as "HOURLY" | "DAILY" | "MONTHLY")}
                             className="mr-3"
                           />
                           <div className="flex-1">
