@@ -163,61 +163,11 @@
 <!--    <a href="/contact" class="contact-button">문의 폼으로 이동</a>-->
   </section>
 
-  <!-- 지도 -->
-  <section class="section map-section">
-      <div class="section-header"> <!-- 섹션 헤더 사용 일관성 -->
-          <h2>찾아오시는 길</h2>
-          <p>신논현역 3번 출구에서 도보 5분 거리에 위치하고 있습니다.</p>
-      </div>
-      <div class="map-area">
-          <div class="map-info">
-              <h3><i class="fas fa-subway"></i> 지하철</h3>
-              <p>9호선/신분당선 신논현역 3번 출구 (300m)</p>
-              <h3><i class="fas fa-bus"></i> 버스</h3>
-              <p>신논현역 정류장 (다수 노선)</p>
-              <h3><i class="fas fa-parking"></i> 주차</h3>
-              <p>건물 내 주차 가능 (유료, 방문 시 문의)</p>
-          </div>
-          <div class="map-wrapper">
-              <div id="map"></div>
-          </div>
-      </div>
-  </section>
-
 
 </main>
 <th:block layout:fragment="page-script">
   <!-- swiper 스크립트 -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5da18d7a3b92134652f249b6d2a46159"></script>
-  <script>
-    $(document).ready(function () {
-       const swiper = new Swiper('.swiper', {
-        loop: true,
-        pagination: {
-          el: '.swiper-pagination',
-          clickable: true
-        },
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
-        },
-        autoplay: {
-          delay: 3000,
-        },
-      });
-
-      const container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-      const options = { //지도를 생성할 때 필요한 기본 옵션
-        center: new kakao.maps.LatLng(37.506167, 127.025832), //지도의 중심좌표.
-        level: 1 //지도의 레벨(확대, 축소 정도)
-      };
-
-      const map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-
-    });
-  </script>
-
 
 </th:block>
 </body>

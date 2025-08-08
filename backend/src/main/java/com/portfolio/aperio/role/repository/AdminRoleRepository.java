@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AdminRoleRepository extends JpaRepository<Role, Long> {
 
-    @Query("SELECT c FROM Role c WHERE c.roleName LIKE CONCAT('%', :searchRoleName, '%')")
+    @Query("SELECT c FROM Role c WHERE c.name LIKE CONCAT('%', :searchRoleName, '%')")
     Page<Role> findRoleWithFilter(Pageable pageable,
                                        @Param("searchRoleName") String searchRoleName);
 }

@@ -22,11 +22,11 @@ public class AdminRoleResDto {
 
     public static AdminRoleResDto from(Role role) {
         return AdminRoleResDto.builder()
-                .roleId(role.getRoleId())
-                .roleName(role.getRoleName())
-                .roleCode(role.getRoleCode())
+                .roleId(role.getId())
+                .roleName(role.getName())
+                .roleCode(role.getCode())
                 .description(role.getDescription())
-                .createDt(role.getCreateDt())
+                .createDt(role.getCreatedAt())
                 .build();
     }
 }

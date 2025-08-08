@@ -127,7 +127,7 @@ public class MenuService {
         return menu.getRoles().stream()
                 .map(MenuRole::getRole)      // MenuRole -> Role 추출
                 .filter(Objects::nonNull)    // null Role 객체 필터링
-                .map(Role::getRoleCode)      // Role -> 역할 이름(String) 추출
+                .map(Role::getCode)      // Role -> 역할 이름(String) 추출
                 .filter(Objects::nonNull)    // null 역할 이름 필터링
                 .collect(Collectors.toSet());
     }

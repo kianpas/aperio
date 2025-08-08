@@ -58,7 +58,7 @@ public class User implements UserDetails, OAuth2User {
         Set<GrantedAuthority> authorities = new HashSet<>();
 
         for (UserRole ur : userRole) {
-            authorities.add(new SimpleGrantedAuthority(ur.getRole().getRoleCode()));
+            authorities.add(new SimpleGrantedAuthority(ur.getRole().getCode()));
         }
         return authorities;
     }

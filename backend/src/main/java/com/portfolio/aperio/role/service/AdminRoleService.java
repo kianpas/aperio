@@ -56,10 +56,10 @@ public class AdminRoleService {
     @Transactional
     public void roleRegist(AdminRoleRegistReqDto adminRoleRegistReqDto) {
         Role role = Role.builder()
-                .roleCode(adminRoleRegistReqDto.getRoleCode())
-                .roleName(adminRoleRegistReqDto.getRoleName())
+                .code(adminRoleRegistReqDto.getRoleCode())
+                .name(adminRoleRegistReqDto.getRoleName())
                 .description(adminRoleRegistReqDto.getDescription())
-                .createDt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         adminRoleRepository.save(role);
@@ -84,10 +84,7 @@ public class AdminRoleService {
 
         Role role = adminRoleRepository.findById(roleId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT));
 
-        role.setRoleCode(adminRoleEditReqDto.getRoleCode());
-        role.setRoleName(adminRoleEditReqDto.getRoleName());
-        role.setDescription(adminRoleEditReqDto.getDescription());
-
+      
     }
 
     /**

@@ -31,13 +31,73 @@ const SignUp = () => {
     agreeMarketing: false,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
+
+  // 전화번호 포맷팅 함수
+  const formatPhoneNumber = (value: string) => {
+    // 숫자만 추출
+    const numbers = value.replace(/[^\d]/g, "");
+
+    // 11자리를 초과하면 자르기
+    if (numbers.length > 11) {
+      return numbers.slice(0, 11);
+    }
+
+    // 포맷팅 적용
+    if (numbers.length <= 3) {
+      return numbers;
+    } else if (numbers.length <= 7) {
+      return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+    } else {
+      return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(
+        7
+      )}`;
+    }
+  };
+
+  // 전화번호 유효성 검사
+  const validatePhoneNumber = (phoneNumber: string) => {
+    const numbers = phoneNumber.replace(/[^\d]/g, "");
+
+    if (numbers.length === 0) {
+      return "";
+    } else if (numbers.length < 10) {
+      return "전화번호가 너무 짧습니다.";
+    } else if (numbers.length > 11) {
+      return "전화번호가 너무 깁니다.";
+    } else if (
+      !numbers.startsWith("010") &&
+      !numbers.startsWith("011") &&
+      !numbers.startsWith("016") &&
+      !numbers.startsWith("017") &&
+      !numbers.startsWith("018") &&
+      !numbers.startsWith("019")
+    ) {
+      return "올바른 휴대폰 번호 형식이 아닙니다.";
+    }
+
+    return "";
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+
+    if (name === "phoneNumber") {
+      // 전화번호인 경우 포맷팅 적용
+      const formattedValue = formatPhoneNumber(value);
+      const error = validatePhoneNumber(formattedValue);
+
+      setPhoneError(error);
+      setFormData((prev) => ({
+        ...prev,
+        [name]: formattedValue,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -50,6 +110,11 @@ const SignUp = () => {
 
     if (!formData.agreeTerms || !formData.agreePrivacy) {
       alert("필수 약관에 동의해주세요.");
+      return;
+    }
+
+    if (phoneError) {
+      alert("올바른 전화번호를 입력해주세요.");
       return;
     }
 
@@ -158,11 +223,42 @@ const SignUp = () => {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black placeholder-gray-400"
+                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:border-transparent transition-all duration-200 text-black placeholder-gray-400 ${
+                    phoneError
+                      ? "border-red-300 focus:ring-red-500"
+                      : formData.phoneNumber && !phoneError
+                      ? "border-green-300 focus:ring-green-500"
+                      : "border-gray-300 focus:ring-blue-500"
+                  }`}
                   placeholder="010-0000-0000"
+                  maxLength={13} // 010-0000-0000 형태의 최대 길이
                   required
                 />
+                {/* 유효성 검사 아이콘 */}
+                {formData.phoneNumber && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    {phoneError ? (
+                      <div className="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center">
+                        <span className="text-red-500 text-xs">✕</span>
+                      </div>
+                    ) : (
+                      <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center">
+                        <span className="text-green-500 text-xs">✓</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
+              {/* 에러 메시지 */}
+              {phoneError && (
+                <p className="mt-1 text-sm text-red-600">{phoneError}</p>
+              )}
+              {/* 도움말 텍스트 */}
+              {!phoneError && formData.phoneNumber && (
+                <p className="mt-1 text-sm text-green-600">
+                  올바른 전화번호 형식입니다.
+                </p>
+              )}
             </div>
 
             {/* 비밀번호 입력 */}

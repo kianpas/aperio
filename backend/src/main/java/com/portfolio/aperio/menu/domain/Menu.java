@@ -62,10 +62,6 @@ public class Menu {
 
     // --- 새로운 @OneToMany 관계 추가 ---
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    // mappedBy: MenuRole 엔티티에 있는 'menu' 필드가 관계의 주인임을 명시
-    // cascade: Menu 저장/삭제 시 MenuRole도 함께 처리
-    // orphanRemoval: menu.getMenuRoles().remove(menuRole) 시 DB에서도 삭제
-    // fetch: LAZY 로딩 권장
     @Builder.Default
     private Set<MenuRole> roles = new HashSet<>();
 
@@ -74,23 +70,38 @@ public class Menu {
         return parentId != null;
     }
 
+    /**
+     * 메뉴가 활성화 상태인지 확인
+     */
     public boolean isActive() {
         return Boolean.TRUE.equals(active);
     }
 
+    /**
+     * 역할 활성화
+     */
     public void activate() {
         this.active = true;
     }
 
+    /**
+     * 역할 비활성화
+     */    
     public void deactivate() {
         this.active = false;
     }
 
+    /**
+     * 역할 추가
+     */    
     public void addRole(MenuRole role) {
         roles.add(role);
         role.setMenu(this);
     }
 
+    /**
+     * 역할 삭제
+     */
     public void removeRole(MenuRole role) {
         roles.remove(role);
         role.setMenu(null);
