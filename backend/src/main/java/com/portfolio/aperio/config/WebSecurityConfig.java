@@ -11,10 +11,12 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 @RequiredArgsConstructor
 @Configuration
@@ -37,41 +39,50 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/css/**", "/js/**", "/img/**",
                                 "/", "/main",
-                                "/signup", "/api/v1/auth/signup", "/findUserInfo","/checkEmail", "/send-verification",
+                                "/signup", "/api/v1/auth/signup", "/findUserInfo", "/checkEmail", "/send-verification",
                                 "/login", "/api/v1/auth/login",
                                 "/signup/verify-code", "/findUserInfo/verify-code",
                                 "/findUserInfo/reqSendEmail", "/findUserInfo/verifyPwdCode", "/api/resetPwd",
-                                 "/faqList", "/error", "/favicon.ico",  "/api/**",
-                                "/oauth2/**", "/**"
-                        ).permitAll() // "/login" 누구나 접근 가능하게
-                        .anyRequest().authenticated()             // 나머지 요청은 인증 필요
+                                "/faqList", "/error", "/favicon.ico", "/api/**",
+                                "/oauth2/**", "/**")
+                        .permitAll() // "/login" 누구나 접근 가능하게
+                        .anyRequest().authenticated() // 나머지 요청은 인증 필요
+                )
+                // SecurityContext를 세션에 저장하도록 명시적 설정 추가 ⭐
+                .securityContext(securityContext -> securityContext
+                        .securityContextRepository(new HttpSessionSecurityContextRepository()))
+                // 세션 관리 설정 추가 ⭐
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요시 세션 생성
+                        .maximumSessions(1) // 동시 세션 1개
+                        .maxSessionsPreventsLogin(false) // 새 로그인 시 기존 세션 만료
                 )
                 // 4. 폼 기반 로그인 설정
                 .formLogin(form -> form
-                        .loginPage("/login")                // 커스텀 로그인 페이지 지정
-                        .defaultSuccessUrl("/")        // 로그인 성공 시 이동할 URL (기본값은 '/')
-                        .permitAll() // 로그인 페이지 자체는 모든 사용자가 접근 가능해야 함 (authorizeHttpRequests에서 이미 /login을 permitAll 했으므로 중복될 수 있으나 명시적으로 추가 가능)
+                        .loginPage("/login") // 커스텀 로그인 페이지 지정
+                        .defaultSuccessUrl("/") // 로그인 성공 시 이동할 URL (기본값은 '/')
+                        .permitAll() // 로그인 페이지 자체는 모든 사용자가 접근 가능해야 함 (authorizeHttpRequests에서 이미 /login을 permitAll
+                                     // 했으므로 중복될 수 있으나 명시적으로 추가 가능)
                 )
                 // 5. 로그아웃 설정
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/")         // 로그아웃 성공 시 이동할 URL
-                        .invalidateHttpSession(true)        // 로그아웃 시 세션 무효화
+                        .logoutSuccessUrl("/") // 로그아웃 성공 시 이동할 URL
+                        .invalidateHttpSession(true) // 로그아웃 시 세션 무효화
                 )
                 // 6. CSRF 비활성화
                 .csrf(AbstractHttpConfigurer::disable) // .csrf(csrf -> csrf.disable()) 와 동일, 메서드 레퍼런스 사용
 
                 // 7. OAuth2 소셜 로그인 설정 추가
                 .oauth2Login(oauth2 -> oauth2
-                                .loginPage("/login") // 로그인 페이지 지정 (인증이 필요할 때 이동)
-                                // .defaultSuccessUrl("/") // 로그인 성공 시 이동할 URL (SuccessHandler 사용 시 주석 처리 가능)
-                                .userInfoEndpoint(userInfo -> userInfo
-                                        .userService(customOAuth2UserService) // 소셜 로그인 성공 후 사용자 정보 처리 서비스 지정
-                                )
+                        .loginPage("/login") // 로그인 페이지 지정 (인증이 필요할 때 이동)
+                        // .defaultSuccessUrl("/") // 로그인 성공 시 이동할 URL (SuccessHandler 사용 시 주석 처리 가능)
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService) // 소셜 로그인 성공 후 사용자 정보 처리 서비스 지정
+                        )
                         // 로그인 성공 핸들러 (선택적): 로그인 성공 후 특정 로직 수행 필요 시
-                         .successHandler(oAuth2LoginSuccessHandler())
+                        .successHandler(oAuth2LoginSuccessHandler())
                         // 로그인 실패 핸들러 (선택적)
-                         .failureHandler(oAuth2LoginFailureHandler())
-                );
+                        .failureHandler(oAuth2LoginFailureHandler()));
 
         return http.build();
     }
@@ -80,10 +91,11 @@ public class WebSecurityConfig {
     /*
      *
      * AuthenticationManager Bean 정의 (Spring Security 6+ 스타일)
-     * 이전 방식(http.getSharedObject(AuthenticationManagerBuilder.class))은 deprecated 되었으므로,
+     * 이전 방식(http.getSharedObject(AuthenticationManagerBuilder.class))은 deprecated
+     * 되었으므로,
      * DaoAuthenticationProvider를 직접 생성하고 설정하여 ProviderManager를 반환하는 방식을 사용합니다.
-
-
+     * 
+     * 
      */
     @Bean
     public AuthenticationManager authenticationManager(
@@ -104,10 +116,9 @@ public class WebSecurityConfig {
 
     // 패스워드 인코더로 사용할 빈 등록
     @Bean
-    public  BCryptPasswordEncoder bCryptPasswordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     // --- 선택적: 로그인 성공/실패 핸들러 빈 등록 ---
     /*
@@ -130,4 +141,3 @@ public class WebSecurityConfig {
         };
     }
 }
-

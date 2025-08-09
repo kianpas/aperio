@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 import {
   FaEye,
   FaEyeSlash,
@@ -22,6 +24,10 @@ const Login = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  const router = useRouter();
+  // useAuth 추가
+  const { login } = useAuth();
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -33,14 +39,22 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    try {
+      const result = await login({
+        email: formData.email,
+        password: formData.password,
+      });
 
-    // TODO: 스프링 시큐리티 연동
-    console.log("Login attempt:", formData);
-
-    // 임시 로딩 시뮬레이션
-    setTimeout(() => {
+      if (result.user) {
+        console.log(`환영합니다, ${result.user.name}님!`);
+        // router.push("/");
+        window.location.href = "/";
+      }
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "로그인에 실패했습니다.");
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   const handleOAuthLogin = (provider: "kakao" | "naver" | "google") => {
@@ -71,7 +85,7 @@ const Login = () => {
 
         {/* 로그인 폼 */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} autoComplete="on" className="space-y-6">
             {/* 이메일 입력 */}
             <div>
               <label
@@ -90,6 +104,7 @@ const Login = () => {
                   onChange={handleInputChange}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black placeholder-gray-400"
                   placeholder="이메일을 입력하세요"
+                  autoComplete="username"
                   required
                 />
               </div>
@@ -113,6 +128,7 @@ const Login = () => {
                   onChange={handleInputChange}
                   className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black placeholder-gray-400"
                   placeholder="비밀번호를 입력하세요"
+                  autoComplete="current-password"
                   required
                 />
                 <button

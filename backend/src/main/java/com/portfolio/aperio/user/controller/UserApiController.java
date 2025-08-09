@@ -3,16 +3,28 @@ package com.portfolio.aperio.user.controller;
 import com.portfolio.aperio.common.dto.ErrorResponse;
 import com.portfolio.aperio.coupon.service.CouponIssueService;
 import com.portfolio.aperio.user.domain.User;
+import com.portfolio.aperio.user.dto.request.user.LgoinUserRequest;
 import com.portfolio.aperio.user.dto.request.user.RegisterUserRequest;
 import com.portfolio.aperio.user.dto.VerificationResult;
+import com.portfolio.aperio.user.dto.response.user.LoginUserResponse;
 import com.portfolio.aperio.user.dto.response.user.RegisterUserResponse;
 import com.portfolio.aperio.user.service.UserService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -30,9 +42,134 @@ public class UserApiController {
 
     private final UserService userService;
 
+    private final AuthenticationManager authenticationManager;
+
     private static final String OTP_PREFIX = "OTP_";
 
     private final CouponIssueService couponIssueService;
+
+    /**
+     * 로그인
+     * @param request
+     * @param httpRequest
+     * @return
+     */
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LgoinUserRequest request, HttpServletRequest httpRequest) {
+
+        try {
+
+            // 인증정보 조회
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()));
+
+            // SecurityContext에 인증 정보 설정
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+            securityContext.setAuthentication(authentication);
+            SecurityContextHolder.setContext(securityContext);
+
+            // 세션에 SecurityContext 명시적으로 저장 ⭐
+            HttpSession session = httpRequest.getSession();
+            session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+            // 세션 확인 로그 추가
+            log.debug("로그인 성공 - 세션 ID: {}", session.getId());
+            log.debug("SecurityContext 저장됨: {}", securityContext.getAuthentication().getName());
+
+            // 인증된 사용자 정보
+            User user = (User) authentication.getPrincipal();
+            // 응답 객체 생성
+            LoginUserResponse response = LoginUserResponse.from(user);
+
+            return ResponseEntity.ok(response);
+
+        } catch (AuthenticationException e) {
+            log.warn("로그인 실패: {}, 사유: {}", request.getEmail(), e.getMessage());
+            return ResponseEntity.status(401)
+                    .body(Map.of("error", "AUTHENTICATION_FAILED",
+                            "message", "이메일 또는 비밀번호가 올바르지 않습니다."));
+        }
+
+    }
+
+    /**
+     * 로그아웃
+     * @param request
+     * @return
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+
+        SecurityContextHolder.clearContext();
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return ResponseEntity.ok(Map.of("message", "로그아웃 되었습니다."));
+    }
+
+    /**
+     * 현재 사용자 정보 조회
+     * @param authentication
+     * @return
+     */
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(Authentication authentication, HttpServletRequest request) {
+        // 세션 정보 로그 추가
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            log.debug("/me 요청 - 세션 ID: {}", session.getId());
+            log.debug("세션 생성 시간: {}", session.getCreationTime());
+            log.debug("세션 마지막 접근: {}", session.getLastAccessedTime());
+        } else {
+            log.debug("/me 요청 - 세션 없음");
+        }
+
+        log.debug("Authentication 객체: {}", authentication);
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.ok(Map.of("authenticated", false));
+        }
+
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(Map.of(
+            "authenticated", true,
+            "user", Map.of(
+                "email", user.getEmail(),
+                "name", user.getName() != null ? user.getName() : user.getEmail()
+            )
+        ));
+    }
+
+    /**
+     * 이메일 중복체크
+     * 
+     * @param user
+     * @return
+     */
+    @RateLimiter(name = "email-check", fallbackMethod = "emailCheckFallback")
+    @GetMapping("/checkEmail")
+    public ResponseEntity<?> checkEmail(@RequestBody User user) {
+
+        // 1분에 10회로 제한
+        boolean available = userService.isEmailAvailable(user.getEmail());
+
+        return ResponseEntity.ok(Map.of("available", available));
+    }
+
+    /**
+     * 중복체크 메소드
+     * @param user
+     * @param ex
+     * @return
+     */
+    public ResponseEntity<?> emailCheckFallback(User user, Exception ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", "요청이 너무 많습니다. 잠시 후 다시 시도해주세요.");
+        return ResponseEntity.status(429).body(response);
+    }
 
     // 회원정보(email/pwd) 확인 페이지 호출
     @GetMapping("/findUserInfo")
@@ -43,59 +180,39 @@ public class UserApiController {
         return "login/findUserInfo";
     }
 
+
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(
             // @Valid : SignupRequest 객체에서 설정한 유효성 검사 실행
             // BindingResult : 유효성 검사 결과를 담는 객체
-            @Valid @RequestBody RegisterUserRequest request
-    ) {
+            @Valid @RequestBody RegisterUserRequest request) {
 
-//        try {
+        // try {
 
-            log.debug("request = {}", request);
+        log.debug("request = {}", request);
 
-            // 회원가입 진행
-            User user = userService.registerUser(request);
+        // 회원가입 진행
+        User user = userService.registerUser(request);
 
-            log.debug("user = {}", user);
-            //쿠폰발급 진행, 쿠폰발급은 회원가입 흐름에 영향을 주지 않아야함
-//            if(user != null) {
-//                try {
-//                    couponIssueService.issueSignUpCoupon(user);
-//                } catch (Exception e) {
-//                    log.error("회원가입 성공 후 쿠폰 발급 실패. 사용자: {}, 에러: {}", user.getUserId(), e.getMessage(), e);
-//                }
-//            }
+        log.debug("user = {}", user);
+        // 쿠폰발급 진행, 쿠폰발급은 회원가입 흐름에 영향을 주지 않아야함
+        // if(user != null) {
+        // try {
+        // couponIssueService.issueSignUpCoupon(user);
+        // } catch (Exception e) {
+        // log.error("회원가입 성공 후 쿠폰 발급 실패. 사용자: {}, 에러: {}", user.getUserId(),
+        // e.getMessage(), e);
+        // }
+        // }
 
+        RegisterUserResponse response = RegisterUserResponse.success(user);
 
-            RegisterUserResponse response = RegisterUserResponse.success(user);
-
-
-            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(ErrorResponse.of("SERVER_ERROR", "서버 오류가 발생했습니다"));
-//        }
-    }
-
-/*
-    PostMapping으로 이메일 중복 체크
- */
-    @PostMapping("/checkEmail")
-    @ResponseBody
-    public Map<String, Boolean> checkEmail(@RequestBody User user) {
-
-        System.out.println("UserController|checkEmail|inputValue|user = " + user);
-        System.out.println("UserController|checkEmail|inputValue|user.getEmail() = " + user.getEmail());
-        boolean isAvailable = userService.checkEmail(user.getEmail());
-        System.out.println("UserController|checkEmail|isAvailable = " + isAvailable);
-
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("available", isAvailable);
-
-        return response;
-
+        return ResponseEntity.ok(response);
+        // } catch (Exception e) {
+        // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        // .body(ErrorResponse.of("SERVER_ERROR", "서버 오류가 발생했습니다"));
+        // }
     }
 
     // 휴대폰번호 인증번호 전송
@@ -110,7 +227,7 @@ public class UserApiController {
         Map<String, String> response = new HashMap<>();
         response.put("success", "true");
 
-//        response.put("code", code); // 디버깅용으로 클라이언트에 반환
+        // response.put("code", code); // 디버깅용으로 클라이언트에 반환
         return response;
 
     }
@@ -132,23 +249,23 @@ public class UserApiController {
 
         // 검증 성공 시 컨트롤러에서 세션 OTP 제거
         if (isValid) {
-            session.removeAttribute(OTP_PREFIX + phoneNo);              // 인증번호 세션 제거
-            session.removeAttribute(OTP_PREFIX + phoneNo + "_expiry");  // 인증번호 만료 시간 세션 제거
+            session.removeAttribute(OTP_PREFIX + phoneNo); // 인증번호 세션 제거
+            session.removeAttribute(OTP_PREFIX + phoneNo + "_expiry"); // 인증번호 만료 시간 세션 제거
 
-                System.out.println("========== 세션에 저장된 인증번호 삭제 확인 ==========");
-                Enumeration<String> attributeNames = session.getAttributeNames();
-                while (attributeNames.hasMoreElements()) {
-                    String attributeName = attributeNames.nextElement();
-                    Object attributeValue = session.getAttribute(attributeName);
-                    System.out.println("키: " + attributeName + ", 값: " + attributeValue);
-                }
-                System.out.println("=================================================");
+            System.out.println("========== 세션에 저장된 인증번호 삭제 확인 ==========");
+            Enumeration<String> attributeNames = session.getAttributeNames();
+            while (attributeNames.hasMoreElements()) {
+                String attributeName = attributeNames.nextElement();
+                Object attributeValue = session.getAttribute(attributeName);
+                System.out.println("키: " + attributeName + ", 값: " + attributeValue);
+            }
+            System.out.println("=================================================");
         }
 
         return response;
     }
 
-// 회원정보찾기 > 이메일 찾기 : 휴대번호로 인증 후 이메일 조회
+    // 회원정보찾기 > 이메일 찾기 : 휴대번호로 인증 후 이메일 조회
     @PostMapping("/findUserInfo/verify-code")
     @ResponseBody
     public Map<String, Object> findEmailByVerifiedPhone(@RequestBody Map<String, String> request, HttpSession session) {
@@ -193,9 +310,6 @@ public class UserApiController {
         return response;
     }
 
-
-
-
     /**
      * [API] 비밀번호 찾기 - 1단계: 이메일 확인 및 OTP 발송 요청
      */
@@ -231,7 +345,8 @@ public class UserApiController {
     @PostMapping("/findUserInfo/verifyPwdCode")
     @ResponseBody
     public Map<String, Object> verifyPwdCode(@RequestBody Map<String, String> request, HttpSession session) {
-        System.out.println("UserController|verifyPasswordOtp| 시작 ==========> email: " + request.get("email") + ", code: " + request.get("code"));
+        System.out.println("UserController|verifyPasswordOtp| 시작 ==========> email: " + request.get("email")
+                + ", code: " + request.get("code"));
 
         String email = request.get("email");
         String code = request.get("code");
@@ -259,6 +374,7 @@ public class UserApiController {
 
     /**
      * [API] 비밀번호 찾기 - 3단계: 새 비밀번호 설정
+     * 
      * @Valid 추가하여 DTO 유효성 검사 가능
      */
     @PostMapping("/api/resetPwd")
@@ -293,6 +409,5 @@ public class UserApiController {
         }
         return response;
     }
-
 
 }

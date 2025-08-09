@@ -51,21 +51,25 @@ public class UserService {
     private static final String DEFAULT_ROLE_CODE = "ROLE_USER"; // 일반 사용자 역할 코드
     private static final String STAFF_ROLE_CODE = "ROLE_STAFF"; // 임직원 역할 코드 (예시)
 
+    /**
+     * 이메일 사용 가능 여부 확인
+     */
+    public boolean isEmailAvailable(String email) {
+        return !userRepository.existsByEmail(email);
+    }
+
+
     // 1. 회원가입
-    @Transactional // 트랜잭션 처리
+    @Transactional
     public User registerUser(RegisterUserRequest request) {
         log.debug("service = {}", request);
-        // 이메일 중복 확인
-        if (!checkEmail(request.getEmail())) {
-            throw new RuntimeException("이미 사용 중인 이메일입니다.");
-        }
 
-        System.out.println("request1 ->" + request);
+        // 이메일 중복 확인
+        validateEmailNotDuplicated(request.getEmail());
 
         // 이메일 도메인 확인
         String email = request.getEmail();
-        String domain = email.substring(email.indexOf("@") + 1); // @ 뒤의 도메인 추출
-
+    
         // 1. 부여할 역할 코드 결정
         String targetRoleCode = DEFAULT_ROLE_CODE; // 기본값: 일반 사용자
 
@@ -109,9 +113,10 @@ public class UserService {
     }
 
     // 2. 회원가입 내 이메일중복 확인
-    public boolean checkEmail(String email) {
-        // return !userRepository.existsByEmail(email);
-        return !userRepository.checkEmail(email);
+    public void validateEmailNotDuplicated(String email) {
+        if (userRepository.checkEmail(email)) {
+            throw new RuntimeException("이미 사용 중인 이메일입니다.");
+        }
     }
 
     // 3. 휴대폰 인증번호 생성 및 SMS전송(API연동)

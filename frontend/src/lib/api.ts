@@ -7,6 +7,29 @@ export interface SignUpData {
   password: string;
 }
 
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface User {
+  email: string;
+  name: string;
+}
+
+// 백엔드 로그인 응답 구조에 맞게 수정
+export interface LoginResponse {
+  email: string;
+  name: string;
+  authorities: string[];
+}
+
+// 현재 사용자 정보 응답 구조
+export interface CurrentUserResponse {
+  authenticated: boolean;
+  user?: User;
+}
+
 export const authAPI = {
   signUp: async (userData: SignUpData) => {
     try {
@@ -19,20 +42,14 @@ export const authAPI = {
         body: JSON.stringify(userData),
       });
 
-      // Content-Type 확인
       const contentType = response.headers.get("content-type");
-
       if (!contentType || !contentType.includes("application/json")) {
-        // JSON이 아닌 응답 (HTML 등)인 경우
         const text = await response.text();
         console.error("Non-JSON response:", text);
-        throw new Error(
-          `서버에서 올바르지 않은 응답을 받았습니다. Status: ${response.status}`
-        );
+        throw new Error(`서버에서 올바르지 않은 응답을 받았습니다. Status: ${response.status}`);
       }
 
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.error || "회원가입에 실패했습니다");
       }
@@ -40,11 +57,48 @@ export const authAPI = {
       return data;
     } catch (error) {
       if (error instanceof TypeError && error.message.includes("fetch")) {
-        throw new Error(
-          "서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요."
-        );
+        throw new Error("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
       }
       throw error;
     }
+  },
+
+  // 백엔드 LoginUserResponse 구조에 맞게 수정
+  login: async (loginData: LoginData): Promise<LoginResponse> => {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(loginData),
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || "로그인에 실패했습니다.");
+    }
+
+    return data; // LoginUserResponse 직접 반환
+  },
+
+  getCurrentUser: async (): Promise<CurrentUserResponse> => {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("사용자 정보 조회 실패");
+    }
+
+    return response.json();
+  },
+
+  logout: async (): Promise<void> => {
+    await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
   },
 };
