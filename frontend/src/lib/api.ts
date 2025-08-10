@@ -37,7 +37,7 @@ export const authAPI = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify(userData),
       });
@@ -46,7 +46,9 @@ export const authAPI = {
       if (!contentType || !contentType.includes("application/json")) {
         const text = await response.text();
         console.error("Non-JSON response:", text);
-        throw new Error(`서버에서 올바르지 않은 응답을 받았습니다. Status: ${response.status}`);
+        throw new Error(
+          `서버에서 올바르지 않은 응답을 받았습니다. Status: ${response.status}`
+        );
       }
 
       const data = await response.json();
@@ -57,7 +59,9 @@ export const authAPI = {
       return data;
     } catch (error) {
       if (error instanceof TypeError && error.message.includes("fetch")) {
-        throw new Error("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+        throw new Error(
+          "서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요."
+        );
       }
       throw error;
     }
@@ -65,40 +69,62 @@ export const authAPI = {
 
   // 백엔드 LoginUserResponse 구조에 맞게 수정
   login: async (loginData: LoginData): Promise<LoginResponse> => {
-    const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(loginData),
-    });
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(loginData),
+      });
 
-    const data = await response.json();
-    
-    if (!response.ok) {
-      throw new Error(data.message || "로그인에 실패했습니다.");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "로그인에 실패했습니다.");
+      }
+
+      return data; // LoginUserResponse 직접 반환
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요."
+        );
+      }
+      throw error;
     }
-
-    return data; // LoginUserResponse 직접 반환
   },
 
   getCurrentUser: async (): Promise<CurrentUserResponse> => {
-    const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
-      credentials: "include",
-    });
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
+        credentials: "include", // 중요: 세션 쿠키 포함
+      });
 
-    if (!response.ok) {
-      throw new Error("사용자 정보 조회 실패");
+      if (!response.ok) {
+        if (response.status === 401) {
+          return { authenticated: false };
+        }
+        throw new Error("사용자 정보 조회 실패");
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("getCurrentUser error:", error);
+      return { authenticated: false };
     }
-
-    return response.json();
   },
 
   logout: async (): Promise<void> => {
-    await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
-      method: "POST",
-      credentials: "include",
-    });
+    try {
+      await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
+        method: "POST",
+        credentials: "include", // 중요: 세션 쿠키 포함
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      // 로그아웃은 실패해도 클라이언트 상태는 초기화
+    }
   },
 };

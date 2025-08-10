@@ -36,5 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
+### Kiro ###
+.kiro/
+
 
 application-local.yml
