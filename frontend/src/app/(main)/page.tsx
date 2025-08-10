@@ -56,8 +56,11 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="relative">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600"></div>
+          <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-blue-400 animate-spin" style={{animationDelay: '0.15s'}}></div>
+        </div>
       </div>
     );
   }
@@ -84,7 +87,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Link
               href="/reservation"
-              className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
             >
               <FaCalendarAlt className="mr-2" />
               지금 예약하기
@@ -136,9 +139,9 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center p-6 rounded-2xl bg-blue-50 hover:bg-blue-100 transition-colors">
-              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FaWifi className="text-2xl text-white" />
+            <div className="text-center p-6 rounded-2xl bg-blue-50 hover:bg-blue-100 transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:rotate-6 transition-transform duration-300">
+                <FaWifi className="text-2xl text-white group-hover:scale-110 transition-transform duration-300" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 초고속 인터넷
@@ -148,9 +151,9 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-2xl bg-purple-50 hover:bg-purple-100 transition-colors">
-              <div className="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FaDesktop className="text-2xl text-white" />
+            <div className="text-center p-6 rounded-2xl bg-purple-50 hover:bg-purple-100 transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+              <div className="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:rotate-6 transition-transform duration-300">
+                <FaDesktop className="text-2xl text-white group-hover:scale-110 transition-transform duration-300" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 프리미엄 장비
@@ -158,9 +161,9 @@ export default function Home() {
               <p className="text-gray-600">최신 모니터와 업무용 장비 완비</p>
             </div>
 
-            <div className="text-center p-6 rounded-2xl bg-amber-50 hover:bg-amber-100 transition-colors">
-              <div className="w-16 h-16 bg-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FaCoffee className="text-2xl text-white" />
+            <div className="text-center p-6 rounded-2xl bg-amber-50 hover:bg-amber-100 transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+              <div className="w-16 h-16 bg-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:rotate-6 transition-transform duration-300">
+                <FaCoffee className="text-2xl text-white group-hover:scale-110 transition-transform duration-300" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 무제한 커피
@@ -170,9 +173,9 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-colors">
-              <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FaShieldAlt className="text-2xl text-white" />
+            <div className="text-center p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+              <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:rotate-6 transition-transform duration-300">
+                <FaShieldAlt className="text-2xl text-white group-hover:scale-110 transition-transform duration-300" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 24시간 보안
@@ -198,8 +201,8 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-3xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 overflow-hidden">
-              <div className="h-2 bg-blue-600"></div>
+            <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden hover:-translate-y-2 group">
+              <div className="h-2 bg-blue-600 group-hover:h-3 transition-all duration-300"></div>
               <div className="p-8">
                 <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
                   <FaUser className="text-2xl text-blue-600" />
@@ -238,8 +241,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="bg-white rounded-3xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 overflow-hidden">
-              <div className="h-2 bg-purple-600"></div>
+            <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden hover:-translate-y-2 group">
+              <div className="h-2 bg-purple-600 group-hover:h-3 transition-all duration-300"></div>
               <div className="p-8">
                 <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6">
                   <FaUsers className="text-2xl text-purple-600" />
@@ -278,8 +281,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="bg-white rounded-3xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 overflow-hidden">
-              <div className="h-2 bg-green-600"></div>
+            <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden hover:-translate-y-2 group">
+              <div className="h-2 bg-green-600 group-hover:h-3 transition-all duration-300"></div>
               <div className="p-8">
                 <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
                   <FaPhone className="text-2xl text-green-600" />
@@ -335,7 +338,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-gray-50 rounded-2xl p-8 hover:bg-gray-100 transition-colors">
+            <div className="bg-gray-50 rounded-2xl p-8 hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-lg">
               <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <FaDesktop className="text-2xl text-blue-600" />
               </div>
@@ -362,7 +365,7 @@ export default function Home() {
               </ul>
             </div>
 
-            <div className="bg-gray-50 rounded-2xl p-8 hover:bg-gray-100 transition-colors">
+            <div className="bg-gray-50 rounded-2xl p-8 hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-lg">
               <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <FaCog className="text-2xl text-green-600" />
               </div>
@@ -389,7 +392,7 @@ export default function Home() {
               </ul>
             </div>
 
-            <div className="bg-gray-50 rounded-2xl p-8 hover:bg-gray-100 transition-colors">
+            <div className="bg-gray-50 rounded-2xl p-8 hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-lg">
               <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <FaUsers className="text-2xl text-purple-600" />
               </div>
