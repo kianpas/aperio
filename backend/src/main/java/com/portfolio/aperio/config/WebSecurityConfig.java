@@ -75,8 +75,7 @@ public class WebSecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/") // 로그아웃 성공 시 이동할 URL
                         .invalidateHttpSession(true) // 로그아웃 시 세션 무효화
-                        .clearAuthentication(true)
-                )
+                        .clearAuthentication(true))
                 // 6. CSRF 비활성화
                 .csrf(AbstractHttpConfigurer::disable) // .csrf(csrf -> csrf.disable()) 와 동일, 메서드 레퍼런스 사용
                 // 7. OAuth2 소셜 로그인 설정 추가
