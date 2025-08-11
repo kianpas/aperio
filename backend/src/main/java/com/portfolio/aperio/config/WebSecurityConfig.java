@@ -11,7 +11,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
@@ -23,6 +22,12 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -42,6 +47,13 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                //CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                //세션/쿠키 기반이면 활성 권장
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                // 예: 일부 훅/헬스체크나 외부콜백은 CSRF 제외
+                //.ignoringRequestMatchers("/actuator/**", "/webhook/**")
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/css/**", "/js/**", "/img/**",
@@ -63,6 +75,7 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요시 세션 생성
                         .maximumSessions(1) // 동시 세션 1개
                         .maxSessionsPreventsLogin(false) // 새 로그인 시 기존 세션 만료
+                        .sessionRegistry(sessionRegistry())
                 )
                 // 4. 폼 기반 로그인 설정
                 .formLogin(form -> form
@@ -75,9 +88,11 @@ public class WebSecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/") // 로그아웃 성공 시 이동할 URL
                         .invalidateHttpSession(true) // 로그아웃 시 세션 무효화
-                        .clearAuthentication(true))
-                // 6. CSRF 비활성화
-                .csrf(AbstractHttpConfigurer::disable) // .csrf(csrf -> csrf.disable()) 와 동일, 메서드 레퍼런스 사용
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID", "XSRF-TOKEN")
+                )
+//                // 6. CSRF 비활성화
+//                .csrf(AbstractHttpConfigurer::disable) // .csrf(csrf -> csrf.disable()) 와 동일, 메서드 레퍼런스 사용
                 // 7. OAuth2 소셜 로그인 설정 추가
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login") // 로그인 페이지 지정 (인증이 필요할 때 이동)
@@ -118,6 +133,27 @@ public class WebSecurityConfig {
         // AuthenticationManager의 표준 구현체
         // 여기서는 DaoAuthenticationProvider 하나만 사용합니다.
         return new ProviderManager(daoAuthenticationProvider);
+    }
+
+    // CORS: Next.js 도메인만 허용 + 쿠키 허용
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration cfg = new CorsConfiguration();
+        // 프론트 개발/운영 URL로 교체
+        cfg.setAllowedOrigins(List.of(
+                "http://localhost:3000",           // React 개발 서버
+                "http://localhost:3001",           // 추가 개발 포트
+                "http://localhost:63342",          // IntelliJ 내장 서버
+                "https://your-app.vercel.app"      // 프로덕션 환경 (실제 도메인으로 변경 필요)
+        ));
+        cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
+        cfg.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-XSRF-TOKEN"));
+        cfg.setAllowCredentials(true); // ★ 쿠키 전송 허용
+        cfg.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", cfg);
+        return source;
     }
 
     // 패스워드 인코더로 사용할 빈 등록
