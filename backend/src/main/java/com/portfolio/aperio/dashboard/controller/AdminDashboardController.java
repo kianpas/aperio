@@ -1,4 +1,4 @@
-package com.portfolio.aperio.admin.controller;
+package com.portfolio.aperio.dashboard.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

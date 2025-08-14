@@ -1,35 +1,53 @@
-package com.portfolio.aperio.mypage.controller;
+package com.portfolio.aperio.dashboard.controller;
 
-import com.portfolio.aperio.common.exception.CustomException;
-import com.portfolio.aperio.mypage.dto.*;
-import com.portfolio.aperio.mypage.service.MyReservationService;
-import com.portfolio.aperio.mypage.service.MypageService;
-import com.portfolio.aperio.user.domain.User;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import com.portfolio.aperio.common.exception.CustomException;
+import com.portfolio.aperio.mypage.dto.MyReservationDetailDto;
+import com.portfolio.aperio.mypage.dto.MyReservationDto;
+import com.portfolio.aperio.mypage.dto.MypageCouponResDto;
+import com.portfolio.aperio.mypage.dto.MypageUserInfoResDto;
+import com.portfolio.aperio.mypage.dto.UserInfoEditReqDto;
+import com.portfolio.aperio.mypage.dto.UserPasswordEditReqDto;
+import com.portfolio.aperio.mypage.service.MyReservationService;
+import com.portfolio.aperio.user.domain.User;
+import com.portfolio.aperio.user.service.command.UserCommandService;
+import com.portfolio.aperio.user.service.query.UserQueryService;
+
+import org.springframework.data.domain.*;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/mypage")
 @RequiredArgsConstructor
-public class MypageController {
+public class DashboardController {
+    
+    private final UserQueryService userQueryService;
 
-    private final MypageService mypageService;
+    private final UserCommandService userCommandService;
+
     private final MyReservationService myReservationService;
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
      * 마이페이지 조회
@@ -42,7 +60,7 @@ public class MypageController {
     ) {
 
         log.debug("user = {}", user);
-        MypageUserInfoResDto mypageUserInfoResDto = mypageService.findUserbyId(user.getUserId());
+        MypageUserInfoResDto mypageUserInfoResDto = userQueryService.findUserbyId(user.getUserId());
         log.debug("mypageResponseDto.getName = {}", mypageUserInfoResDto.getName());
 
         model.addAttribute("userInfo", mypageUserInfoResDto);
@@ -58,7 +76,7 @@ public class MypageController {
 
         log.debug("user = {}", user);
         //1. 회원정보 조회
-        MypageUserInfoResDto mypageUserInfoResDto = mypageService.findUserbyId(user.getUserId());
+        MypageUserInfoResDto mypageUserInfoResDto = userQueryService.findUserbyId(user.getUserId());
 
         model.addAttribute("userInfo", mypageUserInfoResDto);
 
@@ -82,7 +100,7 @@ public class MypageController {
             log.debug("editProfile|userName = {}", user.getName());
             log.debug("editProfile|userInfoEditReqDto = {}", userInfoEditReqDto);
             //정보 수정
-            MypageUserInfoResDto mypageUserInfoResDto = mypageService.updateUserInfo(user.getUserId(), userInfoEditReqDto);
+            MypageUserInfoResDto mypageUserInfoResDto = userCommandService.updateUserInfo(user.getUserId(), userInfoEditReqDto);
             model.addAttribute("userInfo", mypageUserInfoResDto);
 
             return "redirect:/mypage/edit";
@@ -127,7 +145,7 @@ public class MypageController {
         }
 
         try {
-            mypageService.changePassword(user.getUserId(),
+            userCommandService.changePassword(user.getUserId(),
                     userPasswordEditReqDto);
             model.addAttribute("result", "success");
             return "redirect:/mypage";
@@ -167,7 +185,7 @@ public class MypageController {
         }
 
         //비밀번호 일치 여부
-        boolean passwordMatches = mypageService.verifyPassword(user.getUserId(), currentPassword);
+        boolean passwordMatches = userQueryService.verifyPassword(user.getUserId(), currentPassword);
 
         if (passwordMatches) {
             return "redirect:/mypage/accountDeletion";
@@ -207,7 +225,7 @@ public class MypageController {
 
         try {
             //탈퇴 요청
-            mypageService.accountDeletion(user.getUserId());
+            userCommandService.accountDeletion(user.getUserId());
 
             return "redirect:/";
         } catch (Exception e) {
@@ -241,7 +259,7 @@ public class MypageController {
 //                endDate
 //                );
 
-        Page<MypageCouponResDto> userCouponList = mypageService.findCouponListByIdPage(
+        Page<MypageCouponResDto> userCouponList = userQueryService.findCouponListByIdPage(
                 user.getUserId(),
                 tab,
                 startDate,
@@ -388,6 +406,5 @@ public class MypageController {
             return "error/500";
         }
     }
-
 
 }
