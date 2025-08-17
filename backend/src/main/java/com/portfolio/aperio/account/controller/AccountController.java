@@ -1,30 +1,16 @@
-package com.portfolio.aperio.user.controller;
+package com.portfolio.aperio.account.controller;
 
-import com.portfolio.aperio.common.dto.ErrorResponse;
-import com.portfolio.aperio.coupon.service.CouponIssueService;
+import com.portfolio.aperio.account.service.command.AccountCommandService;
 import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.user.dto.request.user.LgoinUserRequest;
-import com.portfolio.aperio.user.dto.request.user.RegisterUserRequest;
 import com.portfolio.aperio.user.dto.VerificationResult;
-import com.portfolio.aperio.user.dto.response.user.LoginUserResponse;
+import com.portfolio.aperio.user.dto.request.user.RegisterUserRequest;
 import com.portfolio.aperio.user.dto.response.user.RegisterUserResponse;
-import com.portfolio.aperio.user.service.UserService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -32,120 +18,55 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
-public class UserApiController {
+public class AccountController {
 
-    private final UserService userService;
-
-    private final AuthenticationManager authenticationManager;
+    private final AccountCommandService accountCommandService;
 
     private static final String OTP_PREFIX = "OTP_";
 
-    private final CouponIssueService couponIssueService;
+    // 회원가입
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(
+            // @Valid : SignupRequest 객체에서 설정한 유효성 검사 실행
+            // BindingResult : 유효성 검사 결과를 담는 객체
+            @Valid @RequestBody RegisterUserRequest request) {
 
-    /**
-     * 로그인
-     * @param request
-     * @param httpRequest
-     * @return
-     */
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LgoinUserRequest request, HttpServletRequest httpRequest) {
+        // try {
 
-        try {
+        log.debug("request = {}", request);
 
-            // 인증정보 조회
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()));
+        // 회원가입 진행
+        User user = accountCommandService.registerUser(request);
 
-            // SecurityContext에 인증 정보 설정
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-            securityContext.setAuthentication(authentication);
-            SecurityContextHolder.setContext(securityContext);
+        log.debug("user = {}", user);
+        // 쿠폰발급 진행, 쿠폰발급은 회원가입 흐름에 영향을 주지 않아야함
+        // if(user != null) {
+        // try {
+        // couponIssueService.issueSignUpCoupon(user);
+        // } catch (Exception e) {
+        // log.error("회원가입 성공 후 쿠폰 발급 실패. 사용자: {}, 에러: {}", user.getUserId(),
+        // e.getMessage(), e);
+        // }
+        // }
 
-            // 세션에 SecurityContext 명시적으로 저장 ⭐
-            HttpSession session = httpRequest.getSession();
-            session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-            // 세션 확인 로그 추가
-            log.debug("로그인 성공 - 세션 ID: {}", session.getId());
-            log.debug("SecurityContext 저장됨: {}", securityContext.getAuthentication().getName());
+        RegisterUserResponse response = RegisterUserResponse.success(user);
 
-            // 인증된 사용자 정보
-            User user = (User) authentication.getPrincipal();
-            // 응답 객체 생성
-            LoginUserResponse response = LoginUserResponse.from(user);
-
-            return ResponseEntity.ok(response);
-
-        } catch (AuthenticationException e) {
-            log.warn("로그인 실패: {}, 사유: {}", request.getEmail(), e.getMessage());
-            return ResponseEntity.status(401)
-                    .body(Map.of("error", "AUTHENTICATION_FAILED",
-                            "message", "이메일 또는 비밀번호가 올바르지 않습니다."));
-        }
-
+        return ResponseEntity.ok(response);
+        // } catch (Exception e) {
+        // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        // .body(ErrorResponse.of("SERVER_ERROR", "서버 오류가 발생했습니다"));
+        // }
     }
 
-    /**
-     * 로그아웃
-     * @param request
-     * @return
-     */
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-
-        SecurityContextHolder.clearContext();
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-
-        return ResponseEntity.ok(Map.of("message", "로그아웃 되었습니다."));
-    }
-
-    /**
-     * 현재 사용자 정보 조회
-     * @param authentication
-     * @return
-     */
-    @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser(Authentication authentication, HttpServletRequest request) {
-        // 세션 정보 로그 추가
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            log.debug("/me 요청 - 세션 ID: {}", session.getId());
-            log.debug("세션 생성 시간: {}", session.getCreationTime());
-            log.debug("세션 마지막 접근: {}", session.getLastAccessedTime());
-        } else {
-            log.debug("/me 요청 - 세션 없음");
-        }
-
-        log.debug("Authentication 객체: {}", authentication);
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.ok(Map.of("authenticated", false));
-        }
-
-        User user = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(Map.of(
-            "authenticated", true,
-            "user", Map.of(
-                "email", user.getEmail(),
-                "name", user.getName() != null ? user.getName() : user.getEmail()
-            )
-        ));
-    }
 
     /**
      * 이메일 중복체크
-     * 
+     *
      * @param user
      * @return
      */
@@ -154,7 +75,7 @@ public class UserApiController {
     public ResponseEntity<?> checkEmail(@RequestBody User user) {
 
         // 1분에 10회로 제한
-        boolean available = userService.isEmailAvailable(user.getEmail());
+        boolean available = accountCommandService.isEmailAvailable(user.getEmail());
 
         return ResponseEntity.ok(Map.of("available", available));
     }
@@ -181,39 +102,7 @@ public class UserApiController {
     }
 
 
-    // 회원가입
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(
-            // @Valid : SignupRequest 객체에서 설정한 유효성 검사 실행
-            // BindingResult : 유효성 검사 결과를 담는 객체
-            @Valid @RequestBody RegisterUserRequest request) {
 
-        // try {
-
-        log.debug("request = {}", request);
-
-        // 회원가입 진행
-        User user = userService.registerUser(request);
-
-        log.debug("user = {}", user);
-        // 쿠폰발급 진행, 쿠폰발급은 회원가입 흐름에 영향을 주지 않아야함
-        // if(user != null) {
-        // try {
-        // couponIssueService.issueSignUpCoupon(user);
-        // } catch (Exception e) {
-        // log.error("회원가입 성공 후 쿠폰 발급 실패. 사용자: {}, 에러: {}", user.getUserId(),
-        // e.getMessage(), e);
-        // }
-        // }
-
-        RegisterUserResponse response = RegisterUserResponse.success(user);
-
-        return ResponseEntity.ok(response);
-        // } catch (Exception e) {
-        // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        // .body(ErrorResponse.of("SERVER_ERROR", "서버 오류가 발생했습니다"));
-        // }
-    }
 
     // 휴대폰번호 인증번호 전송
     @PostMapping("/send-verification")
@@ -222,7 +111,7 @@ public class UserApiController {
         System.out.println("UserController|sendVerificationCode|시작 ==========> request : " + request);
 
         String phoneNo = request.get("phoneNo");
-        String code = userService.generateAndSendVerificationCode(session, phoneNo);
+        String code = accountCommandService.generateAndSendVerificationCode(session, phoneNo);
 
         Map<String, String> response = new HashMap<>();
         response.put("success", "true");
@@ -241,7 +130,7 @@ public class UserApiController {
         String phoneNo = request.get("phoneNo");
         String code = request.get("code");
 
-        boolean isValid = userService.verifyCode(session, phoneNo, code);
+        boolean isValid = accountCommandService.verifyCode(session, phoneNo, code);
         System.out.println("UserController|verifyCode|isValid : " + isValid);
 
         Map<String, Boolean> response = new HashMap<>();
@@ -265,6 +154,7 @@ public class UserApiController {
         return response;
     }
 
+
     // 회원정보찾기 > 이메일 찾기 : 휴대번호로 인증 후 이메일 조회
     @PostMapping("/findUserInfo/verify-code")
     @ResponseBody
@@ -275,7 +165,7 @@ public class UserApiController {
         String code = request.get("code");
 
         // 인증번호 검증 및 이메일 정보 조회
-        VerificationResult result = userService.verifyAndGetUserByPhone(session, phoneNo, code);
+        VerificationResult result = accountCommandService.verifyAndGetUserByPhone(session, phoneNo, code);
 
         Map<String, Object> response = new HashMap<>();
 
@@ -324,7 +214,7 @@ public class UserApiController {
 
         try {
             // 회원여부 확인 > 인증번호 생성 > 메일 발송(세션저장)
-            boolean requested = userService.requestPasswordOtp(email, session);
+            boolean requested = accountCommandService.requestPasswordOtp(email, session);
             response.put("success", requested);
 
             if (!requested) {
@@ -356,7 +246,7 @@ public class UserApiController {
         try {
 
             // 인증번호 및 유효시간 검증 > 유효 시 세션 제거
-            boolean isValid = userService.verifyPasswordOtp(email, code, session);
+            boolean isValid = accountCommandService.verifyPasswordOtp(email, code, session);
             response.put("success", isValid);
 
             if (!isValid) {
@@ -374,7 +264,7 @@ public class UserApiController {
 
     /**
      * [API] 비밀번호 찾기 - 3단계: 새 비밀번호 설정
-     * 
+     *
      * @Valid 추가하여 DTO 유효성 검사 가능
      */
     @PostMapping("/api/resetPwd")
@@ -394,7 +284,7 @@ public class UserApiController {
         }
 
         try {
-            boolean resetSuccess = userService.resetPassword(user.getEmail(), user.getPassword());
+            boolean resetSuccess = accountCommandService.resetPassword(user.getEmail(), user.getPassword());
             response.put("success", resetSuccess);
 
             if (!resetSuccess) {
@@ -409,5 +299,4 @@ public class UserApiController {
         }
         return response;
     }
-
 }

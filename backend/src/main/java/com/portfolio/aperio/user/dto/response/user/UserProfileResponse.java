@@ -1,4 +1,4 @@
-package com.portfolio.aperio.mypage.dto;
+package com.portfolio.aperio.user.dto.response.user;
 
 import com.portfolio.aperio.user.domain.User;
 import lombok.Builder;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class MypageUserInfoResDto {
+public class UserProfileResponse {
 
     private Long userNo;
 
@@ -20,8 +20,8 @@ public class MypageUserInfoResDto {
 
     private LocalDateTime createDt;
 
-    public static MypageUserInfoResDto from(User user) {
-        return MypageUserInfoResDto.builder()
+    public static UserProfileResponse from(User user) {
+        return UserProfileResponse.builder()
                 .userNo(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())

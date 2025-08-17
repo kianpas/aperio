@@ -33,12 +33,15 @@ export interface CurrentUserResponse {
 export const authAPI = {
   signUp: async (userData: SignUpData) => {
     try {
+
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      };
+  
       const response = await fetch(`${API_BASE_URL}/api/v1/auth/signup`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers,
         body: JSON.stringify(userData),
       });
 
@@ -70,11 +73,14 @@ export const authAPI = {
   // 백엔드 LoginUserResponse 구조에 맞게 수정
   login: async (loginData: LoginData): Promise<LoginResponse> => {
     try {
+      
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+    
       const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         credentials: "include",
         body: JSON.stringify(loginData),
       });
@@ -98,7 +104,7 @@ export const authAPI = {
 
   getCurrentUser: async (): Promise<CurrentUserResponse> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
         credentials: "include", // 중요: 세션 쿠키 포함
       });
 
@@ -118,8 +124,12 @@ export const authAPI = {
 
   logout: async (): Promise<void> => {
     try {
+     
+      const headers: HeadersInit = {};
+    
       await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
         method: "POST",
+        headers,
         credentials: "include", // 중요: 세션 쿠키 포함
       });
     } catch (error) {

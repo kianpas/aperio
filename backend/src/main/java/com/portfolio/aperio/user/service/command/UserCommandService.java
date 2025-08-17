@@ -1,20 +1,18 @@
 package com.portfolio.aperio.user.service.command;
 
+import com.portfolio.aperio.common.exception.CustomException;
+import com.portfolio.aperio.common.exception.ErrorCode;
+import com.portfolio.aperio.mypage.dto.UserInfoEditReqDto;
+import com.portfolio.aperio.mypage.dto.UserPasswordEditReqDto;
+import com.portfolio.aperio.user.domain.User;
+import com.portfolio.aperio.user.dto.response.user.UserProfileResponse;
+import com.portfolio.aperio.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import com.portfolio.aperio.common.exception.CustomException;
-import com.portfolio.aperio.common.exception.ErrorCode;
-import com.portfolio.aperio.mypage.dto.MypageUserInfoResDto;
-import com.portfolio.aperio.mypage.dto.UserInfoEditReqDto;
-import com.portfolio.aperio.mypage.dto.UserPasswordEditReqDto;
-import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.user.repository.UserRepository;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -29,7 +27,7 @@ public class UserCommandService {
      * 유저 정보 수정
      */
     @Transactional
-    public MypageUserInfoResDto updateUserInfo(Long userNo, UserInfoEditReqDto userInfoEditReqDto) {
+    public UserProfileResponse updateUserInfo(Long userNo, UserInfoEditReqDto userInfoEditReqDto) {
 
         //1. 회원정보 조회
         User user = userRepository.findById(userNo).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -47,7 +45,7 @@ public class UserCommandService {
             user.setPhoneNumber(userInfoEditReqDto.getPhoneNo());
         }
 
-        return MypageUserInfoResDto.from(user);
+        return UserProfileResponse.from(user);
     }
 
     /**

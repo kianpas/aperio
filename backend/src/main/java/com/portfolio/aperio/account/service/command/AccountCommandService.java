@@ -1,19 +1,17 @@
-package com.portfolio.aperio.user.service;
+package com.portfolio.aperio.account.service.command;
 
 import com.portfolio.aperio.role.domain.Role;
-//import com.portfolio.aperio.common.util.SmsUtil;
+import com.portfolio.aperio.role.domain.UserRole;
 import com.portfolio.aperio.role.repository.RoleRepository;
 import com.portfolio.aperio.user.domain.LoginMethod;
 import com.portfolio.aperio.user.domain.User;
 import com.portfolio.aperio.user.domain.UserStatus;
-import com.portfolio.aperio.user.dto.request.user.RegisterUserRequest;
 import com.portfolio.aperio.user.dto.VerificationResult;
+import com.portfolio.aperio.user.dto.request.user.RegisterUserRequest;
 import com.portfolio.aperio.user.repository.UserRepository;
-import com.portfolio.aperio.role.domain.UserRole;
-import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -27,29 +25,30 @@ import java.util.Enumeration;
 import java.util.Optional;
 import java.util.Random;
 
-@lombok.extern.slf4j.Slf4j
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService {
-
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    // private final SmsUtil smsUtil;
-    private final RoleRepository roleRepository;
+public class AccountCommandService {
 
     // 인증번호
     private static final String OTP_PREFIX = "OTP_";
+
+    private static final String DEFAULT_ROLE_CODE = "ROLE_USER"; // 일반 사용자 역할 코드
+
+    private static final String STAFF_ROLE_CODE = "ROLE_STAFF"; // 임직원 역할 코드 (예시)
+
+    private final RoleRepository roleRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final UserRepository userRepository;
+
     private static final int EXPIRATION_TIME = 180; // 3분
 
     // 이메일 인증번호
     private final JavaMailSender mailSender;
     @Value("${spring.mail.username}") // application.properties/yml 값 주입
     private String fromEmail;
-
-    // 기본 역할 코드 상수 정의 (설정 파일 등으로 관리하는 것이 더 좋음)
-    private static final String DEFAULT_ROLE_CODE = "ROLE_USER"; // 일반 사용자 역할 코드
-    private static final String STAFF_ROLE_CODE = "ROLE_STAFF"; // 임직원 역할 코드 (예시)
 
     /**
      * 이메일 사용 가능 여부 확인
@@ -69,7 +68,7 @@ public class UserService {
 
         // 이메일 도메인 확인
         String email = request.getEmail();
-    
+
         // 1. 부여할 역할 코드 결정
         String targetRoleCode = DEFAULT_ROLE_CODE; // 기본값: 일반 사용자
 
@@ -175,6 +174,7 @@ public class UserService {
         return isValid; // 검증 결과만 반환
     }
 
+
     // 5. 회원정보찾기 > 이메일 찾기 : 휴대번호로 인증 후 이메일 조회
     public VerificationResult verifyAndGetUserByPhone(HttpSession session, String phoneNo, String code) { // 새 메서드
         System.out.println("UserService|verifyAndGetUserByPhone| ===============> 시작");
@@ -224,7 +224,7 @@ public class UserService {
 
     /**
      * [비밀번호 찾기 1단계] 이메일 존재 확인 및 OTP 발송 요청 처리
-     * 
+     *
      * @param email   사용자 이메일
      * @param session HttpSession
      * @return 성공 여부 (사용자 존재 및 메일 발송 성공 시 true)
@@ -282,7 +282,7 @@ public class UserService {
 
     /**
      * [비밀번호 찾기 2단계] 이메일로 받은 OTP 검증
-     * 
+     *
      * @param email   사용자 이메일
      * @param code    입력받은 OTP 코드
      * @param session HttpSession
@@ -321,7 +321,7 @@ public class UserService {
 
     /**
      * [비밀번호 찾기 3단계] 비밀번호 재설정
-     * 
+     *
      * @param email       대상 사용자 이메일
      * @param newPassword 새 비밀번호 (평문)
      * @return 성공 여부
@@ -354,5 +354,4 @@ public class UserService {
             return false;
         }
     }
-
 }

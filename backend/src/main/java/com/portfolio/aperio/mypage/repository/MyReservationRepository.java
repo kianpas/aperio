@@ -1,7 +1,7 @@
 package com.portfolio.aperio.mypage.repository;
 
-import com.portfolio.aperio.mypage.dto.MyReservationDto;
 import com.portfolio.aperio.reservation.domain.Reservation;
+import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,7 +24,7 @@ public interface MyReservationRepository extends JpaRepository<Reservation, Long
      * @return 페이징 처리된 MyReservationDto 리스트
      */
     @Query(
-            "SELECT NEW com.portfolio.aperio.mypage.dto.MyReservationDto(" +
+            "SELECT NEW com.portfolio.aperio.reservation.dto.user.UserReservationResponse(" +
             "r.resNo, r.resDt, s.seatNm, r.resStart, r.resEnd, r.totalPrice, r.resPrice, r.dcPrice, " +
             "CASE " +
             "  WHEN r.resStatus = true AND r.resEnd > :now THEN '1' " +     // 예약완료 & 종료시간 미래 -> '1' (예정)
@@ -43,7 +43,7 @@ public interface MyReservationRepository extends JpaRepository<Reservation, Long
             "         ELSE 'UNKNOWN' " +
             "       END) = :tabStatus"                                      // 3. 탭 상태 필터링
     )
-    Page<MyReservationDto> findUserReservationsWithStatus(
+    Page<UserReservationResponse> findUserReservationsWithStatus(
             @Param("userNo") Long userNo,
             @Param("startDateTime") LocalDateTime startDateTime,
             @Param("endDateTime") LocalDateTime endDateTime,

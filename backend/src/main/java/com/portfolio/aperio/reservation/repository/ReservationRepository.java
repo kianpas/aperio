@@ -35,4 +35,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime,
             @Param("excludeResNo") Long excludeResNo);
+
+
+//    List<Reservation> recentReservation(Long userId, int i);
 }

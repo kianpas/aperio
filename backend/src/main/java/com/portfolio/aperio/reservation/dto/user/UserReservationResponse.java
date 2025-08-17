@@ -1,9 +1,8 @@
-package com.portfolio.aperio.mypage.dto;
+package com.portfolio.aperio.reservation.dto.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.portfolio.aperio.reservation.domain.Reservation;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 // 마이페이지 > 예약 내역 조회 DTO
@@ -11,7 +10,8 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor // 기본 생성자
 @AllArgsConstructor // 모든 필드를 받는 생성자
-public class MyReservationDto {
+@Builder
+public class UserReservationResponse {
 
     private Long resNo;                 // 예약 번호
     private String totalPrice;          // 총 결제 금액
@@ -28,8 +28,18 @@ public class MyReservationDto {
     private String seat;                // 좌석 번호
     private String seatNm;              // Seat 엔티티와 조인해서 가져와야 함 (실제 구현 시)
 
+    public static UserReservationResponse from(Reservation reservation) {
+        return UserReservationResponse.builder()
+                .resNo(reservation.getResNo())
+                .totalPrice(reservation.getTotalPrice())
+                .resPrice(reservation.getResPrice())
+                .dcPrice(reservation.getDcPrice())
 
-    public MyReservationDto(
+                .build();
+    }
+
+
+    public UserReservationResponse(
             Long resNo,
             LocalDateTime resDt,
             String seatNm,

@@ -1,26 +1,26 @@
 package com.portfolio.aperio.user.service.query;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-
+import com.portfolio.aperio.common.exception.CustomException;
+import com.portfolio.aperio.common.exception.ErrorCode;
+import com.portfolio.aperio.coupon.service.CouponService;
+import com.portfolio.aperio.mypage.dto.MypageCouponResDto;
+import com.portfolio.aperio.reservation.service.ReservationService;
+import com.portfolio.aperio.user.domain.User;
+import com.portfolio.aperio.user.dto.response.user.UserProfileResponse;
+import com.portfolio.aperio.user.repository.UserRepository;
+import com.portfolio.aperio.usercoupon.domain.UserCoupon;
+import com.portfolio.aperio.usercoupon.repository.UserCouponRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.portfolio.aperio.common.exception.CustomException;
-import com.portfolio.aperio.common.exception.ErrorCode;
-import com.portfolio.aperio.mypage.dto.MypageCouponResDto;
-import com.portfolio.aperio.mypage.dto.MypageUserInfoResDto;
-import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.user.repository.UserRepository;
-import com.portfolio.aperio.usercoupon.domain.UserCoupon;
-import com.portfolio.aperio.usercoupon.repository.UserCouponRepository;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -29,18 +29,34 @@ public class UserQueryService {
 
     private final UserRepository userRepository;
 
+    private final ReservationService reservationService;
+
+    private final CouponService couponService;
+
     private final UserCouponRepository userCouponRepository;
 
     private final PasswordEncoder passwordEncoder;
-    
-        /**
+
+    /**
      * 유저 조회
      */
-    public MypageUserInfoResDto findUserbyId(Long userNo) {
+    public UserProfileResponse getUserProfile(Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+
+
+        return UserProfileResponse.from(user);
+    }
+
+    /**
+     * 유저 조회
+     */
+    public UserProfileResponse findUserbyId(Long userNo) {
 
         User user = userRepository.findById(userNo).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
         log.debug("findUserbyId|user = {}", user);
-        return MypageUserInfoResDto.from(user);
+        return UserProfileResponse.from(user);
     }
 
 

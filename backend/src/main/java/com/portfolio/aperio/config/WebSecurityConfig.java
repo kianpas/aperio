@@ -51,7 +51,10 @@ public class WebSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 //세션/쿠키 기반이면 활성 권장
                 .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers("/api/v1/auth/login", "/api/v1/auth/signup")
+                )
+
                 // 예: 일부 훅/헬스체크나 외부콜백은 CSRF 제외
                 //.ignoringRequestMatchers("/actuator/**", "/webhook/**")
                 .authorizeHttpRequests(authorize -> authorize

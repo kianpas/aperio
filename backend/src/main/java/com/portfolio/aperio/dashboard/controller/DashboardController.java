@@ -1,40 +1,30 @@
 package com.portfolio.aperio.dashboard.controller;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
+import com.portfolio.aperio.common.exception.CustomException;
+import com.portfolio.aperio.mypage.dto.*;
+import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
+import com.portfolio.aperio.reservation.service.ReservationService;
+import com.portfolio.aperio.user.domain.User;
+import com.portfolio.aperio.user.dto.response.user.UserProfileResponse;
+import com.portfolio.aperio.user.service.command.UserCommandService;
+import com.portfolio.aperio.user.service.query.UserQueryService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import com.portfolio.aperio.common.exception.CustomException;
-import com.portfolio.aperio.mypage.dto.MyReservationDetailDto;
-import com.portfolio.aperio.mypage.dto.MyReservationDto;
-import com.portfolio.aperio.mypage.dto.MypageCouponResDto;
-import com.portfolio.aperio.mypage.dto.MypageUserInfoResDto;
-import com.portfolio.aperio.mypage.dto.UserInfoEditReqDto;
-import com.portfolio.aperio.mypage.dto.UserPasswordEditReqDto;
-import com.portfolio.aperio.mypage.service.MyReservationService;
-import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.user.service.command.UserCommandService;
-import com.portfolio.aperio.user.service.query.UserQueryService;
-
-import org.springframework.data.domain.*;
-
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Controller
@@ -45,7 +35,7 @@ public class DashboardController {
 
     private final UserCommandService userCommandService;
 
-    private final MyReservationService myReservationService;
+    private final ReservationService reservationService;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -60,10 +50,10 @@ public class DashboardController {
     ) {
 
         log.debug("user = {}", user);
-        MypageUserInfoResDto mypageUserInfoResDto = userQueryService.findUserbyId(user.getUserId());
-        log.debug("mypageResponseDto.getName = {}", mypageUserInfoResDto.getName());
+        UserProfileResponse userProfileResponse = userQueryService.findUserbyId(user.getUserId());
+        log.debug("mypageResponseDto.getName = {}", userProfileResponse.getName());
 
-        model.addAttribute("userInfo", mypageUserInfoResDto);
+        model.addAttribute("userInfo", userProfileResponse);
 
         return "mypage/dashboard";
     }
@@ -76,9 +66,9 @@ public class DashboardController {
 
         log.debug("user = {}", user);
         //1. 회원정보 조회
-        MypageUserInfoResDto mypageUserInfoResDto = userQueryService.findUserbyId(user.getUserId());
+        UserProfileResponse userProfileResponse = userQueryService.findUserbyId(user.getUserId());
 
-        model.addAttribute("userInfo", mypageUserInfoResDto);
+        model.addAttribute("userInfo", userProfileResponse);
 
         return "mypage/edit-profile";
     }
@@ -100,8 +90,8 @@ public class DashboardController {
             log.debug("editProfile|userName = {}", user.getName());
             log.debug("editProfile|userInfoEditReqDto = {}", userInfoEditReqDto);
             //정보 수정
-            MypageUserInfoResDto mypageUserInfoResDto = userCommandService.updateUserInfo(user.getUserId(), userInfoEditReqDto);
-            model.addAttribute("userInfo", mypageUserInfoResDto);
+            UserProfileResponse userProfileResponse = userCommandService.updateUserInfo(user.getUserId(), userInfoEditReqDto);
+            model.addAttribute("userInfo", userProfileResponse);
 
             return "redirect:/mypage/edit";
         } catch (CustomException ex) {
@@ -316,7 +306,7 @@ public class DashboardController {
         try {
 
     // 예약 내역 조회
-            Page<MyReservationDto> reservationsPage = myReservationService.findMyReservations(
+            Page<UserReservationResponse> reservationsPage = reservationService.findMyReservations(
                     user.getUserId(), // 현재 사용자 번호
                     tab,              // 선택된 탭
                     currentStartDate, // 조회 시작일
@@ -379,7 +369,7 @@ public class DashboardController {
         try {
 
             // Service 호출하여 예약 상세 정보 DTO 조회
-            MyReservationDetailDto reservationDetail = myReservationService.findMyReservationDetail(user.getUserId(), resNo);
+            MyReservationDetailDto reservationDetail = reservationService.findMyReservationDetail(user.getUserId(), resNo);
 
             if (reservationDetail == null) {
                 log.error("Reservation not found or access denied for resNo: {}", resNo);
