@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
+import { useUser } from "@/hooks/useUser";
 import {
   FaUser,
   FaEnvelope,
@@ -15,36 +16,49 @@ import {
 } from "react-icons/fa";
 
 const Profile = () => {
+  const { profile } = useUser();
   const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState({
-    name: "김철수",
-    email: "kim@example.com",
-    phone: "010-1234-5678",
-    joinDate: "2024-01-15",
-    plan: "월 정기",
-    profileImage: null as string | null,
-  });
+  // const [profileData, setProfileData] = useState({
+  //   name: "김철수",
+  //   email: "kim@example.com",
+  //   phone: "010-1234-5678",
+  //   joinDate: "2024-01-15",
+  //   plan: "월 정기",
+  //   profileImage: null as string | null,
+  // });
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [editData, setEditData] = useState({ ...profile });
 
-  const [editData, setEditData] = useState({ ...profileData });
+  // const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+  console.log("profile =>", profile);
+
+  if (!profile) {
+    return <div>사용자 프로필 정보가 없습니다.</div>;
+  }
 
   const handleEdit = () => {
     setIsEditing(true);
-    setEditData({ ...profileData });
+    // setEditData({ ...profileData });
   };
 
   const handleSave = () => {
     // TODO: API 호출로 프로필 업데이트
-    setProfileData({ ...editData });
+    // setProfileData({ ...editData });
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setEditData({ ...profileData });
+    // setEditData({ ...profileData });
     setIsEditing(false);
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setEditData((prev) => ({ ...prev, [field]: value }));
+    // setEditData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const parseDate = (createdAt: string) => {
+    return new Date(createdAt).toLocaleString();
   };
 
   return (
@@ -73,7 +87,7 @@ const Profile = () => {
         {/* 프로필 헤더 */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-6">
           <div className="flex items-center space-x-6">
-            <div className="relative">
+            {/* <div className="relative">
               <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-blue-600 text-3xl font-bold shadow-lg">
                 {profileData.profileImage ? (
                   <Image
@@ -92,13 +106,13 @@ const Profile = () => {
                   <FaCamera className="text-sm" />
                 </button>
               )}
-            </div>
+            </div> */}
             <div className="text-white">
-              <h2 className="text-2xl font-bold">{profileData.name}</h2>
-              <p className="text-blue-100 mt-1">{profileData.plan} 멤버</p>
+              <h2 className="text-2xl font-bold">{profile.name}</h2>
+              <p className="text-blue-100 mt-1">{profile.plan} 멤버</p>
               <div className="flex items-center mt-2 text-blue-100">
                 <FaCalendarAlt className="mr-2" />
-                <span>가입일: {profileData.joinDate}</span>
+                <span>가입일: {parseDate(profile.createdAt)}</span>
               </div>
             </div>
           </div>
@@ -116,13 +130,13 @@ const Profile = () => {
               {isEditing ? (
                 <input
                   type="text"
-                  value={editData.name}
+                  // value={editData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               ) : (
                 <div className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900">
-                  {profileData.name}
+                  {profile.name}
                 </div>
               )}
             </div>
@@ -134,7 +148,7 @@ const Profile = () => {
                 이메일
               </label>
               <div className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900 flex items-center justify-between">
-                {profileData.email}
+                {profile.email}
                 <FaShieldAlt className="text-green-500" title="인증됨" />
               </div>
               <p className="text-xs text-gray-500 mt-1">
@@ -151,13 +165,13 @@ const Profile = () => {
               {isEditing ? (
                 <input
                   type="tel"
-                  value={editData.phone}
+                  // value={editData.phoneNumber}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               ) : (
                 <div className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900">
-                  {profileData.phone}
+                  {profile.phoneNumber}
                 </div>
               )}
             </div>
@@ -169,7 +183,7 @@ const Profile = () => {
               </label>
               <div className="px-4 py-3 bg-gray-50 rounded-lg">
                 <span className="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
-                  {profileData.plan}
+                  {/* {profileData.plan} */}
                 </span>
               </div>
             </div>

@@ -44,8 +44,6 @@ public class UserQueryService {
 
         User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-
-
         return UserProfileResponse.from(user);
     }
 

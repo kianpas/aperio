@@ -10,23 +10,23 @@ import java.time.LocalDateTime;
 @Builder
 public class UserProfileResponse {
 
-    private Long userNo;
+    private Long userId;
 
     private String email;
 
     private String name;
 
-    private String phoneNo;
+    private String phoneNumber;
 
-    private LocalDateTime createDt;
+    private LocalDateTime createdAt;
 
     public static UserProfileResponse from(User user) {
         return UserProfileResponse.builder()
-                .userNo(user.getUserId())
+                .userId(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .phoneNo(user.getPhoneNumber())
-                .createDt(user.getCreatedAt())
+                .phoneNumber(user.getPhoneNumber())
+                .createdAt(user.getCreatedAt())
                 .build();
     }
 

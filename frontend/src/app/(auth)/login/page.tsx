@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -24,7 +24,7 @@ const Login = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const router = useRouter();
+  // const router = useRouter();
   // useAuth 추가
   const { login } = useAuth();
 
