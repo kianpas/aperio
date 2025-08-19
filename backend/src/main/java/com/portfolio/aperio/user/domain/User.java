@@ -21,7 +21,7 @@ import java.util.*;
 @AllArgsConstructor // 모든 필드를 인자로 받는 생성자 생성
 @Table(name = "users")
 @EqualsAndHashCode(exclude = "usercoupon") // 양방향 연관관계 시 순환 참조 방지 위해 추가 권장
-public class User implements UserDetails, OAuth2User {
+public class User implements OAuth2User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,35 +72,6 @@ public class User implements UserDetails, OAuth2User {
     @ToString.Exclude // Lombok이 생성하는 toString() 메소드에서 이 필드를 제외시킴!
     @Builder.Default
     private Set<UserRole> userRole = new HashSet<>(); // 사용자가 가진 쿠폰 목록 (UserCoupon 객체들을 통해 접근)
-
-    // 사용자의 id를 반환 (고유한 값)
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    // 사용자의 패스워드 반환
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    // 계정 만료 여부 반환
-    @Override
-    public boolean isAccountNonExpired() {
-        return true; // 계정 만료되었는지 확인하는 로직 (true면 만료되지 않았음)
-    }
-
-    // 계정 잠금 여부 반환
-    @Override
-    public boolean isAccountNonLocked() {
-        return true; // 패스워드 만료됐는지 확인하는 로직
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true; // 계정 사용 가능 확인하는 로직
-    }
 
     // === 소셜로그인(OAuth2) 정보 저장을 위한 필드 추가 ===
     @Transient // DB 컬럼으로 만들지 않음 (DB에 저장할 필요 없는 임시 데이터)

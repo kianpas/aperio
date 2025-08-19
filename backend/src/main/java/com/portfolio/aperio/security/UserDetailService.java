@@ -9,9 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,28 +27,39 @@ public class UserDetailService implements UserDetailsService {
     private final UserQueryService userQueryService;
 
     @Override
-    public User loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         User user = userQueryService.findByEmail(email);
-
-        if (!user.isAccountNonLocked()) {
-            log.warn("잠긴 계정 로그인 시도: {}", email);
-            throw new LockedException("계정이 잠겨있습니다.");
-        }
-
-        if (!user.isEnabled()) {
-            log.warn("비활성화된 계정 로그인 시도: {}", email);
-            throw new DisabledException("계정이 비활성화되었습니다.");
-        }
-
         log.debug("user with Role => {}", user);
 
+//        if (!user.isAccountNonLocked()) {
+//            log.warn("잠긴 계정 로그인 시도: {}", email);
+//            throw new LockedException("계정이 잠겨있습니다.");
+//        }
+//
+//        if (!user.isEnabled()) {
+//            log.warn("비활성화된 계정 로그인 시도: {}", email);
+//            throw new DisabledException("계정이 비활성화되었습니다.");
+//        }
 
         for (UserRole userRole : user.getUserRole()) {
             log.debug("role => {}", userRole.getRole());
         }
 
-        return user;
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (UserRole ur : user.getUserRole()) {
+            authorities.add(new SimpleGrantedAuthority(ur.getRole().getCode())); // "ROLE_..."
+        }
+
+        UserDetails userDetails = CustomUserDetails.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+//                .enabled(user.isEnabled())
+//                .accountNonLocked(user.isAccountNonLocked())
+                .authorities(authorities)
+                .build();
+
+        return userDetails;
     }
 
 
