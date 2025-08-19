@@ -52,6 +52,7 @@ public class UserDetailService implements UserDetailsService {
         }
 
         UserDetails userDetails = CustomUserDetails.builder()
+                .userId(user.getUserId())
                 .username(user.getEmail())
                 .password(user.getPassword())
 //                .enabled(user.isEnabled())

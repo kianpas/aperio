@@ -12,6 +12,8 @@ import java.util.Objects;
 @Getter
 public class CustomUserDetails implements UserDetails {
 
+    private final Long userId;
+
     private final String username;
 
     private final String password;
@@ -23,11 +25,14 @@ public class CustomUserDetails implements UserDetails {
     private final List<GrantedAuthority> authorities;
 
     @Builder
-    private CustomUserDetails(String username,
+    private CustomUserDetails(
+                              Long userId,
+                              String username,
                               String password,
                               Boolean enabled,
                               Boolean accountNonLocked,
                               List<GrantedAuthority> authorities) {
+        this.userId = Objects.requireNonNull(userId, "userId");
         this.username = Objects.requireNonNull(username, "username");
         this.password = Objects.requireNonNull(password, "password");
         this.enabled = enabled != null ? enabled.booleanValue() : true;

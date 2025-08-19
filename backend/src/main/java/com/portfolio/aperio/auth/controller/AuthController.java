@@ -1,9 +1,12 @@
 package com.portfolio.aperio.auth.controller;
 
+import com.portfolio.aperio.security.CustomUserDetails;
 import com.portfolio.aperio.user.domain.User;
 import com.portfolio.aperio.user.dto.request.user.LgoinUserRequest;
 import com.portfolio.aperio.user.dto.response.user.LoginUserResponse;
+import com.portfolio.aperio.user.service.query.UserQueryService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +35,10 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
+    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+
+    private final UserQueryService userQueryService;
+
     /**
      * 로그인
      * @param request
@@ -37,30 +46,32 @@ public class AuthController {
      * @return
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LgoinUserRequest request, HttpServletRequest httpRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody LgoinUserRequest request,
+                                   HttpServletRequest httpRequest,
+                                   HttpServletResponse httpResponse) {
 
         try {
 
-            // 인증정보 조회
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()));
+            // 1) 아이디/비밀번호로 인증 시도
+            UsernamePasswordAuthenticationToken authRequest =
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
 
-            // SecurityContext에 인증 정보 설정
+            Authentication authentication = authenticationManager.authenticate(authRequest);
+
+            // 2) SecurityContext 생성 및 Authentication 주입
             SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             securityContext.setAuthentication(authentication);
             SecurityContextHolder.setContext(securityContext);
 
-            // 세션에 SecurityContext 명시적으로 저장 ⭐
-            HttpSession session = httpRequest.getSession();
-            session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-            // 세션 확인 로그 추가
-            log.debug("로그인 성공 - 세션 ID: {}", session.getId());
-            log.debug("SecurityContext 저장됨: {}", securityContext.getAuthentication().getName());
+            // 3) 표준 방식으로 컨텍스트 저장 (세션 저장)
+            securityContextRepository.saveContext(securityContext, httpRequest, httpResponse);
 
-            // 인증된 사용자 정보
-            User user = (User) authentication.getPrincipal();
+            // 4) principal에서 식별자만 꺼내 DB 재조회 (엔티티 캐스팅 금지)
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            String email = customUserDetails.getUsername();
+
+            User user = userQueryService.findByEmail(email);
+
             // 응답 객체 생성
             LoginUserResponse response = LoginUserResponse.from(user);
 
