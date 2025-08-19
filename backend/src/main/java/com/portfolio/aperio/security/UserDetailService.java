@@ -1,8 +1,9 @@
-package com.portfolio.aperio.user.service;
+package com.portfolio.aperio.security;
 
 import com.portfolio.aperio.user.domain.User;
 import com.portfolio.aperio.user.repository.UserRepository;
 import com.portfolio.aperio.role.domain.UserRole;
+import com.portfolio.aperio.user.service.query.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,16 +18,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserQueryService userQueryService;
 
     @Override
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUsernameWithRolesAndPermissions(email)
-                .orElseThrow(() -> {
-                    log.warn("존재하지 않는 사용자 로그인 시도: {}", email);
-                    return new UsernameNotFoundException("사용자를 찾을 수 없습니다. - " + email);
-                });
+        User user = userQueryService.findByEmail(email);
 
         if (!user.isAccountNonLocked()) {
             log.warn("잠긴 계정 로그인 시도: {}", email);

@@ -1,7 +1,6 @@
-package com.portfolio.aperio.config;
+package com.portfolio.aperio.security;
 
 import com.portfolio.aperio.common.util.OAuth.CustomOAuth2UserService;
-import com.portfolio.aperio.user.service.UserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +39,20 @@ public class UserQueryService {
 
     private final PasswordEncoder passwordEncoder;
 
+    public User findByEmail(String email) {
+
+        User user = userRepository.findByUsernameWithRolesAndPermissions(email)
+                .orElseThrow(() -> {
+                    log.warn("존재하지 않는 사용자 로그인 시도: {}", email);
+                    return new UsernameNotFoundException("사용자를 찾을 수 없습니다. - " + email);
+                });
+
+        return user;
+    }
+
+
     /**
-     * 유저 조회
+     * 유저 프로필 조회
      */
     public UserProfileResponse getUserProfile(Long userId) {
 
