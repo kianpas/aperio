@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/faqs")  // 리소스 기반 + 버전 관리
 @RequiredArgsConstructor
-public class FaqApiController {
+public class FaqController {
 
     private final FaqService faqService;
 

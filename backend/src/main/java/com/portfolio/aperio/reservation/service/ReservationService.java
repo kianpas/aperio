@@ -326,6 +326,25 @@ public class ReservationService {
         return results; // 조회 결과(Page 객체) 반환
     }
 
+    public List<UserReservationResponse> findReservationsById(Long userId) {
+
+        // 1. 날짜 파싱 및 LocalDateTime 으로 변환
+        LocalDateTime startDateTime;
+        LocalDateTime endDateTime;
+
+        // 3. 현재 시각 가져오기 (JPQL의 :now 파라미터에 전달)
+        LocalDateTime now = LocalDateTime.now();
+
+        // 4. Repository 호출하여 예약 내역 조회
+        List<UserReservationResponse> results = reservationRepository.findReservationsById(
+                userId
+        );
+
+
+        return results; // 조회 결과(Page 객체) 반환
+    }
+
+
 
 
     /**

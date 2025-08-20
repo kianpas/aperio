@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/menus") // 리소스 기반 + 버전 관리
-public class MenuApiController {
+public class MenuController {
 
     private final MenuService menuService;
 

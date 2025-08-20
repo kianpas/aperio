@@ -1,5 +1,6 @@
 package com.portfolio.aperio.account.service.command;
 
+import com.portfolio.aperio.oauth.provider.OAuth2UserInfo;
 import com.portfolio.aperio.role.domain.Role;
 import com.portfolio.aperio.role.domain.UserRole;
 import com.portfolio.aperio.role.repository.RoleRepository;
@@ -353,5 +354,33 @@ public class AccountCommandService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public User findOrCreateSocialUser(OAuth2UserInfo oAuth2UserInfo) {
+        String provider = oAuth2UserInfo.getProvider();
+        String providerId = oAuth2UserInfo.getProviderId();
+        String email = oAuth2UserInfo.getEmail();
+        // 1. 이메일로 사용자 조회
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        User user; // 최종적으로 저장할 User 객체를 담을 변수
+
+        // 2. 사용자가 존재하는지 확인
+        if (userOptional.isPresent()) {
+            // 3-1. 사용자가 존재하면 기존 User 객체를 반환 (로그인 처리)
+            user = userOptional.get();
+        } else {
+            // 3-2. 사용자가 존재하지 않으면 새로 생성
+            user = User.builder()
+                    .email(email)
+                    .name(oAuth2UserInfo.getName())
+                    .phoneNumber(oAuth2UserInfo.getPhoneNumber())
+                    .userStatus(UserStatus.ACTIVE)
+                    .loginMethod(LoginMethod.fromProivderId(providerId))
+                    .build();
+
+            userRepository.save(user);
+        }
+        return user;
     }
 }

@@ -2,45 +2,45 @@ package com.portfolio.aperio.main.controller;
 
 import com.portfolio.aperio.banner.dto.response.user.BannerListResponseDto;
 import com.portfolio.aperio.banner.service.BannerService;
-import com.portfolio.aperio.common.exception.CustomException;
-import com.portfolio.aperio.common.exception.ErrorCode;
+import com.portfolio.aperio.main.dto.response.user.MainDataResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
+@RequestMapping("/api/v1/main")  // 리소스 기반 + 버전 관리
 @RequiredArgsConstructor
 public class MainController {
 
     private final BannerService bannerService;
 
-    @GetMapping("/")
-    public String main(Model model) {
+    /**
+     * 프론트엔드 메인 화면용 API
+     * GET /api/v1/main
+     * 
+     * @return 배너 목록과 메인 화면에 필요한 데이터
+     */
+    @GetMapping
+    public ResponseEntity<?> getMainData() {
+
         List<BannerListResponseDto> bannerList = bannerService.findBannerList();
-        model.addAttribute("bannerList", bannerList);
-        return "main/main";
+
+        // 메인 화면 데이터를 담는 응답 객체
+        MainDataResponse response = MainDataResponse.builder()
+                .bannerList(bannerList)
+                .message("메인 화면 데이터 조회 성공")
+                .build();
+
+        return ResponseEntity.ok(response);
+
     }
 
-    @GetMapping("/user/login")
-    public String login(Model model) {
-
-        return "user/login";
-    }
-
-    @GetMapping("/user/join")
-    public String join(Model model) {
-
-        return "user/join";
-    }
-
-    @GetMapping("/custom-error")
-    public String error(Model model) {
-        throw new CustomException(ErrorCode.INTERNAL_ERROR);
-    }
 
 }

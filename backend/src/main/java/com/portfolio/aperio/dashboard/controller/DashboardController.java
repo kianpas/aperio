@@ -5,7 +5,7 @@ import com.portfolio.aperio.mypage.dto.*;
 import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
 import com.portfolio.aperio.reservation.service.ReservationService;
 import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.user.dto.response.user.UserProfileResponse;
+import com.portfolio.aperio.user.dto.response.user.UserInfoResponse;
 import com.portfolio.aperio.user.service.command.UserCommandService;
 import com.portfolio.aperio.user.service.query.UserQueryService;
 import jakarta.validation.Valid;
@@ -50,10 +50,10 @@ public class DashboardController {
     ) {
 
         log.debug("user = {}", user);
-        UserProfileResponse userProfileResponse = userQueryService.findUserbyId(user.getUserId());
-        log.debug("mypageResponseDto.getName = {}", userProfileResponse.getName());
+        UserInfoResponse userInfoResponse = userQueryService.findUserbyId(user.getUserId());
+        log.debug("mypageResponseDto.getName = {}", userInfoResponse.getName());
 
-        model.addAttribute("userInfo", userProfileResponse);
+        model.addAttribute("userInfo", userInfoResponse);
 
         return "mypage/dashboard";
     }
@@ -66,9 +66,9 @@ public class DashboardController {
 
         log.debug("user = {}", user);
         //1. 회원정보 조회
-        UserProfileResponse userProfileResponse = userQueryService.findUserbyId(user.getUserId());
+        UserInfoResponse UserInfoResponse = userQueryService.findUserbyId(user.getUserId());
 
-        model.addAttribute("userInfo", userProfileResponse);
+        model.addAttribute("userInfo", UserInfoResponse);
 
         return "mypage/edit-profile";
     }
@@ -90,8 +90,8 @@ public class DashboardController {
             log.debug("editProfile|userName = {}", user.getName());
             log.debug("editProfile|userInfoEditReqDto = {}", userInfoEditReqDto);
             //정보 수정
-            UserProfileResponse userProfileResponse = userCommandService.updateUserInfo(user.getUserId(), userInfoEditReqDto);
-            model.addAttribute("userInfo", userProfileResponse);
+            UserInfoResponse userInfoResponse = userCommandService.updateUserInfo(user.getUserId(), userInfoEditReqDto);
+            model.addAttribute("userInfo", userInfoResponse);
 
             return "redirect:/mypage/edit";
         } catch (CustomException ex) {

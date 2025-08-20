@@ -1,6 +1,11 @@
-package com.portfolio.aperio.common.util.OAuth;
+package com.portfolio.aperio.oauth.service;
 
+import com.portfolio.aperio.account.service.command.AccountCommandService;
+import com.portfolio.aperio.common.util.OAuth.OAuthAttributes;
+import com.portfolio.aperio.oauth.provider.OAuth2UserInfo;
+import com.portfolio.aperio.oauth.provider.OAuth2UserInfoProvider;
 import com.portfolio.aperio.user.domain.User;
+import com.portfolio.aperio.user.domain.UserStatus;
 import com.portfolio.aperio.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -11,6 +16,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // 추가
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /*
@@ -77,9 +83,7 @@ import java.util.Optional;
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    private final UserRepository userRepository;
-    // HttpSession 주입 (선택적: 세션에 사용자 정보 저장 시 필요)
-    // private final HttpSession httpSession;
+    private final AccountCommandService accountCommandService;
 
     @Override
     @Transactional // 추가: DB 작업을 포함하므로 트랜잭션 처리
@@ -92,68 +96,18 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // 1. 소셜 로그인 서비스 구분 (naver, google, ...)
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
-        // 2. OAuth2 로그인 시 키가 되는 필드값 (Primary Key와 같은 역할)
-        // application.yml의 provider 설정에서 user-name-attribute 값 : response
-        String userNameAttributeName = userRequest.getClientRegistration()
-                                                    .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
-        // 3. OAuth2UserService를 통해 가져온 OAuth2User의 attribute를 담을 클래스
-        OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
-        System.out.println("CustomOAuth2UserService|loadUser|attributes = " + attributes);
-
+//       Provider 정보로 전략 선택 및 사용자 정보 파싱
+        OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoProvider.getOAuth2UserInfo(
+                registrationId,
+                oAuth2User.getAttributes());
 
         // 4. 소셜로그인 시 사용자 존재 유무 파악 후 없으면 신규 생성
-        User user = snsSaveOrLogin(attributes);
+        User user = accountCommandService.findOrCreateSocialUser(oAuth2UserInfo);
         System.out.println("CustomOAuth2UserService|loadUser|user = " + user);
 
-        // 5. 세션에 사용자 정보 저장 (선택적)
-        // SessionUser sessionUser = new SessionUser(user);
-        // httpSession.setAttribute("user", sessionUser); // SessionUser는 직렬화 가능한 별도 DTO 권장
-
-        // 6. Spring Security의 OAuth2User 객체 반환
-//        return new DefaultOAuth2User(
-//                Collections.singleton(new SimpleGrantedAuthority(user.getAuthCd())), // 사용자의 권한 정보
-//                attributes.getAttributes(),          // 소셜 서비스에서 받은 원본 속성 맵
-//                attributes.getNameAttributeKey());   // 사용자 이름 속성 키 (Naver: "response" 안의 "id")
 
         return user;
     }
 
-    // 소셜로그인 시 사용자 존재 유무 파악 후 없으면 신규 생성
-    private User snsSaveOrLogin(OAuthAttributes attributes) {
-        System.out.println("CustomOAuth2UserService|saveOrUpdate|Start ===========> attributes = " + attributes);
-
-        // 1. 이메일로 사용자 조회(없으면 null 리턴)
-        Optional<User> optionalUser = userRepository.findByEmailAndPhoneNumber(attributes.getEmail(), attributes.getMobile().replaceAll("-", ""));
-
-        User user; // 최종적으로 저장할 User 객체를 담을 변수
-
-        // 2. 사용자가 존재하는지 확인
-        if (optionalUser.isPresent()) {
-            // 3-1. 사용자가 존재하면 기존 User 객체를 반환 (로그인 처리)
-            user = optionalUser.get();
-            System.out.println("CustomOAuth2UserService|saveOrUpdate|기존 사용자 로그인: " + user.getEmail());
-
-            return user;
-        } else {
-            // 3-2. 사용자가 존재하지 않으면 새로 생성
-            user = attributes.toEntity();
-            System.out.println("CustomOAuth2UserService|saveOrUpdate|신규 사용자 생성: " + user.getEmail());
-
-            return userRepository.save(user);
-        }
-
-
-    /*
-        람다식 사용 예시
-        User user = userRepository.findByEmail(attributes.getEmail())
-                // 사용자가 있으면 이름, 휴대폰 번호 등 변경사항 업데이트
-//                .map(entity -> entity.update(attributes.getName(), attributes.getMobile())) // User 엔티티에 update 메소드 추가 필요
-                // 사용자가 없으면(Optional 안에 User 객체가 존재하지 않을 경우) User 객체를 생성
-                .orElse(attributes.toEntity());
-
-        return userRepository.save(user);
-    */
-
-    }
 }

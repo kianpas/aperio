@@ -1,6 +1,6 @@
 package com.portfolio.aperio.security;
 
-import com.portfolio.aperio.common.util.OAuth.CustomOAuth2UserService;
+import com.portfolio.aperio.oauth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -123,13 +123,13 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(
             UserDetailService userDetailService, // 사용자 정의 UserDetailsService 주입
-            BCryptPasswordEncoder bCryptPasswordEncoder) { // PasswordEncoder 주입
+            PasswordEncoder passwordEncoder) { // PasswordEncoder 주입
 
         // DaoAuthenticationProvider: UserDetailsService와 PasswordEncoder를 사용하여
         // 사용자 인증을 처리하는 AuthenticationProvider 구현체
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailService); // 사용자 정보 로드 서비스 설정
-        daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder); // 비밀번호 인코더 설정
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder); // 비밀번호 인코더 설정
 
         // ProviderManager: 여러 AuthenticationProvider를 관리하고 인증 요청을 위임하는
         // AuthenticationManager의 표준 구현체
@@ -156,12 +156,6 @@ public class WebSecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cfg);
         return source;
-    }
-
-    // 패스워드 인코더로 사용할 빈 등록
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Bean

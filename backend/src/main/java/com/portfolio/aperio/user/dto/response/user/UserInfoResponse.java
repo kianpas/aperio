@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class UserProfileResponse {
+public class UserInfoResponse {
 
     private Long userId;
 
@@ -20,10 +20,8 @@ public class UserProfileResponse {
 
     private LocalDateTime createdAt;
 
-//    private
-
-    public static UserProfileResponse from(User user) {
-        return UserProfileResponse.builder()
+    public static UserInfoResponse from(User user) {
+        return UserInfoResponse.builder()
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
@@ -31,5 +29,4 @@ public class UserProfileResponse {
                 .createdAt(user.getCreatedAt())
                 .build();
     }
-
 }

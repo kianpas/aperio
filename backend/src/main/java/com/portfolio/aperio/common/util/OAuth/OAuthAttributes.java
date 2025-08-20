@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 public class OAuthAttributes {
 
+    private Long userId;
     private Map<String, Object> attributes; // OAuth2User.getAttributes() 반환값
     private String nameAttributeKey;        // 사용자 이름 속성의 키 값 (Naver: "response")
     private String name;

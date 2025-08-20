@@ -5,7 +5,7 @@ import com.portfolio.aperio.common.exception.ErrorCode;
 import com.portfolio.aperio.mypage.dto.UserInfoEditReqDto;
 import com.portfolio.aperio.mypage.dto.UserPasswordEditReqDto;
 import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.user.dto.response.user.UserProfileResponse;
+import com.portfolio.aperio.user.dto.response.user.UserInfoResponse;
 import com.portfolio.aperio.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class UserCommandService {
      * 유저 정보 수정
      */
     @Transactional
-    public UserProfileResponse updateUserInfo(Long userNo, UserInfoEditReqDto userInfoEditReqDto) {
+    public UserInfoResponse updateUserInfo(Long userNo, UserInfoEditReqDto userInfoEditReqDto) {
 
         //1. 회원정보 조회
         User user = userRepository.findById(userNo).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -45,7 +45,7 @@ public class UserCommandService {
             user.setPhoneNumber(userInfoEditReqDto.getPhoneNo());
         }
 
-        return UserProfileResponse.from(user);
+        return UserInfoResponse.from(user);
     }
 
     /**

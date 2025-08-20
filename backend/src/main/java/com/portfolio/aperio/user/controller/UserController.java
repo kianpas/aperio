@@ -49,25 +49,8 @@ public class UserController {
         }
 
         Object principal = authentication.getPrincipal();
-        String email;
+        String email = extractEmail(principal);
         String name = null;
-
-        if (principal instanceof CustomUserDetails cud) {
-            email = cud.getUsername();              // 로그인 ID
-            // name 이 필요하면 cud 안에 별도 필드/메서드 추가해서 꺼내기
-        } else if (principal instanceof org.springframework.security.core.userdetails.User u) {
-            email = u.getUsername();
-        } else if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User ou) {
-            // 공급자별 맵에서 이메일/이름 꺼내기 (예시는 구글/네이버 혼용)
-            email = (String) ou.getAttributes().getOrDefault("email",
-                    ((Map<?,?>) ou.getAttributes().getOrDefault("response", Map.of())).getOrDefault("email", null));
-            Object displayName = ou.getAttributes().getOrDefault("name",
-                    ((Map<?,?>) ou.getAttributes().getOrDefault("response", Map.of())).getOrDefault("name", null));
-            name = displayName != null ? displayName.toString() : null;
-        } else {
-            // 예상 외 principal
-            return ResponseEntity.ok(Map.of("authenticated", true));
-        }
 
         return ResponseEntity.ok(Map.of(
                 "authenticated", true,
@@ -88,10 +71,17 @@ public class UserController {
             ));
         }
 
-        CustomUserDetails cud = (CustomUserDetails) authentication.getPrincipal();
+        Object principal = authentication.getPrincipal();
+        // 1) userId 우선
+        Long userId = extractUserId(principal);
 
+        if(userId != null) {
+            UserProfileResponse userProfileResponse = userQueryService.getUserProfileById(userId);
+            return ResponseEntity.ok(userProfileResponse);
+        }
+
+        // 2) 보조: email로 조회 (userId 미탑재 OAuth2 등을 대비)
         String email = extractEmail(authentication.getPrincipal());
-
         if (email == null || email.isBlank()) {
             return ResponseEntity.status(400).body(Map.of(
                     "error", "BAD_PRINCIPAL",
@@ -99,9 +89,25 @@ public class UserController {
             ));
         }
 
-        UserProfileResponse userProfileResponse = userQueryService.getUserProfile(cud.getUserId());
+        UserProfileResponse userProfileResponse = userQueryService.getUserProfileByEmail(email);
 
         return ResponseEntity.ok(userProfileResponse);
+    }
+
+    // principal에서 아이디를 꺼내는 유틸 (폼/OAuth2 모두 대응)
+    public Long extractUserId(Object principal) {
+        if (principal instanceof CustomUserDetails cud) {
+            return cud.getUserId();
+        }
+        //TODO: CustomOAuth2User 생성 필요
+//        if (principal instanceof CustomOAuth2User cou) { // 커스텀 OAuth2User 사용 시
+//            return cou.getUserId();
+//        }
+        if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User ou) {
+            Object id = ou.getAttributes().get("userId"); // DefaultOAuth2User에 userId 심어둔 경우
+            if (id instanceof Number n) return n.longValue();
+        }
+        return null;
     }
 
     // principal에서 이메일/표시명을 꺼내는 유틸 (폼/OAuth2 모두 대응)
@@ -121,7 +127,5 @@ public class UserController {
         }
         return null;
     }
-
-
 
 }

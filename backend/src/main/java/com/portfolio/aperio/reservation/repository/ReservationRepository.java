@@ -1,6 +1,8 @@
 package com.portfolio.aperio.reservation.repository;
 
 import com.portfolio.aperio.reservation.domain.Reservation;
+import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -35,6 +37,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime,
             @Param("excludeResNo") Long excludeResNo);
+
+    List<UserReservationResponse> findReservationsById(Long userId);
 
 
 //    List<Reservation> recentReservation(Long userId, int i);

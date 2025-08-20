@@ -4,8 +4,11 @@ import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.common.exception.ErrorCode;
 import com.portfolio.aperio.coupon.service.CouponService;
 import com.portfolio.aperio.mypage.dto.MypageCouponResDto;
+import com.portfolio.aperio.reservation.domain.Reservation;
+import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
 import com.portfolio.aperio.reservation.service.ReservationService;
 import com.portfolio.aperio.user.domain.User;
+import com.portfolio.aperio.user.dto.response.user.UserInfoResponse;
 import com.portfolio.aperio.user.dto.response.user.UserProfileResponse;
 import com.portfolio.aperio.user.repository.UserRepository;
 import com.portfolio.aperio.usercoupon.domain.UserCoupon;
@@ -53,11 +56,26 @@ public class UserQueryService {
 
 
     /**
-     * 유저 프로필 조회
+     * 아이디로 유저 프로필 조회
      */
-    public UserProfileResponse getUserProfile(Long userId) {
+    public UserProfileResponse getUserProfileById(Long userId) {
 
         User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        UserInfoResponse userInfoResponse = UserInfoResponse.from(user);
+
+        List<UserReservationResponse> reservations = reservationService.findReservationsById(userId);
+
+
+
+        return UserProfileResponse.from(user);
+    }
+
+    /**
+     * 이메일로 유저 프로필 조회
+     */
+    public UserProfileResponse getUserProfileByEmail(String email) {
+
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return UserProfileResponse.from(user);
     }
@@ -65,11 +83,11 @@ public class UserQueryService {
     /**
      * 유저 조회
      */
-    public UserProfileResponse findUserbyId(Long userNo) {
+    public UserInfoResponse findUserbyId(Long userNo) {
 
         User user = userRepository.findById(userNo).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
         log.debug("findUserbyId|user = {}", user);
-        return UserProfileResponse.from(user);
+        return UserInfoResponse.from(user);
     }
 
 
