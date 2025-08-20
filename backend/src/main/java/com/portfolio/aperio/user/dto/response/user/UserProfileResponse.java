@@ -20,8 +20,6 @@ public class UserProfileResponse {
 
     private LocalDateTime createdAt;
 
-//    private
-
     public static UserProfileResponse from(User user) {
         return UserProfileResponse.builder()
                 .userId(user.getUserId())

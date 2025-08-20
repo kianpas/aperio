@@ -34,7 +34,6 @@ public class UserReservationResponse {
                 .totalPrice(reservation.getTotalPrice())
                 .resPrice(reservation.getResPrice())
                 .dcPrice(reservation.getDcPrice())
-
                 .build();
     }
 

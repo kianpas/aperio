@@ -61,11 +61,6 @@ public class UserQueryService {
     public UserProfileResponse getUserProfileById(Long userId) {
 
         User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
-        UserInfoResponse userInfoResponse = UserInfoResponse.from(user);
-
-        List<UserReservationResponse> reservations = reservationService.findReservationsById(userId);
-
-
 
         return UserProfileResponse.from(user);
     }

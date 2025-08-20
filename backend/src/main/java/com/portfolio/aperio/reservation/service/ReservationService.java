@@ -336,12 +336,15 @@ public class ReservationService {
         LocalDateTime now = LocalDateTime.now();
 
         // 4. Repository 호출하여 예약 내역 조회
-        List<UserReservationResponse> results = reservationRepository.findReservationsById(
-                userId
-        );
+        List<Reservation> reservationList = reservationRepository.findReservationsById(userId);
+
+        List<UserReservationResponse> userReservationList = reservationList
+                .stream()
+                .map(UserReservationResponse::from)
+                .toList();
 
 
-        return results; // 조회 결과(Page 객체) 반환
+        return userReservationList; // 조회 결과(Page 객체) 반환
     }
 
 
