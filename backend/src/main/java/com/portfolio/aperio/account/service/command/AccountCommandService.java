@@ -371,13 +371,7 @@ public class AccountCommandService {
             user = userOptional.get();
         } else {
             // 3-2. 사용자가 존재하지 않으면 새로 생성
-            user = User.builder()
-                    .email(email)
-                    .name(oAuth2UserInfo.getName())
-                    .phoneNumber(oAuth2UserInfo.getPhoneNumber())
-                    .userStatus(UserStatus.ACTIVE)
-                    .loginMethod(LoginMethod.fromProivderId(providerId))
-                    .build();
+            user = oAuth2UserInfo.toEntity();
 
             userRepository.save(user);
         }

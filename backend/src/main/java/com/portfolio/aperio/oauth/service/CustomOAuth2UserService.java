@@ -1,23 +1,22 @@
 package com.portfolio.aperio.oauth.service;
 
 import com.portfolio.aperio.account.service.command.AccountCommandService;
-import com.portfolio.aperio.common.util.OAuth.OAuthAttributes;
+import com.portfolio.aperio.oauth.domain.CustomOAuth2User;
 import com.portfolio.aperio.oauth.provider.OAuth2UserInfo;
 import com.portfolio.aperio.oauth.provider.OAuth2UserInfoProvider;
 import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.user.domain.UserStatus;
-import com.portfolio.aperio.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // 추가
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.Collection;
+
 
 /*
     네이버로부터 사용자 정보를 받아온 후, 우리 서비스의 DB에 사용자를 저장하거나 업데이트하는 로직을 담당
@@ -88,26 +87,35 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     @Override
     @Transactional // 추가: DB 작업을 포함하므로 트랜잭션 처리
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        System.out.println("CustomOAuth2UserService|loadUser|userRequest = " + userRequest);
 
+        // 1. 소셜 프로바이더에서 사용자 속성 로드
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        // 1. 소셜 로그인 서비스 구분 (naver, google, ...)
+        // 2. 프로바이더 식별 (google/kakao/naver/...)
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
-
-//       Provider 정보로 전략 선택 및 사용자 정보 파싱
+        // 3. 속성 파싱
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoProvider.getOAuth2UserInfo(
                 registrationId,
                 oAuth2User.getAttributes());
 
         // 4. 소셜로그인 시 사용자 존재 유무 파악 후 없으면 신규 생성
         User user = accountCommandService.findOrCreateSocialUser(oAuth2UserInfo);
-        System.out.println("CustomOAuth2UserService|loadUser|user = " + user);
+
+        // 5. User 엔티티의 getAuthorities()를 통해 권한 목록 가져오기
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+
+        // 6. nameAttributeKey (google=sub 등)
+        String nameAttrKey = userRequest.getClientRegistration()
+                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
 
-        return user;
+        return new CustomOAuth2User(
+                user.getUserId(),
+                authorities,
+                oAuth2User.getAttributes(),
+                nameAttrKey);
     }
 
 }

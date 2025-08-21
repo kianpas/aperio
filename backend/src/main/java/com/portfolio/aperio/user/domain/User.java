@@ -21,7 +21,7 @@ import java.util.*;
 @AllArgsConstructor // 모든 필드를 인자로 받는 생성자 생성
 @Table(name = "users")
 @EqualsAndHashCode(exclude = "usercoupon") // 양방향 연관관계 시 순환 참조 방지 위해 추가 권장
-public class User implements OAuth2User {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +53,7 @@ public class User implements OAuth2User {
     @LastModifiedDate
     private LocalDateTime updatedAt; // DB: updated_at
 
-    @Override // 권한
+
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
 
@@ -81,35 +81,35 @@ public class User implements OAuth2User {
     private String nameAttributeKey; // 사용자 이름(고유 식별자)을 찾기 위한 키값 (예: naver="response")
 
     // === OAuth2User 인터페이스 메소드 구현 ===
-    @Override
-    public Map<String, Object> getAttributes() {
-        return this.attributes;
-    }
+//    @Override
+//    public Map<String, Object> getAttributes() {
+//        return this.attributes;
+//    }
 
     /**
      * OAuth2 제공자로부터 받은 사용자 정보 중 이름(사용자 식별자)에 해당하는 값을 반환합니다.
      * Naver는 'response' 객체 안에 'id'가 있고, Google은 'sub' 필드를 사용합니다.
      * nameAttributeKey 필드를 사용하여 이 키를 구분합니다.
      */
-    @Override
-    public String getName() {
-        if (this.nameAttributeKey == null || this.attributes == null) {
-            return this.name; // 또는 userNo.toString() 등 대체 식별자 반환 고려
-        }
-        // Naver 특정 처리 (userNameAttributeName이 'response'일 경우)
-        if ("response".equals(this.nameAttributeKey) && this.attributes.containsKey("response")) {
-            Object responseObj = this.attributes.get("response");
-
-            if (responseObj instanceof Map) {
-                @SuppressWarnings("unchecked") // 타입 캐스팅 경고 무시
-                Map<String, Object> responseMap = (Map<String, Object>) responseObj;
-                // Naver 응답에서 실제 ID는 'id' 필드에 있음
-                return (String) responseMap.get("id");
-            }
-        }
-        // Google 등 다른 일반적인 경우 (userNameAttributeName이 'sub' 등일 경우)
-        return (String) this.attributes.get(this.nameAttributeKey);
-    }
+//    @Override
+//    public String getName() {
+//        if (this.nameAttributeKey == null || this.attributes == null) {
+//            return this.name; // 또는 userNo.toString() 등 대체 식별자 반환 고려
+//        }
+//        // Naver 특정 처리 (userNameAttributeName이 'response'일 경우)
+//        if ("response".equals(this.nameAttributeKey) && this.attributes.containsKey("response")) {
+//            Object responseObj = this.attributes.get("response");
+//
+//            if (responseObj instanceof Map) {
+//                @SuppressWarnings("unchecked") // 타입 캐스팅 경고 무시
+//                Map<String, Object> responseMap = (Map<String, Object>) responseObj;
+//                // Naver 응답에서 실제 ID는 'id' 필드에 있음
+//                return (String) responseMap.get("id");
+//            }
+//        }
+//        // Google 등 다른 일반적인 경우 (userNameAttributeName이 'sub' 등일 경우)
+//        return (String) this.attributes.get(this.nameAttributeKey);
+//    }
 
     /**
      * CustomOAuth2UserService에서 호출하여 OAuth 관련 정보를 User 객체에 설정
