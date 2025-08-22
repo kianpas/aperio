@@ -13,7 +13,7 @@
 ```
 {domain}/
 ├── controller/
-│   ├── {Domain}ApiController.java      # 일반 사용자용 API
+│   ├── {Domain}Controller.java      # 일반 사용자용 API
 │   └── {Domain}AdminController.java    # 관리자용 API
 ├── service/
 │   └── {Domain}Service.java            # 비즈니스 로직 (공유)
@@ -38,7 +38,7 @@
 ```java
 @RestController
 @RequestMapping("/api/v1/users")
-public class UserApiController {
+public class UserController {
     @GetMapping("/profile")              // GET /api/v1/users/profile
     @PutMapping("/profile")              // PUT /api/v1/users/profile
     @PostMapping("/change-password")     // POST /api/v1/users/change-password
@@ -148,7 +148,7 @@ public class MypageController {
 // 개선
 @RestController
 @RequestMapping("/api/v1/users")
-public class UserApiController {
+public class UserController {
     // 사용자 프로필 관련만
 }
 

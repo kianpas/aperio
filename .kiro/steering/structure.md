@@ -18,7 +18,7 @@ aperio/
 backend/src/main/java/com/portfolio/aperio/
 ├── user/                    # 사용자 도메인
 │   ├── controller/
-│   │   ├── UserApiController.java      # 일반 사용자용 API
+│   │   ├── UserController.java      # 일반 사용자용 API
 │   │   └── UserAdminController.java    # 관리자용 사용자 관리 API
 │   ├── service/
 │   │   └── UserService.java            # 비즈니스 로직 (공유)
@@ -31,7 +31,7 @@ backend/src/main/java/com/portfolio/aperio/
 │       └── response/                   # 응답 DTO
 ├── reservation/             # 예약 도메인
 │   ├── controller/
-│   │   ├── ReservationApiController.java
+│   │   ├── ReservationController.java
 │   │   └── ReservationAdminController.java
 │   ├── service/
 │   ├── repository/
@@ -39,7 +39,7 @@ backend/src/main/java/com/portfolio/aperio/
 │   └── dto/
 ├── coupon/                  # 쿠폰 도메인
 │   ├── controller/
-│   │   ├── CouponApiController.java
+│   │   ├── CouponController.java
 │   │   └── CouponAdminController.java
 │   ├── service/
 │   ├── repository/
@@ -105,7 +105,7 @@ frontend/src/
 
 - **도메인 우선 분리**: 각 비즈니스 도메인별로 최상위 패키지 분리
 - **컨트롤러 역할별 분리**: 도메인 내에서 API/Admin 컨트롤러 분리
-  - `XxxApiController.java`: 일반 사용자용 API (`/api/v1/xxx/**`)
+  - `XxxController.java`: 일반 사용자용 API (`/api/v1/xxx/**`)
   - `XxxAdminController.java`: 관리자용 API (`/admin/xxx/**`)
 - **서비스 로직 공유**: 비즈니스 로직은 하나의 Service에서 공유
 - **DTO 세분화**: request/response 패키지로 DTO 분리
