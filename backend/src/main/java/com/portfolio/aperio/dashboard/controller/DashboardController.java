@@ -42,7 +42,7 @@ public class DashboardController {
     /**
      * 마이페이지 조회
      */
-    @GetMapping
+    @GetMapping("mypage")
     public String mypage(
             //  @AuthenticationPrincipal : SecurityContext에 저장된 Authentication 객체에서 Principal 객체를 꺼내어 지정된 타입(여기서는 User)으로 변환하여 주
             @AuthenticationPrincipal User user,
