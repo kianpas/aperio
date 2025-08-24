@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaBars, FaTimes } from "react-icons/fa";
+import LoadingSpinner from "./ui/LoadingSpinner";
 
 interface Menu {
   menuId: number;
@@ -77,8 +78,7 @@ const Navigation = ({
   if (loading) {
     return (
       <nav className="flex items-center space-x-4">
-        <div className="animate-pulse bg-gray-200 h-4 w-20 rounded"></div>
-        <div className="animate-pulse bg-gray-200 h-4 w-20 rounded"></div>
+        <LoadingSpinner size="sm" />
       </nav>
     );
   }

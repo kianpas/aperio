@@ -100,55 +100,107 @@ export default function InquiriesPage() {
     setNewReply("");
   };
 
+  const getStatusCount = (status: string) => {
+    switch(status) {
+      case 'all': return sampleInquiries.length;
+      case 'waiting': return sampleInquiries.filter(i => i.status === 'waiting').length;
+      case 'answered': return sampleInquiries.filter(i => i.status === 'answered').length;
+      case 'completed': return sampleInquiries.filter(i => i.status === 'completed').length;
+      default: return 0;
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* 헤더 섹션 */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-8 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold mb-2">문의 내역</h1>
-        <p className="text-blue-100 text-lg">
-          문의하신 내용과 답변을 확인하실 수 있습니다
-        </p>
+      {/* 헤더 */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">문의 내역</h1>
+          <p className="text-gray-600 mt-1">문의하신 내용과 답변을 확인하실 수 있습니다.</p>
+        </div>
+        <button
+          onClick={() => setShowNewInquiry(true)}
+          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <FaPlus className="mr-2" />
+          새 문의하기
+        </button>
+      </div>
+
+      {/* 통계 카드 */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[
+          { 
+            label: '전체 문의', 
+            count: getStatusCount('all'), 
+            color: 'blue',
+            description: '총 문의 건수'
+          },
+          { 
+            label: '답변 대기', 
+            count: getStatusCount('waiting'), 
+            color: 'yellow',
+            description: '답변을 기다리는 문의'
+          },
+          { 
+            label: '답변 완료', 
+            count: getStatusCount('answered'), 
+            color: 'green',
+            description: '답변이 완료된 문의'
+          },
+          { 
+            label: '해결 완료', 
+            count: getStatusCount('completed'), 
+            color: 'purple',
+            description: '완전히 해결된 문의'
+          }
+        ].map((stat, index) => (
+          <div key={index} className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <div className={`p-3 rounded-full bg-${stat.color}-100`}>
+                <FaComments className={`text-xl text-${stat.color}-600`} />
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-gray-900">{stat.count}</p>
+                <p className="text-gray-600 text-sm">{stat.label}</p>
+              </div>
+            </div>
+            <p className="text-sm text-gray-500">{stat.description}</p>
+          </div>
+        ))}
       </div>
 
       {/* 필터 및 검색 */}
       <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="문의 내용 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-              <FaSearch className="absolute left-3 top-3 text-gray-400" />
-            </div>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+          {/* 카테고리 탭 */}
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+            {categories.slice(0, 4).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategory(cat)}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  category === cat
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                {cat} ({cat === '전체' ? sampleInquiries.length : sampleInquiries.filter(i => i.category === cat).length})
+              </button>
+            ))}
           </div>
-          <button
-            onClick={() => setShowNewInquiry(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <FaPlus className="mr-2" />
-            새 문의하기
-          </button>
-        </div>
-        
-        {/* 카테고리 필터 */}
-        <div className="mt-4 flex flex-wrap gap-2">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategory(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                category === cat
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+
+          {/* 검색 */}
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="문의 내용 검색..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
         </div>
       </div>
 

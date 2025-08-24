@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Navigation from "./Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { FaUser } from "react-icons/fa";
+import LoadingSpinner from "./ui/LoadingSpinner";
 
 const Header = () => {
   const { user, loading, isAuthenticated, logout } = useAuth();
@@ -58,9 +59,7 @@ const Header = () => {
             {/* 데스크톱 인증 영역 */}
             <div className="hidden md:flex items-center space-x-4">
               {loading ? (
-                <div className="animate-pulse">
-                  <div className="h-4 bg-gray-300 rounded w-20"></div>
-                </div>
+                <LoadingSpinner size="sm" />
               ) : isAuthenticated && user ? (
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
@@ -106,9 +105,7 @@ const Header = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 pt-4 pb-4">
             {loading ? (
-              <div className="animate-pulse">
-                <div className="h-4 bg-gray-300 rounded w-20"></div>
-              </div>
+              <LoadingSpinner size="sm" />
             ) : isAuthenticated && user ? (
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">

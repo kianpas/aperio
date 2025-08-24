@@ -15,6 +15,7 @@ import {
 import { SiKakao, SiNaver } from "react-icons/si";
 import { authAPI } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const SignUp = () => {
   const router = useRouter();
@@ -395,7 +396,7 @@ const SignUp = () => {
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 transform hover:scale-105 disabled:transform-none"
             >
               {isLoading ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                <LoadingSpinner size="sm" color="white" />
               ) : (
                 <>
                   <span>회원가입</span>

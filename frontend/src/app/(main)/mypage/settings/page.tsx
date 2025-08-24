@@ -95,14 +95,67 @@ export default function SettingsPage() {
     );
   };
 
+  const getSettingCount = (type: string) => {
+    switch(type) {
+      case 'notifications': return settings.length;
+      case 'enabled': return settings.filter(s => s.value).length;
+      case 'disabled': return settings.filter(s => !s.value).length;
+      case 'security': return 2; // 비밀번호 변경, 로그인 기록
+      default: return 0;
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* 헤더 섹션 */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-8 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold mb-2">설정</h1>
-        <p className="text-blue-100 text-lg">
-          계정 및 알림 설정을 관리하세요
-        </p>
+      {/* 헤더 */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">설정</h1>
+          <p className="text-gray-600 mt-1">계정 및 알림 설정을 관리하세요.</p>
+        </div>
+      </div>
+
+      {/* 통계 카드 */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[
+          { 
+            label: '알림 설정', 
+            count: getSettingCount('notifications'), 
+            color: 'blue',
+            description: '전체 알림 설정 항목'
+          },
+          { 
+            label: '활성화됨', 
+            count: getSettingCount('enabled'), 
+            color: 'green',
+            description: '현재 켜져있는 알림'
+          },
+          { 
+            label: '비활성화됨', 
+            count: getSettingCount('disabled'), 
+            color: 'gray',
+            description: '현재 꺼져있는 알림'
+          },
+          { 
+            label: '보안 설정', 
+            count: getSettingCount('security'), 
+            color: 'red',
+            description: '보안 관련 설정 항목'
+          }
+        ].map((stat, index) => (
+          <div key={index} className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <div className={`p-3 rounded-full bg-${stat.color}-100`}>
+                <FaCog className={`text-xl text-${stat.color}-600`} />
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-gray-900">{stat.count}</p>
+                <p className="text-gray-600 text-sm">{stat.label}</p>
+              </div>
+            </div>
+            <p className="text-sm text-gray-500">{stat.description}</p>
+          </div>
+        ))}
       </div>
 
       {/* 설정 섹션 */}

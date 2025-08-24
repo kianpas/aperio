@@ -92,25 +92,70 @@ export default function RewardsPage() {
     setShowRegister(false);
   };
 
+  const totalSavings = sampleCoupons
+    .filter(c => c.isUsed)
+    .reduce((sum, coupon) => {
+      return sum + (coupon.type === 'fixed' ? coupon.discount : 0);
+    }, 0);
+
   return (
     <div className="space-y-6">
-      {/* 헤더 섹션 */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-8 rounded-2xl shadow-lg">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">쿠폰/혜택</h1>
-            <p className="text-blue-100 text-lg">
-              다양한 혜택으로 더 스마트하게 이용하세요
-            </p>
-          </div>
-          <button
-            onClick={() => setShowRegister(true)}
-            className="flex items-center px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
-          >
-            <FaPlus className="mr-2" />
-            쿠폰 등록
-          </button>
+      {/* 헤더 */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">쿠폰/혜택</h1>
+          <p className="text-gray-600 mt-1">다양한 혜택으로 더 스마트하게 이용하세요.</p>
         </div>
+        <button
+          onClick={() => setShowRegister(true)}
+          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <FaPlus className="mr-2" />
+          쿠폰 등록
+        </button>
+      </div>
+
+      {/* 통계 카드 */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[
+          { 
+            label: '보유 쿠폰', 
+            count: availableCoupons.length, 
+            color: 'blue',
+            description: '사용 가능한 쿠폰'
+          },
+          { 
+            label: '사용한 쿠폰', 
+            count: usedCoupons.length, 
+            color: 'gray',
+            description: '이미 사용한 쿠폰'
+          },
+          { 
+            label: '총 절약 금액', 
+            count: `${totalSavings.toLocaleString()}원`, 
+            color: 'green',
+            description: '쿠폰으로 절약한 금액'
+          },
+          { 
+            label: '회원 혜택', 
+            count: benefits.length, 
+            color: 'purple',
+            description: '이용 가능한 혜택'
+          }
+        ].map((stat, index) => (
+          <div key={index} className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <div className={`p-3 rounded-full bg-${stat.color}-100`}>
+                <FaGift className={`text-xl text-${stat.color}-600`} />
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-gray-900">{typeof stat.count === 'number' ? stat.count : stat.count}</p>
+                <p className="text-gray-600 text-sm">{stat.label}</p>
+              </div>
+            </div>
+            <p className="text-sm text-gray-500">{stat.description}</p>
+          </div>
+        ))}
       </div>
 
       {/* 쿠폰 등록 패널 */}
@@ -136,52 +181,64 @@ export default function RewardsPage() {
       )}
 
       {/* 사용 가능한 쿠폰 */}
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">
-          사용 가능한 쿠폰 ({availableCoupons.length})
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {availableCoupons.map((coupon) => (
-            <div
-              key={coupon.id}
-              className="bg-white p-6 rounded-xl shadow-md border border-gray-100"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    {coupon.name}
-                  </h3>
-                  <p className="text-gray-600 text-sm">{coupon.description}</p>
-                </div>
-                <div className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-medium">
-                  {coupon.type === "percentage"
-                    ? `${coupon.discount}%`
-                    : `${coupon.discount.toLocaleString()}원`}
-                </div>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center text-gray-500">
-                  <FaClock className="mr-1" />
-                  {new Date(coupon.expiryDate).toLocaleDateString()} 까지
-                </div>
-                <div className="text-gray-500">
-                  최소 주문금액:{" "}
-                  <span className="font-medium">
-                    {coupon.minAmount.toLocaleString()}원
-                  </span>
-                </div>
-              </div>
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">쿠폰 코드</span>
-                  <span className="font-mono font-medium text-blue-600">
-                    {coupon.code}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
+      <div className="bg-white rounded-xl shadow-md border border-gray-100">
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-xl font-bold text-gray-900">
+            사용 가능한 쿠폰 ({availableCoupons.length})
+          </h2>
         </div>
+        {availableCoupons.length === 0 ? (
+          <div className="p-12 text-center">
+            <FaGift className="mx-auto text-4xl text-gray-300 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">사용 가능한 쿠폰이 없습니다</h3>
+            <p className="text-gray-500">새로운 쿠폰을 등록해보세요.</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-gray-200">
+            {availableCoupons.map((coupon) => (
+              <div key={coupon.id} className="p-6 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <FaTag className="text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-lg">
+                        {coupon.name}
+                      </h3>
+                      <div className="flex items-center space-x-4 mt-1 text-sm text-gray-500">
+                        <span className="flex items-center">
+                          <FaClock className="mr-1" />
+                          {new Date(coupon.expiryDate).toLocaleDateString()} 까지
+                        </span>
+                        <span>
+                          최소 {coupon.minAmount.toLocaleString()}원
+                        </span>
+                        <span className="font-mono text-blue-600">
+                          {coupon.code}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-blue-600">
+                      {coupon.type === "percentage"
+                        ? `${coupon.discount}%`
+                        : `${coupon.discount.toLocaleString()}원`}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      할인
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-3 text-sm text-gray-600">
+                  {coupon.description}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 회원 혜택 */}

@@ -14,6 +14,7 @@ import {
   FaBuilding,
 } from "react-icons/fa";
 import { SiKakao, SiNaver } from "react-icons/si";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -168,7 +169,7 @@ const Login = () => {
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 transform hover:scale-105 disabled:transform-none"
             >
               {isLoading ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                <LoadingSpinner size="sm" color="white" />
               ) : (
                 <>
                   <span>로그인</span>

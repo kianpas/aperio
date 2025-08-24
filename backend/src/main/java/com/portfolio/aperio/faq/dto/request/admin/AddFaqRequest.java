@@ -20,7 +20,7 @@ public class AddFaqRequest {
         return Faq.builder()
                 .question(question)
                 .answer(answer)
-                .createDt(createDt)
+                .createdAt(createDt)
                 .build();
     }
 }

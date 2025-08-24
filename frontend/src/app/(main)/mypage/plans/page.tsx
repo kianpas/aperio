@@ -66,38 +66,99 @@ export default function PlansPage() {
     setShowConfirm(true);
   };
 
+  const currentPlan = plans.find(plan => plan.isCurrent);
+  const getStatusCount = (status: string) => {
+    switch(status) {
+      case 'current': return plans.filter(p => p.isCurrent).length;
+      case 'available': return plans.filter(p => !p.isCurrent).length;
+      case 'popular': return plans.filter(p => p.isPopular).length;
+      default: return plans.length;
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* 헤더 섹션 */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-8 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold mb-2">요금제 관리</h1>
-        <p className="text-blue-100 text-lg">
-          나에게 맞는 요금제를 선택하세요
-        </p>
+      {/* 헤더 */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">요금제 관리</h1>
+          <p className="text-gray-600 mt-1">나에게 맞는 요금제를 선택하고 관리하세요.</p>
+        </div>
+      </div>
+
+      {/* 통계 카드 */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[
+          { 
+            label: '전체 요금제', 
+            count: getStatusCount('all'), 
+            color: 'blue',
+            description: '이용 가능한 모든 요금제'
+          },
+          { 
+            label: '현재 이용중', 
+            count: getStatusCount('current'), 
+            color: 'green',
+            description: '현재 구독중인 요금제'
+          },
+          { 
+            label: '이용 가능', 
+            count: getStatusCount('available'), 
+            color: 'purple',
+            description: '변경 가능한 요금제'
+          },
+          { 
+            label: '인기 요금제', 
+            count: getStatusCount('popular'), 
+            color: 'yellow',
+            description: '가장 많이 선택하는 요금제'
+          }
+        ].map((stat, index) => (
+          <div key={index} className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <div className={`p-3 rounded-full bg-${stat.color}-100`}>
+                <FaTag className={`text-xl text-${stat.color}-600`} />
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-gray-900">{stat.count}</p>
+                <p className="text-gray-600 text-sm">{stat.label}</p>
+              </div>
+            </div>
+            <p className="text-sm text-gray-500">{stat.description}</p>
+          </div>
+        ))}
       </div>
 
       {/* 현재 요금제 정보 */}
-      <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="bg-blue-100 p-3 rounded-full">
-              <FaTag className="text-blue-600 text-xl" />
+      {currentPlan && (
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <FaCheck className="text-green-600" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  현재 이용중인 요금제
+                </h2>
+                <div className="flex items-center space-x-4 mt-1 text-sm text-gray-500">
+                  <span>{currentPlan.name}</span>
+                  <span>•</span>
+                  <span>다음 결제일: 2025년 8월 23일</span>
+                </div>
+              </div>
             </div>
-            <div className="ml-4">
-              <h2 className="text-xl font-semibold text-gray-900">
-                현재 이용중인 요금제
-              </h2>
-              <p className="text-gray-600">
-                일일권 • 다음 결제일: 2025년 8월 23일
-              </p>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-gray-900">
+                ₩{currentPlan.price.toLocaleString()}
+              </div>
+              <div className="text-sm text-gray-500">
+                {currentPlan.period}당
+              </div>
             </div>
-          </div>
-          <div className="text-right">
-            <p className="text-2xl font-bold text-gray-900">10,000원</p>
-            <p className="text-gray-500">1일</p>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 요금제 목록 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

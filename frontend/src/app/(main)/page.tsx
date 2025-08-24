@@ -16,6 +16,7 @@ import {
   FaShieldAlt,
   FaCog,
 } from "react-icons/fa";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 interface Banner {
   bNo: number;
@@ -56,12 +57,12 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="relative">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600"></div>
-          <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-blue-400 animate-spin" style={{animationDelay: '0.15s'}}></div>
-        </div>
-      </div>
+      <LoadingSpinner
+        size="xl"
+        fullScreen
+        gradient
+        double
+      />
     );
   }
 
