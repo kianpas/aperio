@@ -1,7 +1,5 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Suspense } from "react";
 import {
   FaMapMarkerAlt,
   FaUsers,
@@ -16,58 +14,52 @@ import {
   FaShieldAlt,
   FaCog,
 } from "react-icons/fa";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
-
-interface Banner {
-  bNo: number;
-  bTitle: string;
-  bImageUrl: string;
-  startDt: string;
-  endDt: string;
-  register: string;
-  createDt: string;
-  useAt: string;
-}
+import { Banner } from "@/types/banner";
+import BannerSection from "@/components/main/BannerSection";
+import BannerSkeleton from "@/components/main/BannerSkeleton";
 
 interface MainDataResponse {
   bannerList: Banner[];
   message: string;
 }
 
-export default function Home() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBanners = async () => {
-      try {
-        const response = await fetch("/api/v1/main");
-        if (response.ok) {
-          const data: MainDataResponse = await response.json();
-          console.log("Banner data loaded:", data.bannerList);
-        }
-      } catch (error) {
-        console.error("메인 데이터 조회 실패:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBanners();
-  }, []);
-
-  if (loading) {
-    return (
-      <LoadingSpinner
-        size="xl"
-        fullScreen
-        gradient
-        double
-      />
-    );
+// 서버에서 배너 데이터 가져오기
+async function getBanners(): Promise<Banner[]> {
+  try {
+    // 서버 사이드에서는 내부 URL 사용, 클라이언트에서는 공개 URL 사용
+    const apiUrl = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    const response = await fetch(`${apiUrl}/api/v1/main`, {
+      // 배너는 자주 변경되지 않으므로 캐싱 활용
+      next: { revalidate: 300 }, // 5분마다 재검증
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      console.error('배너 데이터 조회 실패:', response.status);
+      return [];
+    }
+    
+    const data: MainDataResponse = await response.json();
+    return data.bannerList || [];
+  } catch (error) {
+    console.error('배너 데이터 조회 실패:', error);
+    return [];
   }
+}
+
+export default async function Home() {
+  // 서버에서 데이터 미리 가져오기 (SSR)
+  const banners = await getBanners();
 
   return (
     <div className="bg-white">
+      {/* Banner Section - 서버에서 렌더링된 배너 */}
+      <Suspense fallback={<BannerSkeleton />}>
+        <BannerSection banners={banners} />
+      </Suspense>
+      
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
