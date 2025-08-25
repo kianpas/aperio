@@ -213,7 +213,7 @@ const ReservationPage = () => {
     }
 
     setTotalPrice(Math.floor(price));
-  }, [selectedSeat, planType, selectedTimes, selectedCoupon]);
+  }, [selectedSeat, planType, selectedTimes, selectedCoupon, sampleCoupons]);
 
   // 결제 진행
   const handlePayment = () => {

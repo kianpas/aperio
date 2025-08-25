@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import {
   FaImage,
   FaPlus,
@@ -236,9 +237,11 @@ const BannersPage = () => {
                 {/* 배너 이미지 미리보기 */}
                 <div className="col-span-3">
                   <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden bg-gray-100">
-                    <img
+                    <Image
                       src={banner.devices[previewDevice]}
                       alt={banner.title}
+                      width={400}
+                      height={225}
                       className="object-cover w-full h-full"
                     />
                   </div>
@@ -525,9 +528,11 @@ const BannersPage = () => {
                   )
                   .map((banner) => (
                   <div key={banner.id} className="relative">
-                    <img
+                    <Image
                       src={banner.devices[previewDevice]}
                       alt={banner.title}
+                      width={400}
+                      height={225}
                       className="w-full"
                     />
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-4">

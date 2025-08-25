@@ -73,9 +73,7 @@ export default function BillingPage() {
       (activeTab === "all" || payment.status === activeTab)
   );
 
-  const totalAmount = filteredPayments
-    .filter((p) => p.status === "completed")
-    .reduce((sum, payment) => sum + payment.amount, 0);
+
 
   const getStatusInfo = (status: string) => {
     switch (status) {

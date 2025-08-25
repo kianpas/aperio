@@ -24,6 +24,7 @@ export const authAPI = {
       const user = await apiClient.get<User>("/api/v1/users/me");
       return { authenticated: true, user };
     } catch (error) {
+      console.log(error)
       // 401 에러인 경우 인증되지 않은 상태로 처리
       return { authenticated: false };
     }
@@ -35,7 +36,7 @@ export const authAPI = {
       await apiClient.post("/api/v1/auth/logout");
     } catch (error) {
       // 로그아웃은 실패해도 클라이언트 상태 초기화
-      console.warn("Logout request failed, but proceeding with client cleanup");
+      console.warn("Logout request failed, but proceeding with client cleanup", error);
     }
   },
 };

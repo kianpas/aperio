@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Banner } from "@/types/banner";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
@@ -56,10 +57,12 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
             className="w-full h-full flex-shrink-0 relative bg-gradient-to-r from-blue-600 to-purple-600"
           >
             {banner.imageUrl && (
-              <img
+              <Image
                 src={banner.imageUrl}
                 alt={banner.title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                priority={index === 0}
               />
             )}
             <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
