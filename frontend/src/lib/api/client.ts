@@ -1,7 +1,7 @@
 // API 클라이언트 기본 설정
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data?: T;
   message?: string;
   error?: string;
@@ -122,7 +122,7 @@ export const apiClient = {
   },
 
   // POST 요청
-  post<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
+  post<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
@@ -131,7 +131,7 @@ export const apiClient = {
   },
 
   // PUT 요청
-  put<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
+  put<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'PUT',
       body: data ? JSON.stringify(data) : undefined,
@@ -151,7 +151,7 @@ export const serverApiClient = {
     return apiClient.serverRequest<T>(endpoint, { method: 'GET', ...options });
   },
 
-  post<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
+  post<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
     return apiClient.serverRequest<T>(endpoint, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,

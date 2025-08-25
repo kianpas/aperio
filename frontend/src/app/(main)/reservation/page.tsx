@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   FaCalendarAlt,
   FaChair,
@@ -130,29 +130,32 @@ const ReservationPage = () => {
   ];
 
   // 샘플 쿠폰 데이터 (실제로는 API에서 가져올 데이터)
-  const sampleCoupons: Coupon[] = [
-    {
-      id: "WELCOME10",
-      name: "신규 회원 특가",
-      discount: 10,
-      type: "percentage",
-      description: "첫 예약 10% 할인",
-    },
-    {
-      id: "FIXED5000",
-      name: "얼리버드 할인",
-      discount: 5000,
-      type: "fixed",
-      description: "오전 예약 시 5,000원 할인",
-    },
-    {
-      id: "MONTHLY20",
-      name: "월정액 프리미엄",
-      discount: 20,
-      type: "percentage",
-      description: "월정액 20% 할인 + 무료 커피",
-    },
-  ];
+  const sampleCoupons: Coupon[] = useMemo(
+    () => [
+      {
+        id: "WELCOME10",
+        name: "신규 회원 특가",
+        discount: 10,
+        type: "percentage",
+        description: "첫 예약 10% 할인",
+      },
+      {
+        id: "FIXED5000",
+        name: "얼리버드 할인",
+        discount: 5000,
+        type: "fixed",
+        description: "오전 예약 시 5,000원 할인",
+      },
+      {
+        id: "MONTHLY20",
+        name: "월정액 프리미엄",
+        discount: 20,
+        type: "percentage",
+        description: "월정액 20% 할인 + 무료 커피",
+      },
+    ],
+    []
+  );
 
   // 좌석 선택 핸들러
   const handleSeatSelect = (seat: Seat) => {
