@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { 
-  FaPhone, 
   FaSearch, 
   FaPlus, 
   FaComments,
@@ -109,6 +108,8 @@ export default function InquiriesPage() {
       default: return 0;
     }
   };
+
+  console.log(showNewInquiry)
 
   return (
     <div className="space-y-6">

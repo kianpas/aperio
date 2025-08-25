@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  FaCreditCard, 
-  FaDownload, 
-  FaSearch, 
+import {
+  FaCreditCard,
+  FaDownload,
+  FaSearch,
   FaReceipt,
   FaCheckCircle,
   FaExclamationTriangle,
   FaClock,
   FaCalendarAlt,
-  FaEye
+  FaEye,
 } from "react-icons/fa";
 import { SiKakao, SiNaver } from "react-icons/si";
 
@@ -61,14 +61,16 @@ const samplePayments: Payment[] = [
 export default function BillingPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("2025-08");
-  const [activeTab, setActiveTab] = useState<'all' | 'completed' | 'pending' | 'failed'>('all');
+  const [activeTab, setActiveTab] = useState<
+    "all" | "completed" | "pending" | "failed"
+  >("all");
 
   const filteredPayments = samplePayments.filter(
     (payment) =>
       payment.date.startsWith(selectedMonth) &&
       (payment.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         payment.type.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (activeTab === 'all' || payment.status === activeTab)
+      (activeTab === "all" || payment.status === activeTab)
   );
 
   const totalAmount = filteredPayments
@@ -77,22 +79,38 @@ export default function BillingPage() {
 
   const getStatusInfo = (status: string) => {
     switch (status) {
-      case 'completed':
-        return { label: '완료', color: 'bg-green-100 text-green-800', icon: FaCheckCircle };
-      case 'pending':
-        return { label: '처리중', color: 'bg-yellow-100 text-yellow-800', icon: FaClock };
-      case 'failed':
-        return { label: '실패', color: 'bg-red-100 text-red-800', icon: FaExclamationTriangle };
+      case "completed":
+        return {
+          label: "완료",
+          color: "bg-green-100 text-green-800",
+          icon: FaCheckCircle,
+        };
+      case "pending":
+        return {
+          label: "처리중",
+          color: "bg-yellow-100 text-yellow-800",
+          icon: FaClock,
+        };
+      case "failed":
+        return {
+          label: "실패",
+          color: "bg-red-100 text-red-800",
+          icon: FaExclamationTriangle,
+        };
       default:
-        return { label: '알 수 없음', color: 'bg-gray-100 text-gray-800', icon: FaExclamationTriangle };
+        return {
+          label: "알 수 없음",
+          color: "bg-gray-100 text-gray-800",
+          icon: FaExclamationTriangle,
+        };
     }
   };
 
   const getPaymentIcon = (type: string) => {
     switch (type) {
-      case '카카오페이':
+      case "카카오페이":
         return <SiKakao className="text-yellow-500" />;
-      case '네이버페이':
+      case "네이버페이":
         return <SiNaver className="text-green-500" />;
       default:
         return <FaCreditCard className="text-blue-500" />;
@@ -100,8 +118,8 @@ export default function BillingPage() {
   };
 
   const getTabCount = (status: string) => {
-    if (status === 'all') return samplePayments.length;
-    return samplePayments.filter(p => p.status === status).length;
+    if (status === "all") return samplePayments.length;
+    return samplePayments.filter((p) => p.status === status).length;
   };
 
   return (
@@ -110,39 +128,50 @@ export default function BillingPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">결제 내역</h1>
-          <p className="text-gray-600 mt-1">모든 결제 내역을 한눈에 확인하세요.</p>
+          <p className="text-gray-600 mt-1">
+            모든 결제 내역을 한눈에 확인하세요.
+          </p>
         </div>
       </div>
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
-          { 
-            label: '전체 결제', 
-            count: getTabCount('all'), 
-            color: 'blue',
-            amount: samplePayments.reduce((sum, p) => sum + p.amount, 0)
+          {
+            label: "전체 결제",
+            count: getTabCount("all"),
+            color: "blue",
+            amount: samplePayments.reduce((sum, p) => sum + p.amount, 0),
           },
-          { 
-            label: '완료된 결제', 
-            count: getTabCount('completed'), 
-            color: 'green',
-            amount: samplePayments.filter(p => p.status === 'completed').reduce((sum, p) => sum + p.amount, 0)
+          {
+            label: "완료된 결제",
+            count: getTabCount("completed"),
+            color: "green",
+            amount: samplePayments
+              .filter((p) => p.status === "completed")
+              .reduce((sum, p) => sum + p.amount, 0),
           },
-          { 
-            label: '처리중인 결제', 
-            count: getTabCount('pending'), 
-            color: 'yellow',
-            amount: samplePayments.filter(p => p.status === 'pending').reduce((sum, p) => sum + p.amount, 0)
+          {
+            label: "처리중인 결제",
+            count: getTabCount("pending"),
+            color: "yellow",
+            amount: samplePayments
+              .filter((p) => p.status === "pending")
+              .reduce((sum, p) => sum + p.amount, 0),
           },
-          { 
-            label: '실패한 결제', 
-            count: getTabCount('failed'), 
-            color: 'red',
-            amount: samplePayments.filter(p => p.status === 'failed').reduce((sum, p) => sum + p.amount, 0)
-          }
+          {
+            label: "실패한 결제",
+            count: getTabCount("failed"),
+            color: "red",
+            amount: samplePayments
+              .filter((p) => p.status === "failed")
+              .reduce((sum, p) => sum + p.amount, 0),
+          },
         ].map((stat, index) => (
-          <div key={index} className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+          <div
+            key={index}
+            className="bg-white p-6 rounded-xl shadow-md border border-gray-100"
+          >
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 rounded-full bg-${stat.color}-100`}>
                 <FaReceipt className={`text-xl text-${stat.color}-600`} />
@@ -167,18 +196,22 @@ export default function BillingPage() {
           {/* 탭 필터 */}
           <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
             {[
-              { key: 'all', label: '전체' },
-              { key: 'completed', label: '완료' },
-              { key: 'pending', label: '처리중' },
-              { key: 'failed', label: '실패' }
+              { key: "all", label: "전체" },
+              { key: "completed", label: "완료" },
+              { key: "pending", label: "처리중" },
+              { key: "failed", label: "실패" },
             ].map((tab) => (
               <button
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key as 'all' | 'completed' | 'pending' | 'failed')}
+                onClick={() =>
+                  setActiveTab(
+                    tab.key as "all" | "completed" | "pending" | "failed"
+                  )
+                }
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   activeTab === tab.key
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? "bg-white text-blue-600 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
                 }`}
               >
                 {tab.label} ({getTabCount(tab.key)})
@@ -217,8 +250,12 @@ export default function BillingPage() {
         {filteredPayments.length === 0 ? (
           <div className="p-12 text-center">
             <FaReceipt className="mx-auto text-4xl text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">결제 내역이 없습니다</h3>
-            <p className="text-gray-500">선택한 조건에 맞는 결제 내역이 없습니다.</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              결제 내역이 없습니다
+            </h3>
+            <p className="text-gray-500">
+              선택한 조건에 맞는 결제 내역이 없습니다.
+            </p>
           </div>
         ) : (
           <div className="divide-y divide-gray-200">
@@ -228,7 +265,10 @@ export default function BillingPage() {
               const PaymentIcon = getPaymentIcon(payment.type);
 
               return (
-                <div key={payment.id} className="p-6 hover:bg-gray-50 transition-colors">
+                <div
+                  key={payment.id}
+                  className="p-6 hover:bg-gray-50 transition-colors"
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -241,7 +281,7 @@ export default function BillingPage() {
                         <div className="flex items-center space-x-4 mt-1 text-sm text-gray-500">
                           <span className="flex items-center">
                             <FaCalendarAlt className="mr-1" />
-                            {new Date(payment.date).toLocaleDateString('ko-KR')}
+                            {new Date(payment.date).toLocaleDateString("ko-KR")}
                           </span>
                           <span className="flex items-center">
                             <FaCreditCard className="mr-1" />
@@ -260,11 +300,13 @@ export default function BillingPage() {
                           ₩{payment.amount.toLocaleString()}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {new Date(payment.date).toLocaleDateString('ko-KR')}
+                          {new Date(payment.date).toLocaleDateString("ko-KR")}
                         </div>
                       </div>
-                      
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}>
+
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}
+                      >
                         <StatusIcon className="mr-1 text-xs" />
                         {statusInfo.label}
                       </span>

@@ -6,15 +6,12 @@ import {
   FaPlus,
   FaEdit,
   FaTrash,
-  FaArrowUp,
-  FaArrowDown,
   FaTimes,
   FaGripVertical,
   FaList,
-    FaStream,
-    FaEye,
-    FaChevronDown,
-    FaChevronRight,
+  FaStream,
+  FaChevronDown,
+  FaChevronRight,
 } from "react-icons/fa";
 
 interface MenuItem {
@@ -34,55 +31,55 @@ const MenusPage = () => {
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
-  
+
   const handleDragStart = (e: React.DragEvent, itemId: string) => {
-    e.dataTransfer.setData('text/plain', itemId);
+    e.dataTransfer.setData("text/plain", itemId);
     setDraggedItem(itemId);
     const draggedElement = e.target as HTMLElement;
-    draggedElement.classList.add('opacity-50');
+    draggedElement.classList.add("opacity-50");
   };
 
   const handleDragEnd = (e: React.DragEvent) => {
     const draggedElement = e.target as HTMLElement;
-    draggedElement.classList.remove('opacity-50');
+    draggedElement.classList.remove("opacity-50");
     setDraggedItem(null);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     const target = e.target as HTMLElement;
-    const menuItem = target.closest('[data-menu-id]');
+    const menuItem = target.closest("[data-menu-id]");
     if (menuItem) {
       const rect = menuItem.getBoundingClientRect();
       const threshold = rect.top + rect.height / 2;
-      
+
       if (e.clientY < threshold) {
-        menuItem.classList.add('border-t-2', 'border-blue-500');
-        menuItem.classList.remove('border-b-2');
+        menuItem.classList.add("border-t-2", "border-blue-500");
+        menuItem.classList.remove("border-b-2");
       } else {
-        menuItem.classList.add('border-b-2', 'border-blue-500');
-        menuItem.classList.remove('border-t-2');
+        menuItem.classList.add("border-b-2", "border-blue-500");
+        menuItem.classList.remove("border-t-2");
       }
     }
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
     const target = e.target as HTMLElement;
-    const menuItem = target.closest('[data-menu-id]');
+    const menuItem = target.closest("[data-menu-id]");
     if (menuItem) {
-      menuItem.classList.remove('border-t-2', 'border-b-2', 'border-blue-500');
+      menuItem.classList.remove("border-t-2", "border-b-2", "border-blue-500");
     }
   };
 
   const handleDrop = (e: React.DragEvent, targetId: string) => {
     e.preventDefault();
-    const draggedId = e.dataTransfer.getData('text/plain');
+    const draggedId = e.dataTransfer.getData("text/plain");
     if (draggedId === targetId) return;
 
     const target = e.target as HTMLElement;
-    const menuItem = target.closest('[data-menu-id]');
+    const menuItem = target.closest("[data-menu-id]");
     if (menuItem) {
-      menuItem.classList.remove('border-t-2', 'border-b-2', 'border-blue-500');
+      menuItem.classList.remove("border-t-2", "border-b-2", "border-blue-500");
     }
 
     // 여기서 실제 메뉴 순서 변경 로직 구현
@@ -91,9 +88,9 @@ const MenusPage = () => {
   };
 
   const toggleExpand = (menuId: string) => {
-    setExpandedMenus(prev => 
+    setExpandedMenus((prev) =>
       prev.includes(menuId)
-        ? prev.filter(id => id !== menuId)
+        ? prev.filter((id) => id !== menuId)
         : [...prev, menuId]
     );
   };
@@ -211,8 +208,7 @@ const MenusPage = () => {
             onClick={() => setShowAddForm(true)}
             className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
-            <FaPlus className="mr-2" />
-            새 메뉴 추가
+            <FaPlus className="mr-2" />새 메뉴 추가
           </button>
         </div>
       </div>
@@ -223,7 +219,8 @@ const MenusPage = () => {
         <div className="md:col-span-2 bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
           <div className="p-6 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-xl font-bold text-gray-900">
-              메뉴 구조 ({menuItems.filter((item) => item.type === selectedType).length})
+              메뉴 구조 (
+              {menuItems.filter((item) => item.type === selectedType).length})
             </h2>
             <div className="flex space-x-2">
               <button
@@ -232,8 +229,10 @@ const MenusPage = () => {
               >
                 메뉴 미리보기
               </button>
-              <button 
-                onClick={() => setExpandedMenus(menuItems.map(item => item.id))}
+              <button
+                onClick={() =>
+                  setExpandedMenus(menuItems.map((item) => item.id))
+                }
                 className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
               >
                 전체 펼치기
@@ -246,9 +245,11 @@ const MenusPage = () => {
                 .filter((item) => item.type === selectedType && !item.parentId)
                 .sort((a, b) => a.order - b.order)
                 .map((item) => {
-                  const hasChildren = menuItems.some(m => m.parentId === item.id);
+                  const hasChildren = menuItems.some(
+                    (m) => m.parentId === item.id
+                  );
                   const isExpanded = expandedMenus.includes(item.id);
-                  
+
                   return (
                     <div key={item.id} className="menu-tree-item">
                       <div
@@ -269,7 +270,11 @@ const MenusPage = () => {
                             onClick={() => toggleExpand(item.id)}
                             className="mr-2 text-gray-400 hover:text-gray-600"
                           >
-                            {isExpanded ? <FaChevronDown /> : <FaChevronRight />}
+                            {isExpanded ? (
+                              <FaChevronDown />
+                            ) : (
+                              <FaChevronRight />
+                            )}
                           </button>
                         )}
                         <div className="cursor-move text-gray-400 hover:text-gray-600 mr-2">
@@ -277,14 +282,18 @@ const MenusPage = () => {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center space-x-2">
-                            <span className="font-medium text-gray-900">{item.name}</span>
+                            <span className="font-medium text-gray-900">
+                              {item.name}
+                            </span>
                             {!item.isActive && (
                               <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">
                                 비활성
                               </span>
                             )}
                           </div>
-                          <span className="text-sm text-gray-500">{item.url}</span>
+                          <span className="text-sm text-gray-500">
+                            {item.url}
+                          </span>
                         </div>
                         <div className="opacity-0 group-hover:opacity-100 flex items-center space-x-2">
                           <button className="p-1 hover:bg-blue-100 rounded text-blue-600">
@@ -295,19 +304,21 @@ const MenusPage = () => {
                           </button>
                         </div>
                       </div>
-                      
+
                       {/* 서브메뉴 표시 */}
                       {hasChildren && isExpanded && (
                         <div className="ml-8 mt-1 space-y-1">
                           {menuItems
-                            .filter(child => child.parentId === item.id)
+                            .filter((child) => child.parentId === item.id)
                             .sort((a, b) => a.order - b.order)
-                            .map(child => (
+                            .map((child) => (
                               <div
                                 key={child.id}
                                 data-menu-id={child.id}
                                 draggable
-                                onDragStart={(e) => handleDragStart(e, child.id)}
+                                onDragStart={(e) =>
+                                  handleDragStart(e, child.id)
+                                }
                                 onDragEnd={handleDragEnd}
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
@@ -319,7 +330,9 @@ const MenusPage = () => {
                                 </div>
                                 <div className="flex-1">
                                   <div className="flex items-center space-x-2">
-                                    <span className="font-medium text-gray-900">{child.name}</span>
+                                    <span className="font-medium text-gray-900">
+                                      {child.name}
+                                    </span>
                                     <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                                       서브메뉴
                                     </span>
@@ -329,7 +342,9 @@ const MenusPage = () => {
                                       </span>
                                     )}
                                   </div>
-                                  <span className="text-sm text-gray-500">{child.url}</span>
+                                  <span className="text-sm text-gray-500">
+                                    {child.url}
+                                  </span>
                                 </div>
                                 <div className="opacity-0 group-hover:opacity-100 flex items-center space-x-2">
                                   <button className="p-1 hover:bg-blue-100 rounded text-blue-600">
@@ -355,11 +370,15 @@ const MenusPage = () => {
           <h3 className="text-lg font-bold text-gray-900 mb-4">메뉴 정보</h3>
           <div className="space-y-4">
             <div>
-              <span className="text-sm font-medium text-gray-700">전체 메뉴</span>
+              <span className="text-sm font-medium text-gray-700">
+                전체 메뉴
+              </span>
               <div className="mt-1 text-2xl font-bold text-gray-900">12</div>
             </div>
             <div className="border-t pt-4">
-              <span className="text-sm font-medium text-gray-700">메뉴 구성</span>
+              <span className="text-sm font-medium text-gray-700">
+                메뉴 구성
+              </span>
               <div className="mt-2 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">메인 메뉴</span>
@@ -508,7 +527,9 @@ const MenusPage = () => {
                         <div className="font-medium text-gray-900">
                           {item.name}
                         </div>
-                        {menuItems.some(child => child.parentId === item.id) && (
+                        {menuItems.some(
+                          (child) => child.parentId === item.id
+                        ) && (
                           <div className="ml-4 mt-2 space-y-2">
                             {menuItems
                               .filter(

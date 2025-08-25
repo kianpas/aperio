@@ -11,7 +11,6 @@ import {
   FaEdit,
   FaSave,
   FaTimes,
-  FaCamera,
   FaShieldAlt,
 } from "react-icons/fa";
 
@@ -54,6 +53,7 @@ const Profile = () => {
   };
 
   const handleInputChange = (field: string, value: string) => {
+    console.log(field, value)
     // setEditData((prev) => ({ ...prev, [field]: value }));
   };
 

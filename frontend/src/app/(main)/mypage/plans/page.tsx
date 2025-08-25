@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FaTag, FaCreditCard, FaCheck, FaInfoCircle } from "react-icons/fa";
+import { FaTag, FaCheck, FaInfoCircle } from "react-icons/fa";
 
 interface Plan {
   id: string;
@@ -66,13 +66,17 @@ export default function PlansPage() {
     setShowConfirm(true);
   };
 
-  const currentPlan = plans.find(plan => plan.isCurrent);
+  const currentPlan = plans.find((plan) => plan.isCurrent);
   const getStatusCount = (status: string) => {
-    switch(status) {
-      case 'current': return plans.filter(p => p.isCurrent).length;
-      case 'available': return plans.filter(p => !p.isCurrent).length;
-      case 'popular': return plans.filter(p => p.isPopular).length;
-      default: return plans.length;
+    switch (status) {
+      case "current":
+        return plans.filter((p) => p.isCurrent).length;
+      case "available":
+        return plans.filter((p) => !p.isCurrent).length;
+      case "popular":
+        return plans.filter((p) => p.isPopular).length;
+      default:
+        return plans.length;
     }
   };
 
@@ -82,39 +86,44 @@ export default function PlansPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">요금제 관리</h1>
-          <p className="text-gray-600 mt-1">나에게 맞는 요금제를 선택하고 관리하세요.</p>
+          <p className="text-gray-600 mt-1">
+            나에게 맞는 요금제를 선택하고 관리하세요.
+          </p>
         </div>
       </div>
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
-          { 
-            label: '전체 요금제', 
-            count: getStatusCount('all'), 
-            color: 'blue',
-            description: '이용 가능한 모든 요금제'
+          {
+            label: "전체 요금제",
+            count: getStatusCount("all"),
+            color: "blue",
+            description: "이용 가능한 모든 요금제",
           },
-          { 
-            label: '현재 이용중', 
-            count: getStatusCount('current'), 
-            color: 'green',
-            description: '현재 구독중인 요금제'
+          {
+            label: "현재 이용중",
+            count: getStatusCount("current"),
+            color: "green",
+            description: "현재 구독중인 요금제",
           },
-          { 
-            label: '이용 가능', 
-            count: getStatusCount('available'), 
-            color: 'purple',
-            description: '변경 가능한 요금제'
+          {
+            label: "이용 가능",
+            count: getStatusCount("available"),
+            color: "purple",
+            description: "변경 가능한 요금제",
           },
-          { 
-            label: '인기 요금제', 
-            count: getStatusCount('popular'), 
-            color: 'yellow',
-            description: '가장 많이 선택하는 요금제'
-          }
+          {
+            label: "인기 요금제",
+            count: getStatusCount("popular"),
+            color: "yellow",
+            description: "가장 많이 선택하는 요금제",
+          },
         ].map((stat, index) => (
-          <div key={index} className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+          <div
+            key={index}
+            className="bg-white p-6 rounded-xl shadow-md border border-gray-100"
+          >
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 rounded-full bg-${stat.color}-100`}>
                 <FaTag className={`text-xl text-${stat.color}-600`} />

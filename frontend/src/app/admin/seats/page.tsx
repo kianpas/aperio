@@ -5,16 +5,12 @@ import {
   FaChair,
   FaUsers,
   FaMapMarkerAlt,
-  FaWifi,
-  FaCoffee,
-  FaDesktop,
   FaPlus,
   FaEdit,
   FaTrash,
-  FaCheck,
   FaTimes,
   FaTools,
-    FaSearch
+  FaSearch,
 } from "react-icons/fa";
 
 interface Seat {
@@ -49,7 +45,7 @@ const SeatsPage = () => {
       price: 2000,
       floor: "1F",
       location: "A구역",
-      lastMaintenance: "2024-02-15"
+      lastMaintenance: "2024-02-15",
     },
     {
       id: "M201",
@@ -63,7 +59,7 @@ const SeatsPage = () => {
       endTime: "16:00",
       price: 8000,
       floor: "2F",
-      location: "B구역"
+      location: "B구역",
     },
     {
       id: "L301",
@@ -74,7 +70,7 @@ const SeatsPage = () => {
       features: ["Wi-Fi", "소파", "테이블", "커피머신"],
       price: 5000,
       floor: "3F",
-      location: "C구역"
+      location: "C구역",
     },
     {
       id: "P102",
@@ -86,8 +82,8 @@ const SeatsPage = () => {
       price: 1500,
       floor: "1F",
       location: "D구역",
-      lastMaintenance: "2024-02-20"
-    }
+      lastMaintenance: "2024-02-20",
+    },
   ];
 
   const stats = [
@@ -157,7 +153,9 @@ const SeatsPage = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">좌석 관리</h1>
-          <p className="text-gray-600 mt-2">전체 {stats[0].value}의 좌석을 관리하고 모니터링합니다</p>
+          <p className="text-gray-600 mt-2">
+            전체 {stats[0].value}의 좌석을 관리하고 모니터링합니다
+          </p>
         </div>
         <div className="flex items-center space-x-3">
           <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
@@ -177,11 +175,16 @@ const SeatsPage = () => {
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div
+            key={index}
+            className="bg-white p-6 rounded-xl shadow-sm border border-gray-100"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">{stat.title}</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
+                  {stat.value}
+                </p>
               </div>
               <div className={`p-3 rounded-full bg-${stat.color}-100`}>
                 <stat.icon className={`text-xl text-${stat.color}-600`} />
@@ -206,7 +209,7 @@ const SeatsPage = () => {
             />
           </div>
           <div className="flex space-x-3">
-            <select 
+            <select
               value={selectedFloor}
               onChange={(e) => setSelectedFloor(e.target.value)}
               className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -238,7 +241,8 @@ const SeatsPage = () => {
         <div className="p-6 border-b border-gray-200">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-bold text-gray-900">
-              {selectedFloor} 좌석 ({seats.filter(s => s.floor === selectedFloor).length})
+              {selectedFloor} 좌석 (
+              {seats.filter((s) => s.floor === selectedFloor).length})
             </h2>
             <div className="flex space-x-4">
               <button className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
@@ -251,33 +255,45 @@ const SeatsPage = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {seats
-              .filter(seat => seat.floor === selectedFloor)
+              .filter((seat) => seat.floor === selectedFloor)
               .map((seat) => (
                 <div
                   key={seat.id}
                   className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
                 >
-                  <div className={`p-4 ${
-                    seat.status === 'available' ? 'bg-green-50' :
-                    seat.status === 'occupied' ? 'bg-blue-50' :
-                    seat.status === 'reserved' ? 'bg-yellow-50' :
-                    'bg-red-50'
-                  }`}>
+                  <div
+                    className={`p-4 ${
+                      seat.status === "available"
+                        ? "bg-green-50"
+                        : seat.status === "occupied"
+                        ? "bg-blue-50"
+                        : seat.status === "reserved"
+                        ? "bg-yellow-50"
+                        : "bg-red-50"
+                    }`}
+                  >
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900">{seat.name}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {seat.name}
+                        </h3>
                         <p className="text-sm text-gray-600">{seat.location}</p>
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        seat.status === 'available' ? 'bg-green-100 text-green-800' :
-                        seat.status === 'occupied' ? 'bg-blue-100 text-blue-800' :
-                        seat.status === 'reserved' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          seat.status === "available"
+                            ? "bg-green-100 text-green-800"
+                            : seat.status === "occupied"
+                            ? "bg-blue-100 text-blue-800"
+                            : seat.status === "reserved"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
                         {getStatusText(seat.status)}
                       </span>
                     </div>
@@ -285,17 +301,24 @@ const SeatsPage = () => {
 
                   <div className="p-4 space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-500">유형</span>
+                      <span className="text-sm font-medium text-gray-500">
+                        유형
+                      </span>
                       <span className="text-sm font-semibold text-gray-900">
-                        {seat.type === "individual" ? "개인석" :
-                         seat.type === "meeting" ? "회의실" :
-                         seat.type === "lounge" ? "라운지" :
-                         "폰부스"}
+                        {seat.type === "individual"
+                          ? "개인석"
+                          : seat.type === "meeting"
+                          ? "회의실"
+                          : seat.type === "lounge"
+                          ? "라운지"
+                          : "폰부스"}
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-500">수용 인원</span>
+                      <span className="text-sm font-medium text-gray-500">
+                        수용 인원
+                      </span>
                       <span className="text-sm font-semibold text-gray-900">
                         {seat.capacity}인
                       </span>
@@ -303,7 +326,9 @@ const SeatsPage = () => {
 
                     {seat.currentUser && (
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-gray-500">현재 사용자</span>
+                        <span className="text-sm font-medium text-gray-500">
+                          현재 사용자
+                        </span>
                         <span className="text-sm font-semibold text-gray-900">
                           {seat.currentUser}
                           {seat.startTime && seat.endTime && (
@@ -344,7 +369,7 @@ const SeatsPage = () => {
                     </div>
                   </div>
                 </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>

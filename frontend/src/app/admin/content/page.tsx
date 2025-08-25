@@ -8,7 +8,6 @@ import {
   FaTrash,
   FaEye,
   FaLink,
-  FaCopy,
   FaTimes,
   FaClock,
   FaFile,
