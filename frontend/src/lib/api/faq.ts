@@ -1,47 +1,37 @@
-import { FaqResponse } from '@/types/faq';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+import { apiClient, serverApiClient } from './client';
+import type { FaqResponse } from '@/types/faq';
 
 export const faqAPI = {
-  // 모든 FAQ 조회 (플랫 구조)
+  // 모든 FAQ 조회 (클라이언트)
   getFaqs: async (): Promise<FaqResponse[]> => {
-    const response = await fetch(`${API_BASE_URL}/api/v1/faqs`, {
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error("FAQ 목록 조회 실패");
-    }
-
-    return response.json();
+    return apiClient.get<FaqResponse[]>('/api/v1/faqs');
   },
 
-  // 특정 카테고리의 FAQ 조회
+  // 특정 카테고리의 FAQ 조회 (클라이언트)
   getFaqsByCategory: async (category: string): Promise<FaqResponse[]> => {
-    const response = await fetch(
-      `${API_BASE_URL}/api/v1/faqs/category/${encodeURIComponent(category)}`,
-      {
-        credentials: "include",
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("카테고리별 FAQ 조회 실패");
-    }
-
-    return response.json();
+    return apiClient.get<FaqResponse[]>(`/api/v1/faqs/category/${encodeURIComponent(category)}`);
   },
 
-  // 카테고리 목록 조회
+  // 카테고리 목록 조회 (클라이언트)
   getCategories: async (): Promise<string[]> => {
-    const response = await fetch(`${API_BASE_URL}/api/v1/faqs/categories`, {
-      credentials: "include",
-    });
+    return apiClient.get<string[]>('/api/v1/faqs/categories');
+  },
+};
 
-    if (!response.ok) {
-      throw new Error("FAQ 카테고리 조회 실패");
-    }
+// 서버 컴포넌트용 FAQ API
+export const serverFaqAPI = {
+  // 서버에서 FAQ 조회 (SSR/SSG용)
+  getFaqs: async (): Promise<FaqResponse[]> => {
+    return serverApiClient.get<FaqResponse[]>('/api/v1/faqs');
+  },
 
-    return response.json();
+  // 서버에서 카테고리별 FAQ 조회
+  getFaqsByCategory: async (category: string): Promise<FaqResponse[]> => {
+    return serverApiClient.get<FaqResponse[]>(`/api/v1/faqs/category/${encodeURIComponent(category)}`);
+  },
+
+  // 서버에서 카테고리 목록 조회
+  getCategories: async (): Promise<string[]> => {
+    return serverApiClient.get<string[]>('/api/v1/faqs/categories');
   },
 };

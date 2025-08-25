@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { authAPI, LoginData, User, LoginResponse } from "@/lib/api";
+import { authAPI } from "@/lib/api/auth";
+import { LoginData, User, LoginResponse } from "@/types/auth";
 
 interface AuthState {
   user: User | null;

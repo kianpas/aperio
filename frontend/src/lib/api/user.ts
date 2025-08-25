@@ -1,28 +1,24 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-
-export interface UserProfile {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  plan: string;
-  createdAt: string;
-}
+import { apiClient } from './client';
+import type { UserProfile } from '@/types/auth';
 
 export const userAPI = {
+  // 사용자 프로필 조회
   getUserProfile: async (): Promise<UserProfile> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/users/me/profile`, {
-        credentials: "include", // 중요: 세션 쿠키 포함
-      });
+    return apiClient.get<UserProfile>('/api/v1/users/me/profile');
+  },
 
-      if (!response.ok) {
-        throw new Error("사용자 정보 조회 실패");
-      }
+  // 사용자 프로필 업데이트
+  updateUserProfile: async (profileData: Partial<UserProfile>): Promise<UserProfile> => {
+    return apiClient.put<UserProfile>('/api/v1/users/me/profile', profileData);
+  },
 
-      return response.json();
-    } catch (error) {
-      console.error("getCurrentUser error:", error);
-      throw error;
-    }
+  // 비밀번호 변경
+  changePassword: async (passwordData: { currentPassword: string; newPassword: string }) => {
+    return apiClient.post('/api/v1/users/me/change-password', passwordData);
+  },
+
+  // 계정 삭제
+  deleteAccount: async () => {
+    return apiClient.delete('/api/v1/users/me');
   },
 };

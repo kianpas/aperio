@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { userAPI, UserProfile } from '@/lib/api';
+import { useState, useEffect, useCallback } from "react";
+import { userAPI } from "@/lib/api/user";
+import { UserProfile } from "@/types/auth";
 
 interface UserState {
   profile: UserProfile | null;
@@ -28,7 +29,7 @@ export const useUser = () => {
       setUserState({
         profile: null,
         loading: false,
-        error: '프로필 정보를 불러오는 데 실패했습니다.',
+        error: "프로필 정보를 불러오는 데 실패했습니다.",
       });
     }
   }, []);

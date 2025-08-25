@@ -27,24 +27,27 @@ interface MainDataResponse {
 async function getBanners(): Promise<Banner[]> {
   try {
     // 서버 사이드에서는 내부 URL 사용, 클라이언트에서는 공개 URL 사용
-    const apiUrl = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    const apiUrl =
+      process.env.INTERNAL_API_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      "http://localhost:8080";
     const response = await fetch(`${apiUrl}/api/v1/main`, {
       // 배너는 자주 변경되지 않으므로 캐싱 활용
       next: { revalidate: 300 }, // 5분마다 재검증
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
-    
+
     if (!response.ok) {
-      console.error('배너 데이터 조회 실패:', response.status);
+      console.error("배너 데이터 조회 실패:", response.status);
       return [];
     }
-    
+
     const data: MainDataResponse = await response.json();
     return data.bannerList || [];
   } catch (error) {
-    console.error('배너 데이터 조회 실패:', error);
+    console.error("배너 데이터 조회 실패:", error);
     return [];
   }
 }
@@ -59,7 +62,7 @@ export default async function Home() {
       <Suspense fallback={<BannerSkeleton />}>
         <BannerSection banners={banners} />
       </Suspense>
-      
+
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
