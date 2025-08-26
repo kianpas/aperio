@@ -28,28 +28,23 @@ export default function AdminLayout({
   const pathname = usePathname();
 
   const menuItems = [
+    // 대시보드
     { href: "/admin", label: "대시보드", icon: FaTachometerAlt },
 
-    // 사용자 관리
-    { href: "/admin/users", label: "사용자 관리", icon: FaUsers },
-
-    // 예약/좌석 관리
+    // 핵심 운영 관리
     { href: "/admin/reservations", label: "예약 관리", icon: FaCalendarAlt },
     { href: "/admin/seats", label: "좌석 관리", icon: FaChair },
+    { href: "/admin/users", label: "사용자 관리", icon: FaUsers },
 
-    // 콘텐츠 관리
-    { href: "/admin/content", label: "콘텐츠 관리", icon: FaImage },
-    { href: "/admin/menus", label: "메뉴 관리", icon: FaBars },
-    { href: "/admin/banners", label: "배너 관리", icon: FaImage },
-    { href: "/admin/popups", label: "팝업 관리", icon: FaWindowMaximize },
-
-    // 고객 서비스
-    { href: "/admin/support", label: "고객 지원", icon: FaQuestionCircle },
+    // 마케팅 & 프로모션
     { href: "/admin/coupons", label: "쿠폰 관리", icon: FaTicketAlt },
-    { href: "/admin/faq", label: "FAQ 관리", icon: FaLifeRing },
-    { href: "/admin/inquiries", label: "문의 관리", icon: FaQuestionCircle },
+    { href: "/admin/banners", label: "배너 관리", icon: FaImage },
 
-    // 시스템
+    // 웹사이트 관리
+    { href: "/admin/menus", label: "메뉴 관리", icon: FaBars },
+    { href: "/admin/faq", label: "FAQ 관리", icon: FaLifeRing },
+
+    // 분석 & 설정
     { href: "/admin/analytics", label: "통계 분석", icon: FaChartBar },
     { href: "/admin/settings", label: "시스템 설정", icon: FaCog },
   ];

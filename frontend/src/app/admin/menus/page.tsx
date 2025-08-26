@@ -12,6 +12,19 @@ import {
   FaStream,
   FaChevronDown,
   FaChevronRight,
+  FaSearch,
+  FaFilter,
+  FaEye,
+  FaArrowRight,
+  FaCog,
+  FaChartBar,
+  FaLink,
+  FaSort,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaHome,
+  FaInfoCircle,
+  FaCalendarAlt,
 } from "react-icons/fa";
 
 interface MenuItem {
@@ -132,117 +145,167 @@ const MenusPage = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* 헤더 섹션 */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-8 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold mb-2">메뉴 관리</h1>
-        <p className="text-blue-100 text-lg">
-          웹사이트의 메뉴 구조를 관리하세요
-        </p>
-      </div>
-
-      {/* 통계 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          {
-            title: "전체 메뉴",
-            value: "12",
-            subValue: "활성 메뉴 10개",
-            icon: FaBars,
-            color: "blue",
-          },
-          {
-            title: "메인 메뉴",
-            value: "5",
-            subValue: "서브메뉴 7개",
-            icon: FaList,
-            color: "purple",
-          },
-          {
-            title: "푸터 메뉴",
-            value: "6",
-            subValue: "최근 수정 2일 전",
-            icon: FaStream,
-            color: "gray",
-          },
-        ].map((stat, index) => (
-          <div
-            key={index}
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className={`p-3 rounded-full bg-${stat.color}-100`}>
-                <stat.icon className={`text-2xl text-${stat.color}-600`} />
-              </div>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
-            <p className="text-gray-600">{stat.title}</p>
-            <p className="text-sm text-gray-500 mt-1">{stat.subValue}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* 메뉴 타입 필터 */}
-      <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex space-x-2">
-            {["main", "sub", "footer"].map((type) => (
-              <button
-                key={type}
-                onClick={() => setSelectedType(type)}
-                className={`px-4 py-2 rounded-lg ${
-                  selectedType === type
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {type === "main"
-                  ? "메인 메뉴"
-                  : type === "sub"
-                  ? "서브 메뉴"
-                  : "푸터 메뉴"}
-              </button>
-            ))}
-          </div>
+    <div className="space-y-8">
+      {/* 상단 헤더 - Netflix 스타일 */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">메뉴 관리</h1>
+          <p className="text-gray-600 mt-2">웹사이트의 네비게이션 메뉴를 관리하고 구조를 설정합니다</p>
+        </div>
+        <div className="flex items-center space-x-3">
+          <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            <FaFilter />
+            <span>필터</span>
+          </button>
           <button
             onClick={() => setShowAddForm(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
-            <FaPlus className="mr-2" />새 메뉴 추가
+            <FaPlus />
+            <span>새 메뉴</span>
           </button>
         </div>
       </div>
 
-      {/* 메뉴 목록 및 사이드바 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* 메뉴 구조 */}
-        <div className="md:col-span-2 bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-          <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-xl font-bold text-gray-900">
-              메뉴 구조 (
-              {menuItems.filter((item) => item.type === selectedType).length})
-            </h2>
-            <div className="flex space-x-2">
-              <button
-                onClick={() => setShowPreview(true)}
-                className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
-              >
-                메뉴 미리보기
-              </button>
-              <button
-                onClick={() =>
-                  setExpandedMenus(menuItems.map((item) => item.id))
-                }
-                className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
-              >
-                전체 펼치기
-              </button>
+      {/* 통계 카드 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { label: "전체 메뉴", value: "12", change: "+2", trend: "up" },
+          { label: "활성 메뉴", value: "10", change: "+1", trend: "up" },
+          { label: "메인 메뉴", value: "5", change: "0", trend: "stable" },
+          { label: "서브 메뉴", value: "7", change: "+2", trend: "up" }
+        ].map((stat, index) => (
+          <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
+              </div>
+              <div className={`text-sm font-medium ${
+                stat.trend === 'up' ? 'text-green-600' : 
+                stat.trend === 'down' ? 'text-red-600' : 'text-gray-600'
+              }`}>
+                {stat.change !== "0" && stat.change}
+              </div>
             </div>
           </div>
-          <div className="p-4">
-            <div className="space-y-2">
+        ))}
+      </div>
+
+      {/* 빠른 액션 카드 - Netflix/Spotify 스타일 */}
+      <div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">빠른 액션</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              title: "메뉴 구조 설계",
+              description: "드래그 앤 드롭으로 메뉴 순서 변경",
+              count: "12개 메뉴",
+              icon: FaSort,
+              color: "blue",
+              href: "/admin/menus/structure"
+            },
+            {
+              title: "메뉴 분석",
+              description: "메뉴별 클릭률 및 사용 통계",
+              count: "평균 CTR 4.2%",
+              icon: FaChartBar,
+              color: "green",
+              href: "/admin/analytics/menus"
+            },
+            {
+              title: "메뉴 미리보기",
+              description: "실제 사이트에서 메뉴 확인",
+              count: "실시간 반영",
+              icon: FaEye,
+              color: "purple",
+              href: "/admin/menus/preview"
+            }
+          ].map((action, index) => (
+            <div
+              key={index}
+              className="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer"
+              onClick={() => console.log(`Navigate to ${action.href}`)}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-3 rounded-full bg-${action.color}-100`}>
+                  <action.icon className={`text-2xl text-${action.color}-600`} />
+                </div>
+                <FaArrowRight className="text-gray-400 group-hover:text-gray-600 transition-colors" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{action.title}</h3>
+              <p className="text-gray-600 text-sm mb-3">{action.description}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-500">{action.count}</span>
+                <span className="text-sm text-blue-600 group-hover:text-blue-700">
+                  관리하기 →
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 검색 및 필터 바 */}
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
+          <div className="flex-1 relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="메뉴명, URL로 검색..."
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500"
+            />
+          </div>
+          <div className="flex space-x-3">
+            <select 
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+            >
+              <option value="all" className="text-gray-900">전체 메뉴</option>
+              <option value="main" className="text-gray-900">메인 메뉴</option>
+              <option value="sub" className="text-gray-900">서브 메뉴</option>
+              <option value="footer" className="text-gray-900">푸터 메뉴</option>
+            </select>
+            <select className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white">
+              <option value="all" className="text-gray-900">전체 상태</option>
+              <option value="active" className="text-gray-900">활성</option>
+              <option value="inactive" className="text-gray-900">비활성</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* 메뉴 목록 */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">
+                메뉴 목록 ({menuItems.filter((item) => selectedType === "all" || item.type === selectedType).length}개)
+              </h3>
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={() => setShowPreview(true)}
+                  className="flex items-center space-x-2 px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                >
+                  <FaEye />
+                  <span>미리보기</span>
+                </button>
+                <button
+                  onClick={() => setExpandedMenus(menuItems.map((item) => item.id))}
+                  className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <FaList />
+                  <span>전체 펼치기</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="p-6">
+            <div className="space-y-3">
               {menuItems
-                .filter((item) => item.type === selectedType && !item.parentId)
+                .filter((item) => (selectedType === "all" || item.type === selectedType) && !item.parentId)
                 .sort((a, b) => a.order - b.order)
                 .map((item) => {
                   const hasChildren = menuItems.some(
@@ -261,7 +324,7 @@ const MenusPage = () => {
                         onDragLeave={handleDragLeave}
                         onDrop={(e) => handleDrop(e, item.id)}
                         className={`
-                          group flex items-center p-2 hover:bg-gray-50 rounded-lg
+                          group flex items-center p-4 hover:bg-gray-50 rounded-xl border border-gray-100 hover:border-blue-200 transition-all duration-200
                           ${draggedItem === item.id ? "opacity-50" : ""}
                         `}
                       >
@@ -280,26 +343,48 @@ const MenusPage = () => {
                         <div className="cursor-move text-gray-400 hover:text-gray-600 mr-2">
                           <FaGripVertical />
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2">
-                            <span className="font-medium text-gray-900">
-                              {item.name}
-                            </span>
-                            {!item.isActive && (
-                              <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">
-                                비활성
-                              </span>
-                            )}
+                        <div className="flex items-center space-x-3 flex-1">
+                          <div className={`p-2 rounded-lg ${
+                            item.type === "main" ? "bg-blue-100" :
+                            item.type === "sub" ? "bg-green-100" : "bg-gray-100"
+                          }`}>
+                            {item.type === "main" ? <FaHome className="text-blue-600" /> :
+                             item.type === "sub" ? <FaList className="text-green-600" /> :
+                             <FaInfoCircle className="text-gray-600" />}
                           </div>
-                          <span className="text-sm text-gray-500">
-                            {item.url}
-                          </span>
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2">
+                              <span className="font-semibold text-gray-900">
+                                {item.name}
+                              </span>
+                              <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${
+                                item.isActive 
+                                  ? "bg-green-100 text-green-800" 
+                                  : "bg-red-100 text-red-800"
+                              }`}>
+                                <span className={`w-2 h-2 rounded-full mr-1 ${
+                                  item.isActive ? "bg-green-400" : "bg-red-400"
+                                }`}></span>
+                                {item.isActive ? "활성" : "비활성"}
+                              </span>
+                              <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700">
+                                {item.type === "main" ? "메인" : item.type === "sub" ? "서브" : "푸터"}
+                              </span>
+                            </div>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <FaLink className="text-gray-400 text-xs" />
+                              <span className="text-sm text-gray-500">{item.url}</span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="opacity-0 group-hover:opacity-100 flex items-center space-x-2">
-                          <button className="p-1 hover:bg-blue-100 rounded text-blue-600">
+                        <div className="flex items-center space-x-2">
+                          <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                            <FaEye />
+                          </button>
+                          <button className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors">
                             <FaEdit />
                           </button>
-                          <button className="p-1 hover:bg-red-100 rounded text-red-600">
+                          <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
                             <FaTrash />
                           </button>
                         </div>
@@ -307,7 +392,7 @@ const MenusPage = () => {
 
                       {/* 서브메뉴 표시 */}
                       {hasChildren && isExpanded && (
-                        <div className="ml-8 mt-1 space-y-1">
+                        <div className="ml-12 mt-3 space-y-2">
                           {menuItems
                             .filter((child) => child.parentId === item.id)
                             .sort((a, b) => a.order - b.order)
@@ -316,41 +401,53 @@ const MenusPage = () => {
                                 key={child.id}
                                 data-menu-id={child.id}
                                 draggable
-                                onDragStart={(e) =>
-                                  handleDragStart(e, child.id)
-                                }
+                                onDragStart={(e) => handleDragStart(e, child.id)}
                                 onDragEnd={handleDragEnd}
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
                                 onDrop={(e) => handleDrop(e, child.id)}
-                                className="group flex items-center p-2 hover:bg-gray-50 rounded-lg"
+                                className="group flex items-center p-3 hover:bg-gray-50 rounded-lg border border-gray-100 hover:border-green-200 transition-all duration-200"
                               >
-                                <div className="cursor-move text-gray-400 hover:text-gray-600 mr-2">
+                                <div className="cursor-move text-gray-400 hover:text-gray-600 mr-3">
                                   <FaGripVertical />
                                 </div>
-                                <div className="flex-1">
-                                  <div className="flex items-center space-x-2">
-                                    <span className="font-medium text-gray-900">
-                                      {child.name}
-                                    </span>
-                                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                                      서브메뉴
-                                    </span>
-                                    {!child.isActive && (
-                                      <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">
-                                        비활성
-                                      </span>
-                                    )}
+                                <div className="flex items-center space-x-3 flex-1">
+                                  <div className="p-2 rounded-lg bg-green-100">
+                                    <FaList className="text-green-600" />
                                   </div>
-                                  <span className="text-sm text-gray-500">
-                                    {child.url}
-                                  </span>
+                                  <div className="flex-1">
+                                    <div className="flex items-center space-x-2">
+                                      <span className="font-medium text-gray-900">
+                                        {child.name}
+                                      </span>
+                                      <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${
+                                        child.isActive 
+                                          ? "bg-green-100 text-green-800" 
+                                          : "bg-red-100 text-red-800"
+                                      }`}>
+                                        <span className={`w-2 h-2 rounded-full mr-1 ${
+                                          child.isActive ? "bg-green-400" : "bg-red-400"
+                                        }`}></span>
+                                        {child.isActive ? "활성" : "비활성"}
+                                      </span>
+                                      <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                                        서브메뉴
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center space-x-2 mt-1">
+                                      <FaLink className="text-gray-400 text-xs" />
+                                      <span className="text-sm text-gray-500">{child.url}</span>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="opacity-0 group-hover:opacity-100 flex items-center space-x-2">
-                                  <button className="p-1 hover:bg-blue-100 rounded text-blue-600">
+                                <div className="flex items-center space-x-2">
+                                  <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                    <FaEye />
+                                  </button>
+                                  <button className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors">
                                     <FaEdit />
                                   </button>
-                                  <button className="p-1 hover:bg-red-100 rounded text-red-600">
+                                  <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
                                     <FaTrash />
                                   </button>
                                 </div>
@@ -364,52 +461,6 @@ const MenusPage = () => {
             </div>
           </div>
         </div>
-
-        {/* 메뉴 정보 사이드바 */}
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">메뉴 정보</h3>
-          <div className="space-y-4">
-            <div>
-              <span className="text-sm font-medium text-gray-700">
-                전체 메뉴
-              </span>
-              <div className="mt-1 text-2xl font-bold text-gray-900">12</div>
-            </div>
-            <div className="border-t pt-4">
-              <span className="text-sm font-medium text-gray-700">
-                메뉴 구성
-              </span>
-              <div className="mt-2 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">메인 메뉴</span>
-                  <span className="font-medium text-gray-900">5개</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">서브 메뉴</span>
-                  <span className="font-medium text-gray-900">7개</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">푸터 메뉴</span>
-                  <span className="font-medium text-gray-900">4개</span>
-                </div>
-              </div>
-            </div>
-            <div className="border-t pt-4">
-              <span className="text-sm font-medium text-gray-700">상태</span>
-              <div className="mt-2 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">활성 메뉴</span>
-                  <span className="font-medium text-green-600">10개</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">비활성 메뉴</span>
-                  <span className="font-medium text-red-600">2개</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* 메뉴 추가 모달 */}
       {showAddForm && (

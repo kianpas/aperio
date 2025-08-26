@@ -165,23 +165,23 @@ const UsersPage = () => {
               placeholder="사용자 이름, 이메일로 검색..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500"
             />
           </div>
           <div className="flex space-x-3">
             <select 
               value={selectedFilter}
               onChange={(e) => setSelectedFilter(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             >
-              <option value="all">전체 상태</option>
-              <option value="active">활성</option>
-              <option value="inactive">정지</option>
+              <option value="all" className="text-gray-900">전체 상태</option>
+              <option value="active" className="text-gray-900">활성</option>
+              <option value="inactive" className="text-gray-900">정지</option>
             </select>
-            <select className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-              <option>전체 플랜</option>
-              <option>월 정기</option>
-              <option>시간제</option>
+            <select className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white">
+              <option className="text-gray-900">전체 플랜</option>
+              <option className="text-gray-900">월 정기</option>
+              <option className="text-gray-900">시간제</option>
             </select>
           </div>
         </div>

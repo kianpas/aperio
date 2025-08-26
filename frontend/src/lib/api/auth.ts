@@ -1,4 +1,4 @@
-import { apiClient } from "./client";
+import { apiClient, ApiError } from "./client";
 import type {
   SignUpData,
   LoginData,
@@ -24,9 +24,12 @@ export const authAPI = {
       const user = await apiClient.get<User>("/api/v1/users/me");
       return { authenticated: true, user };
     } catch (error) {
-      console.log(error)
-      // 401 에러인 경우 인증되지 않은 상태로 처리
-      return { authenticated: false };
+      // ApiError인 경우 상태 코드 확인
+      if (error instanceof ApiError && error.status === 401) {
+        return { authenticated: false };
+      }
+      // 다른 에러는 다시 throw
+      throw error;
     }
   },
 
@@ -36,7 +39,10 @@ export const authAPI = {
       await apiClient.post("/api/v1/auth/logout");
     } catch (error) {
       // 로그아웃은 실패해도 클라이언트 상태 초기화
-      console.warn("Logout request failed, but proceeding with client cleanup", error);
+      console.warn(
+        "Logout request failed, but proceeding with client cleanup",
+        error
+      );
     }
   },
 };
