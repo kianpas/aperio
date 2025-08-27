@@ -17,6 +17,14 @@ public class SeatService {
     @Autowired
     private SeatRepository seatRepository;
 
+    public List<SeatListResponse> getAllSeats() {
+        // 단순히 seat 테이블에서 기본 정보만 조회
+        // WHERE enabled = true (운영 중인 좌석만)
+        List<Seat> seats = seatRepository.findAllByEnabledTrue();
+        return seats.stream().map(SeatListResponse::from).toList();
+    }
+
+
     /**
      * 모든 활성 좌석 목록과 기본 상태(STATIC/AVAILABLE) 정보를 조회합니다.
      *

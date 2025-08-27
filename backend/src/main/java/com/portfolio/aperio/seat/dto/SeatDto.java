@@ -15,4 +15,5 @@ public class SeatDto {
     // createDt, updateDt, register 는 프론트엔드 표시에 필요 없으므로 제외
     private String gridRow;
     private String gridColumn;
+
 }
