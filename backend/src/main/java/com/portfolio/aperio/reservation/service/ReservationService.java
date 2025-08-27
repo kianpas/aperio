@@ -384,8 +384,8 @@ public class ReservationService {
 
                     // 좌석 정보가 없어도 예약을 보여줘야 할 수 있으므로, 기본 Seat 객체나 null 처리 고려
                     Seat unknownSeat = new Seat();
-                    unknownSeat.setSeatNm("알 수 없는 좌석");
-                    unknownSeat.setSeatSort("-");
+                    // unknownSeat.setSeatNm("알 수 없는 좌석");
+                    // unknownSeat.setSeatSort("-");
                     return unknownSeat;
                     // 또는 return null; DTO 빌더에서 null 체크 필요
                 });
@@ -404,8 +404,8 @@ public class ReservationService {
                 .resDt(reservation.getResDt())
                 .statusCode(statusCode)
                 .displayStatus(displayStatus)
-                .seatNm(seat.getSeatNm())
-                .seatSort(seat.getSeatSort())               // SeatSort가 null일 수 있음에 유의
+                .seatNm(seat.getName())
+                // .seatSort(seat.getSeatSort())               // SeatSort가 null일 수 있음에 유의
                 .resStart(reservation.getResStart())
                 .resEnd(reservation.getResEnd())
                 .resPrice(reservation.getResPrice())        // 필요시 Long/BigDecimal 변환

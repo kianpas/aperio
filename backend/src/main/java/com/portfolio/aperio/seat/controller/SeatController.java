@@ -1,17 +1,16 @@
 package com.portfolio.aperio.seat.controller;
 
-import com.portfolio.aperio.seat.dto.SeatDto;
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.portfolio.aperio.seat.dto.response.user.SeatResponse;
 import com.portfolio.aperio.seat.service.SeatService;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/seats")
@@ -31,7 +30,7 @@ public class SeatController {
 
         try {
             // 서비스 호출 시 branchId 제거됨
-            List<SeatListResponse> seatStatus = seatService.getAllSeats();
+            List<SeatResponse> seatStatus = seatService.getAllSeats();
             return ResponseEntity.ok(seatStatus);
         } catch (Exception e) {
             System.err.println("Error fetching seat status: " + e.getMessage());

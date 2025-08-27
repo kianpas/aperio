@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -41,6 +42,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query("SELECT r from Reservation r")
     List<Reservation> findReservationsById(Long userId);
+
+    Collection<Reservation> findBySeatIdAndDate(Long id, LocalDateTime date);
 
 
 }
