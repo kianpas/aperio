@@ -223,12 +223,12 @@ public class AdminUserService {
 
                         // 좌석 정보가 없어도 예약을 보여줘야 할 수 있으므로, 기본 Seat 객체나 null 처리 고려
                         Seat unknownSeat = new Seat();
-                        unknownSeat.setSeatNm("알 수 없는 좌석");
-                        unknownSeat.setSeatSort("-");
+                        unknownSeat.setName("알 수 없는 좌석");
+                        // unknownSeat.setSeatSort("-");
                         return unknownSeat;
                     });
 
-            return seat.getSeatNm();
+            return seat.getName();
         }
 
         return "알 수 없음";

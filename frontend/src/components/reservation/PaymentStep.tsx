@@ -45,7 +45,7 @@ const CouponSelector = ({
           />
           <div className="flex-1">
             <div className="flex items-center justify-between">
-              <span className="font-medium">{coupon.name}</span>
+              <span className="font-medium text-gray-900">{coupon.name}</span>
               <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded-full">
                 {coupon.type === "percentage"
                   ? `${coupon.discount}%`
@@ -53,7 +53,7 @@ const CouponSelector = ({
                 할인
               </span>
             </div>
-            <p className="text-sm text-gray-600">{coupon.description}</p>
+            <p className="text-sm text-gray-700">{coupon.description}</p>
           </div>
         </label>
       ))}
@@ -66,7 +66,7 @@ const CouponSelector = ({
           onChange={(e) => onCouponChange(e.target.value)}
           className="mr-3"
         />
-        <span className="font-medium text-gray-700">쿠폰 사용 안함</span>
+        <span className="font-medium text-gray-800">쿠폰 사용 안함</span>
       </label>
     </div>
   </div>

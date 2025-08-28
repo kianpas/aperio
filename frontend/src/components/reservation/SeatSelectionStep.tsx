@@ -164,14 +164,14 @@ const SeatCard = ({
         <h4
           className={`font-semibold mt-2 ${
             size === "large" ? "text-base mt-3" : "text-sm"
-          }`}
+          } ${isSelected ? "text-white" : "text-gray-900"}`}
         >
           {seat.name}
         </h4>
         <p
-          className={`mt-1 opacity-75 ${
+          className={`mt-1 text-gray-700 ${
             size === "large" ? "text-sm" : "text-xs"
-          }`}
+          } ${isSelected ? "text-white/90" : ""}`}
         >
           {seat.capacity && `최대 ${seat.capacity}인 • `}
           {seat.price.toLocaleString()}원/시간
@@ -179,7 +179,7 @@ const SeatCard = ({
         {size === "large" && seat.features && (
           <div className="flex justify-center mt-2 space-x-1">
             {seat.features.slice(0, 3).map((feature, idx) => (
-              <span key={idx} className="text-xs opacity-60">
+              <span key={idx} className={`text-xs ${isSelected ? "text-white/80" : "text-gray-600"}`}>
                 {getFeatureIcon(feature)}
               </span>
             ))}
@@ -206,7 +206,7 @@ const SeatSelectionStep = ({
         <h2 className="text-xl font-bold text-gray-900 mb-2">
           어떤 공간을 원하시나요?
         </h2>
-        <p className="text-gray-600">용도에 맞는 공간을 선택해주세요</p>
+        <p className="text-gray-700">용도에 맞는 공간을 선택해주세요</p>
       </div>
 
       <div className="space-y-8">

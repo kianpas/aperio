@@ -245,12 +245,12 @@ const ReservationPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">공간 예약</h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-gray-700 mt-1">
                 원하는 공간과 시간을 선택하세요
               </p>
             </div>
             <div className="text-right">
-              <div className="text-sm text-gray-500">실시간 업데이트</div>
+              <div className="text-sm text-gray-700">실시간 업데이트</div>
               <div className="text-sm font-medium text-gray-900">
                 {new Date().toLocaleTimeString()}
               </div>

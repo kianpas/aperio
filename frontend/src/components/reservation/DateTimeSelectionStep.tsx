@@ -35,8 +35,8 @@ const SelectedSeatInfo = ({ seat }: { seat: Seat }) => (
     <div className="flex items-center">
       {getSeatIcon(seat.type)}
       <div className="ml-3">
-        <p className="font-medium">{seat.name}</p>
-        <p className="text-sm text-gray-600">
+        <p className="font-medium text-gray-900">{seat.name}</p>
+        <p className="text-sm text-gray-800">
           {seat.price.toLocaleString()}원/시간
         </p>
       </div>
@@ -59,7 +59,7 @@ const DateSelector = ({
       value={selectedDate}
       onChange={(e) => onDateChange(e.target.value)}
       min={new Date().toISOString().split("T")[0]}
-      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
     />
   </div>
 );
@@ -116,12 +116,12 @@ const PlanTypeSelector = ({
             />
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <span className="font-medium">{plan.label}</span>
+                <span className="font-medium text-gray-900">{plan.label}</span>
                 <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
                   {plan.badge}
                 </span>
               </div>
-              <p className="text-sm text-gray-600">{plan.desc}</p>
+              <p className="text-sm text-gray-700">{plan.desc}</p>
             </div>
           </label>
         ))}
@@ -153,7 +153,7 @@ const TimeSelector = ({
               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
               : selectedTimes.includes(slot.time)
               ? "bg-blue-600 text-white"
-              : "bg-gray-50 text-gray-700 hover:bg-blue-50"
+              : "bg-gray-50 text-gray-900 hover:bg-blue-50 hover:text-blue-700"
           }`}
         >
           {slot.time}
