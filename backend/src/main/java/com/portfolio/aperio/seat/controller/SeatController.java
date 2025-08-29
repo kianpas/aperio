@@ -25,15 +25,14 @@ public class SeatController {
      * @param date 조회 날짜 (YYYY-MM-DD)
      * @return 좌석 DTO 목록
      */
-    @GetMapping("/seats")
+    @GetMapping
     public ResponseEntity<?> getSeats() {
 
         try {
             // 서비스 호출 시 branchId 제거됨
-            List<SeatResponse> seatStatus = seatService.getAllSeats();
-            return ResponseEntity.ok(seatStatus);
+            List<SeatResponse> seatResponse = seatService.getAllSeats();
+            return ResponseEntity.ok(seatResponse);
         } catch (Exception e) {
-            System.err.println("Error fetching seat status: " + e.getMessage());
             e.printStackTrace(); // 개발 중 에러 확인을 위해 추가
             return ResponseEntity.internalServerError().body("좌석 정보 조회 중 오류가 발생했습니다.");
         }
