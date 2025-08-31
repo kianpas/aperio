@@ -43,7 +43,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("SELECT r from Reservation r")
     List<Reservation> findReservationsById(Long userId);
 
-    Collection<Reservation> findBySeatIdAndDate(Long id, LocalDateTime date);
+    Collection<Reservation> findBySeatId(Long id);
 
 
 }

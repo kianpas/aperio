@@ -149,7 +149,7 @@ public class AdminReservationService {
                 .resDt(reservation.getResDt())                             // 예약 신청 일시
                 .userEmail(user != null ? user.getEmail() : "정보 없음")    // User 객체가 null이 아니면 이메일, null이면 "정보 없음"
                 .userName(user != null ? user.getName() : "정보 없음")      // User 객체가 null이 아니면 이름, null이면 "정보 없음"
-                .seatNm(seat != null ? seat.getSeatNm() : "정보 없음")      // Seat 객체가 null이 아니면 좌석 이름, null이면 "정보 없음"
+                .seatNm(seat != null ? seat.getName() : "정보 없음")      // Seat 객체가 null이 아니면 좌석 이름, null이면 "정보 없음"
                 .resStart(reservation.getResStart()) // 이용 시작 시간
                 .resEnd(reservation.getResEnd())                          // 이용 종료 시간
                 .totalPrice(reservation.getTotalPrice())                  // 결제 금액 (Integer)
@@ -170,7 +170,7 @@ public class AdminReservationService {
 
         // Seat 리스트 -> SeatDto 리스트 변환
         List<SeatDto> seatDtos = seats.stream()
-                .map(seat -> new SeatDto(seat.getSeatNo(), seat.getSeatNm()))
+                .map(seat -> new SeatDto(seat.getId(), seat.getName()))
                 .collect(Collectors.toList());
 
         log.info("좌석 목록 DTO 변환 완료. 조회된 좌석 수: {}", seatDtos.size());

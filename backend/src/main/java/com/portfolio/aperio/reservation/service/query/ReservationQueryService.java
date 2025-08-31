@@ -1,7 +1,6 @@
 package com.portfolio.aperio.reservation.service.query;
 
 import com.portfolio.aperio.reservation.domain.Reservation;
-import com.portfolio.aperio.reservation.dto.user.ReservationInfo;
 import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
 import com.portfolio.aperio.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,12 +34,12 @@ public class ReservationQueryService {
      * @param date
      * @return
      */
-    public List<ReservationInfo> getReservationsBySeatAndDate(Long id, LocalDateTime date) {
-        return reservationRepository.findBySeatIdAndDate(id, date)
-                .stream()
-                .map(ReservationInfo::from)
-                .collect(Collectors.toList());
-
-    }
+//    public List<ReservationInfo> getReservationsBySeatAndDate(Long id, LocalDateTime date) {
+//        return reservationRepository.findBySeatIdAndDate(id, date)
+//                .stream()
+//                .map(ReservationInfo::from)
+//                .collect(Collectors.toList());
+//
+//    }
 
 }

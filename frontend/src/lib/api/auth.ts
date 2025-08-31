@@ -1,36 +1,11 @@
-import { apiClient, ApiError } from "./client";
-import type {
-  SignUpData,
-  LoginData,
-  LoginResponse,
-  CurrentUserResponse,
-  User,
-} from "@/types/auth";
+import { apiClient } from "./client";
+import type { LoginData, User } from "@/types/auth";
 
+// 인증 관련 API (로그인, 로그아웃)
 export const authAPI = {
-  // 회원가입
-  signUp: async (userData: SignUpData) => {
-    return apiClient.post("/api/v1/auth/signup", userData);
-  },
-
-  // 로그인
-  login: async (loginData: LoginData): Promise<LoginResponse> => {
-    return apiClient.post<LoginResponse>("/api/v1/auth/login", loginData);
-  },
-
-  // 현재 사용자 정보 조회
-  getCurrentUser: async (): Promise<CurrentUserResponse> => {
-    try {
-      const user = await apiClient.get<User>("/api/v1/users/me");
-      return { authenticated: true, user };
-    } catch (error) {
-      // ApiError인 경우 상태 코드 확인
-      if (error instanceof ApiError && error.status === 401) {
-        return { authenticated: false };
-      }
-      // 다른 에러는 다시 throw
-      throw error;
-    }
+  // 로그인 - 세션 기반이므로 사용자 정보만 반환
+  login: async (loginData: LoginData): Promise<User> => {
+    return apiClient.post<User>("/api/v1/auth/login", loginData);
   },
 
   // 로그아웃
@@ -38,11 +13,8 @@ export const authAPI = {
     try {
       await apiClient.post("/api/v1/auth/logout");
     } catch (error) {
-      // 로그아웃은 실패해도 클라이언트 상태 초기화
-      console.warn(
-        "Logout request failed, but proceeding with client cleanup",
-        error
-      );
+      // 403 에러가 발생해도 클라이언트 측에서는 로그아웃 처리
+      console.warn("로그아웃 요청 실패, 클라이언트 상태만 초기화:", error);
     }
   },
 };

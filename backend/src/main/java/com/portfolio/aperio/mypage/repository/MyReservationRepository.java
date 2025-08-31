@@ -25,7 +25,7 @@ public interface MyReservationRepository extends JpaRepository<Reservation, Long
      */
     @Query(
             "SELECT NEW com.portfolio.aperio.reservation.dto.user.UserReservationResponse(" +
-            "r.resNo, r.resDt, s.seatNm, r.resStart, r.resEnd, r.totalPrice, r.resPrice, r.dcPrice, " +
+            "r.resNo, r.resDt, s.name, r.resStart, r.resEnd, r.totalPrice, r.resPrice, r.dcPrice, " +
             "CASE " +
             "  WHEN r.resStatus = true AND r.resEnd > :now THEN '1' " +     // 예약완료 & 종료시간 미래 -> '1' (예정)
             "  WHEN r.resStatus = true AND r.resEnd <= :now THEN '2' " +    // 예약완료 & 종료시간 과거/현재 -> '2' (지난)
@@ -33,7 +33,7 @@ public interface MyReservationRepository extends JpaRepository<Reservation, Long
             "  ELSE 'UNKNOWN' " +                                           // 예외 케이스 처리
             "END" +
             ") " +
-            "FROM Reservation r JOIN Seat s ON r.seatNo = s.seatNo " +      // Seat 테이블 조인 (좌석 이름 가져오기)
+            "FROM Reservation r JOIN Seat s ON r.seatNo = s.id " +      // Seat 테이블 조인 (좌석 이름 가져오기)
             "WHERE r.userNo = :userNo " +                                   // 1. 로그인 사용자 필터링
             "  AND r.resDt BETWEEN :startDateTime AND :endDateTime " +      // 2. 예약일(resDt) 기준 날짜 필터링
             "  AND (CASE " +

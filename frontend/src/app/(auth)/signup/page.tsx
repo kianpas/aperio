@@ -13,7 +13,7 @@ import {
   FaArrowRight,
 } from "react-icons/fa";
 import { SiKakao, SiNaver } from "react-icons/si";
-import { authAPI } from "@/lib/api";
+import { accountAPI } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
@@ -131,7 +131,7 @@ const SignUp = () => {
         phoneNumber: formData.phoneNumber,
         password: formData.password,
       };
-      await authAPI.signUp(signUpData);
+      await accountAPI.signUp(signUpData);
 
       alert("회원가입이 완료되었습니다!");
       router.push("/login"); // 로그인 페이지로 이동

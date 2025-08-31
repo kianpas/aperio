@@ -1,123 +1,84 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { authAPI } from "@/lib/api/auth";
-import { LoginData, User, LoginResponse } from "@/types/auth";
-
-interface AuthState {
-  user: User | null;
-  loading: boolean;
-  isAuthenticated: boolean;
-}
+import { accountAPI } from "@/lib/api/account";
+import { LoginData, User, AuthState } from "@/types/auth";
 
 export const useAuth = () => {
-  const [authState, setAuthState] = useState<AuthState>({
+  const [state, setState] = useState<AuthState>({
     user: null,
-    loading: true,
     isAuthenticated: false,
+    loading: true,
   });
 
-  // 초기 사용자 정보 로드
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const userData = await authAPI.getCurrentUser();
-        if (userData.authenticated && userData.user) {
-          setAuthState({
-            user: userData.user,
-            loading: false,
-            isAuthenticated: true,
-          });
-        } else {
-          setAuthState({
-            user: null,
-            loading: false,
-            isAuthenticated: false,
-          });
-        }
-      } catch (error) {
-        console.log(error);
-        setAuthState({
-          user: null,
-          loading: false,
-          isAuthenticated: false,
-        });
-      }
-    };
-
-    loadUser();
+  // 사용자 정보 로드 함수
+  const loadUser = useCallback(async () => {
+    try {
+      const user = await accountAPI.getCurrentUser();
+      console.log("useAuth - loadUser result:", user);
+      console.log("useAuth - user type:", typeof user);
+      console.log("useAuth - user keys:", user ? Object.keys(user) : 'null');
+      
+      setState({
+        user,
+        isAuthenticated: !!user,
+        loading: false,
+      });
+    } catch (error) {
+      console.error("사용자 정보 로드 실패:", error);
+      setState({
+        user: null,
+        isAuthenticated: false,
+        loading: false,
+      });
+    }
   }, []);
 
-  const login = async (
-    credentials: LoginData
-  ): Promise<{ success: boolean; user?: User }> => {
+  // 초기 로드
+  useEffect(() => {
+    loadUser();
+  }, [loadUser]);
+
+  // 로그인
+  const login = useCallback(async (credentials: LoginData): Promise<User> => {
     try {
-      // 백엔드에서 LoginUserResponse 직접 반환
-      const result: LoginResponse = await authAPI.login(credentials);
-
-      console.log("useAuth-login-result => ", result);
-
-      const user: User = {
-        email: result.email,
-        name: result.name,
-      };
-
-      console.log("useAuth-login-user => ", user);
-
-      setAuthState({
+      const user = await authAPI.login(credentials);
+      setState({
         user,
-        loading: false,
         isAuthenticated: true,
+        loading: false,
       });
-
-      console.log("useAuth-login-authstate => ", authState);
-
-      return { success: true, user };
+      return user;
     } catch (error) {
+      setState(prev => ({ ...prev, loading: false }));
       throw error;
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  // 로그아웃
+  const logout = useCallback(async () => {
     try {
       await authAPI.logout();
+    } catch (error) {
+      console.error("로그아웃 요청 실패:", error);
     } finally {
-      setAuthState({
+      setState({
         user: null,
-        loading: false,
         isAuthenticated: false,
+        loading: false,
       });
     }
-  };
+  }, []);
 
-  const refetch = async () => {
-    setAuthState((prev) => ({ ...prev, loading: true }));
-    try {
-      const userData = await authAPI.getCurrentUser();
-      if (userData.authenticated && userData.user) {
-        setAuthState({
-          user: userData.user,
-          loading: false,
-          isAuthenticated: true,
-        });
-      } else {
-        setAuthState({
-          user: null,
-          loading: false,
-          isAuthenticated: false,
-        });
-      }
-    } catch {
-      setAuthState({
-        user: null,
-        loading: false,
-        isAuthenticated: false,
-      });
-    }
-  };
+  // 사용자 정보 새로고침
+  const refresh = useCallback(() => {
+    setState(prev => ({ ...prev, loading: true }));
+    return loadUser();
+  }, [loadUser]);
 
   return {
-    ...authState,
+    ...state,
     login,
     logout,
-    refetch,
+    refresh,
   };
 };

@@ -29,6 +29,8 @@ const Login = () => {
   // useAuth 추가
   const { login } = useAuth();
 
+
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -46,8 +48,10 @@ const Login = () => {
         password: formData.password,
       });
 
-      if (result.user) {
-        console.log(`환영합니다, ${result.user.name}님!`);
+      console.log("result ", result)
+
+      if (result.email) {
+        console.log(`환영합니다, ${result.email}님!`);
         // router.push("/");
         window.location.href = "/";
       }

@@ -83,7 +83,7 @@ public class ReservationController {
                 String seatName = "좌석 이름";
                 try {
                     seatName = seatRepository.findById(reservation.getSeatNo())
-                            .map(Seat::getSeatNm)
+                            .map(Seat::getName)
                             .orElse("삭제된 좌석?");
                 } catch (Exception seatEx) {
                     System.err.println("좌석 이름 조회 중 오류: " + seatEx.getMessage());

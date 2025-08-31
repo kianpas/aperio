@@ -1,4 +1,4 @@
-// 인증 관련 타입 정의
+//인증 타입 정의
 export interface SignUpData {
   name: string;
   email: string;
@@ -19,21 +19,14 @@ export interface User {
   createdAt?: string;
 }
 
-export interface LoginResponse {
-  email: string;
-  name: string;
-  authorities: string[];
-}
-
 export interface CurrentUserResponse {
   authenticated: boolean;
   user?: User;
 }
 
-export interface UserProfile {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  plan: string;
-  createdAt: string;
+// 세션 기반 인증 상태
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  loading: boolean;
 }
