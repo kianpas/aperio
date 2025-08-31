@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { authAPI } from "@/lib/api/auth";
 import { accountAPI } from "@/lib/api/account";
-import { LoginData, User, AuthState } from "@/types/auth";
+import type { LoginData, User, AuthState } from "@/types/auth";
 
 export const useAuth = () => {
   const [state, setState] = useState<AuthState>({

@@ -1,12 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { userAPI } from "@/lib/api/user";
-import { UserProfile } from "@/types/auth";
+import type { UserProfile, UserState } from "@/types/user";
 
-interface UserState {
-  profile: UserProfile | null;
-  loading: boolean;
-  error: string | null;
-}
+// UserState는 이제 @/types/user에서 import
 
 export const useUser = () => {
   const [userState, setUserState] = useState<UserState>({

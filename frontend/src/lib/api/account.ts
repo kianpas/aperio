@@ -1,5 +1,6 @@
 import { apiClient, ApiError } from "./client";
-import type { SignUpData, User, CurrentUserResponse } from "@/types/auth";
+import type { SignUpData } from "@/types/account";
+import type { User, CurrentUserResponse } from "@/types/auth";
 
 // 계정 관리 관련 API (회원가입, 사용자 정보 관리)
 export const accountAPI = {

@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import type { UserProfile } from '@/types/auth';
+import type { UserProfile, PasswordChangeData } from '@/types/user';
 
 export const userAPI = {
   // 사용자 프로필 조회
@@ -13,7 +13,7 @@ export const userAPI = {
   },
 
   // 비밀번호 변경
-  changePassword: async (passwordData: { currentPassword: string; newPassword: string }) => {
+  changePassword: async (passwordData: PasswordChangeData) => {
     return apiClient.post('/api/v1/users/me/change-password', passwordData);
   },
 
