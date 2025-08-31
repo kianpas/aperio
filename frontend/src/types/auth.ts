@@ -19,6 +19,15 @@ export interface User {
   createdAt?: string;
 }
 
+// 사용자 프로필 (상세 정보)
+export interface UserProfile {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  plan: string;
+  createdAt: string;
+}
+
 export interface CurrentUserResponse {
   authenticated: boolean;
   user?: User;
