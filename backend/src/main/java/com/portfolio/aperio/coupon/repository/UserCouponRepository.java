@@ -1,6 +1,6 @@
-package com.portfolio.aperio.usercoupon.repository;
+package com.portfolio.aperio.coupon.repository;
 
-import com.portfolio.aperio.usercoupon.domain.UserCoupon;
+import com.portfolio.aperio.coupon.domain.UserCoupon;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

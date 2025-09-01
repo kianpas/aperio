@@ -1,6 +1,5 @@
 package com.portfolio.aperio.coupon.domain;
 
-import com.portfolio.aperio.usercoupon.domain.UserCoupon;
 import jakarta.persistence.*;
 import lombok.*;
 

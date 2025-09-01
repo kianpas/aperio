@@ -1,10 +1,11 @@
 package com.portfolio.aperio.mypage.dto;
 
-import com.portfolio.aperio.usercoupon.domain.UserCoupon;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+
+import com.portfolio.aperio.coupon.domain.UserCoupon;
 
 @Getter
 @Builder

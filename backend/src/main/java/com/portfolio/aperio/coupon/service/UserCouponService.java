@@ -1,9 +1,9 @@
-package com.portfolio.aperio.usercoupon.service;
+package com.portfolio.aperio.coupon.service;
 
 import com.portfolio.aperio.coupon.domain.Coupon;
 import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.usercoupon.domain.UserCoupon;
-import com.portfolio.aperio.usercoupon.repository.UserCouponRepository;
+import com.portfolio.aperio.coupon.domain.UserCoupon;
+import com.portfolio.aperio.coupon.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

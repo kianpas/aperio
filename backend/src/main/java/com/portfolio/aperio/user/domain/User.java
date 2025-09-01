@@ -1,7 +1,8 @@
 package com.portfolio.aperio.user.domain;
 
+import com.portfolio.aperio.coupon.domain.UserCoupon;
 import com.portfolio.aperio.role.domain.UserRole;
-import com.portfolio.aperio.usercoupon.domain.UserCoupon;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

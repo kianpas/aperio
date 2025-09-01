@@ -2,6 +2,8 @@ package com.portfolio.aperio.user.service.query;
 
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.common.exception.ErrorCode;
+import com.portfolio.aperio.coupon.domain.UserCoupon;
+import com.portfolio.aperio.coupon.repository.UserCouponRepository;
 import com.portfolio.aperio.coupon.service.CouponService;
 import com.portfolio.aperio.mypage.dto.MypageCouponResDto;
 import com.portfolio.aperio.reservation.domain.Reservation;
@@ -11,8 +13,6 @@ import com.portfolio.aperio.user.domain.User;
 import com.portfolio.aperio.user.dto.response.user.UserInfoResponse;
 import com.portfolio.aperio.user.dto.response.user.UserProfileResponse;
 import com.portfolio.aperio.user.repository.UserRepository;
-import com.portfolio.aperio.usercoupon.domain.UserCoupon;
-import com.portfolio.aperio.usercoupon.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

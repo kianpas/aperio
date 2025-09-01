@@ -4,7 +4,6 @@ import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.common.exception.ErrorCode;
 import com.portfolio.aperio.coupon.domain.Coupon;
 import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.usercoupon.service.UserCouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
