@@ -7,7 +7,7 @@ import com.portfolio.aperio.pay.service.KakaoPayService;
 import com.portfolio.aperio.pay.service.PaymentService;
 import com.portfolio.aperio.reservation.domain.Reservation;
 import com.portfolio.aperio.reservation.dto.ReservationRequestDto;
-import com.portfolio.aperio.reservation.service.ReservationService;
+import com.portfolio.aperio.reservation.service.command.ReservationCommandService;
 import com.portfolio.aperio.user.domain.User;
 import com.portfolio.aperio.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -37,7 +37,7 @@ public class PaymentController {
     private UserRepository userRepository;
 
     @Autowired
-    private ReservationService reservationService;
+    private ReservationCommandService reservationCommandService;
 
 
     /**
@@ -74,7 +74,7 @@ public class PaymentController {
             // userId는 서비스에서 username으로 처리하므로 제거
             
             // 임직원이면 카카오페이 생략하게 처리
-            pendingReservation = reservationService.createReservationWithLock(reserveDto, username);
+            pendingReservation = reservationCommandService.createReservationWithLock(reserveDto, username);
             Long resNo = pendingReservation.getResNo(); // 생성된 예약 번호 가져오기
             if (resNo == null) {
                 throw new IllegalStateException("예약 정보 저장 후 예약 번호를 가져올 수 없습니다.");

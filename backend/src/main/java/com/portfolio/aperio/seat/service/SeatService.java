@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.portfolio.aperio.reservation.service.ReservationService;
+import com.portfolio.aperio.reservation.service.query.ReservationQueryService;
 import com.portfolio.aperio.seat.domain.Seat;
 import com.portfolio.aperio.seat.dto.request.user.SeatAvailabilityRequest;
 import com.portfolio.aperio.seat.dto.response.user.SeatAvailabilityResponse;
@@ -20,7 +20,7 @@ public class SeatService {
 
     private final SeatRepository seatRepository;
 
-    private final ReservationService reservationService;
+    private final ReservationQueryService reservationQueryService;
 
     /**
      * 사용가능한 전체 좌석 조회

@@ -29,8 +29,6 @@ const Login = () => {
   // useAuth 추가
   const { login } = useAuth();
 
-
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -48,7 +46,7 @@ const Login = () => {
         password: formData.password,
       });
 
-      console.log("result ", result)
+      console.log("result ", result);
 
       if (result.email) {
         console.log(`환영합니다, ${result.email}님!`);
@@ -62,18 +60,22 @@ const Login = () => {
     }
   };
 
+  const getBackendBase = () => {
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  };
+
   const handleOAuthLogin = (provider: "kakao" | "naver" | "google") => {
     // TODO: OAuth 로그인 연동
     console.log(`${provider} login attempt`);
+    const base = getBackendBase();
 
-    // 실제 구현 시 사용할 URL 예시
-    // const oauthUrls = {
-    //   kakao: "/oauth2/authorization/kakao",
-    //   naver: "/oauth2/authorization/naver",
-    //   google: "/oauth2/authorization/google",
-    // };
+    const url = new URL("/oauth2/authorization/${provider}", base);
 
-    // window.location.href = oauthUrls[provider];
+    // url.searchParams.set(
+    //   "returnUrl",
+    //   returnUrl || window.location.pathname || "/"
+    // );
+    window.location.href = url.toString();
   };
 
   return (

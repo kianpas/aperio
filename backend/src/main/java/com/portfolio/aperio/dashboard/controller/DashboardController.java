@@ -3,8 +3,9 @@ package com.portfolio.aperio.dashboard.controller;
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.mypage.dto.*;
 import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
-import com.portfolio.aperio.reservation.service.ReservationService;
+import com.portfolio.aperio.reservation.service.query.ReservationQueryService;
 import com.portfolio.aperio.user.domain.User;
+import com.portfolio.aperio.user.dto.response.user.MypageCouponResDto;
 import com.portfolio.aperio.user.dto.response.user.UserInfoResponse;
 import com.portfolio.aperio.user.service.command.UserCommandService;
 import com.portfolio.aperio.user.service.query.UserQueryService;
@@ -35,7 +36,7 @@ public class DashboardController {
 
     private final UserCommandService userCommandService;
 
-    private final ReservationService reservationService;
+    private final ReservationQueryService reservationQueryService;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -306,7 +307,7 @@ public class DashboardController {
         try {
 
     // 예약 내역 조회
-            Page<UserReservationResponse> reservationsPage = reservationService.findMyReservations(
+            Page<UserReservationResponse> reservationsPage = reservationQueryService.findMyReservations(
                     user.getUserId(), // 현재 사용자 번호
                     tab,              // 선택된 탭
                     currentStartDate, // 조회 시작일
@@ -369,7 +370,7 @@ public class DashboardController {
         try {
 
             // Service 호출하여 예약 상세 정보 DTO 조회
-            MyReservationDetailDto reservationDetail = reservationService.findMyReservationDetail(user.getUserId(), resNo);
+            MyReservationDetailDto reservationDetail = reservationQueryService.findMyReservationDetail(user.getUserId(), resNo);
 
             if (reservationDetail == null) {
                 log.error("Reservation not found or access denied for resNo: {}", resNo);

@@ -5,11 +5,8 @@ import com.portfolio.aperio.common.exception.ErrorCode;
 import com.portfolio.aperio.coupon.domain.UserCoupon;
 import com.portfolio.aperio.coupon.repository.UserCouponRepository;
 import com.portfolio.aperio.coupon.service.CouponService;
-import com.portfolio.aperio.mypage.dto.MypageCouponResDto;
-import com.portfolio.aperio.reservation.domain.Reservation;
-import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
-import com.portfolio.aperio.reservation.service.ReservationService;
 import com.portfolio.aperio.user.domain.User;
+import com.portfolio.aperio.user.dto.response.user.MypageCouponResDto;
 import com.portfolio.aperio.user.dto.response.user.UserInfoResponse;
 import com.portfolio.aperio.user.dto.response.user.UserProfileResponse;
 import com.portfolio.aperio.user.repository.UserRepository;
@@ -34,8 +31,6 @@ import java.util.List;
 public class UserQueryService {
 
     private final UserRepository userRepository;
-
-    private final ReservationService reservationService;
 
     private final CouponService couponService;
 

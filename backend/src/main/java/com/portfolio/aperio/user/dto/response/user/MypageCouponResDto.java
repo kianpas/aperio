@@ -1,4 +1,4 @@
-package com.portfolio.aperio.mypage.dto;
+package com.portfolio.aperio.user.dto.response.user;
 
 import lombok.Builder;
 import lombok.Getter;
