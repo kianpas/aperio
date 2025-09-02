@@ -32,9 +32,9 @@ const Profile = () => {
 
   console.log("profile =>", profile);
 
-  if (!profile) {
-    return <div>사용자 프로필 정보가 없습니다.</div>;
-  }
+  // if (!profile) {
+  //   return <div>사용자 프로필 정보가 없습니다.</div>;
+  // }
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -53,7 +53,7 @@ const Profile = () => {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    console.log(field, value)
+    console.log(field, value);
     // setEditData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -108,11 +108,14 @@ const Profile = () => {
               )}
             </div> */}
             <div className="text-white">
-              <h2 className="text-2xl font-bold">{profile.name}</h2>
-              <p className="text-blue-100 mt-1">{profile.plan} 멤버</p>
+              <h2 className="text-2xl font-bold">{profile?.name}</h2>
+              <p className="text-blue-100 mt-1">{profile?.plan} 멤버</p>
               <div className="flex items-center mt-2 text-blue-100">
                 <FaCalendarAlt className="mr-2" />
-                <span>가입일: {parseDate(profile.createdAt)}</span>
+                <span>
+                  가입일:{" "}
+                  {profile?.createdAt ? parseDate(profile.createdAt) : ""}
+                </span>
               </div>
             </div>
           </div>
@@ -136,7 +139,7 @@ const Profile = () => {
                 />
               ) : (
                 <div className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900">
-                  {profile.name}
+                  {profile?.name}
                 </div>
               )}
             </div>
@@ -148,7 +151,7 @@ const Profile = () => {
                 이메일
               </label>
               <div className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900 flex items-center justify-between">
-                {profile.email}
+                {profile?.email}
                 <FaShieldAlt className="text-green-500" title="인증됨" />
               </div>
               <p className="text-xs text-gray-500 mt-1">
@@ -171,7 +174,7 @@ const Profile = () => {
                 />
               ) : (
                 <div className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900">
-                  {profile.phoneNumber}
+                  {profile?.phoneNumber}
                 </div>
               )}
             </div>

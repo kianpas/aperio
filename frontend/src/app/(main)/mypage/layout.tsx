@@ -34,7 +34,7 @@ export default function MypageLayout({
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* 사이드바 */}
-      <aside className="w-64 bg-white shadow-lg border-r border-gray-200">
+      <aside className="w-64 bg-white shadow-lg border-r border-gray-200 hidden md:block">
         <div className="p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-8 border-b border-gray-200 pb-4">
             마이페이지
