@@ -2,7 +2,7 @@ package com.portfolio.aperio.auth.controller;
 
 import com.portfolio.aperio.security.CustomUserDetails;
 import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.user.dto.request.user.LgoinUserRequest;
+import com.portfolio.aperio.user.dto.request.user.LoginUserRequest;
 import com.portfolio.aperio.user.dto.response.user.LoginUserResponse;
 import com.portfolio.aperio.user.service.query.UserQueryService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,7 +46,7 @@ public class AuthController {
      * @return
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LgoinUserRequest request,
+    public ResponseEntity<?> login(@Valid @RequestBody LoginUserRequest request,
                                    HttpServletRequest httpRequest,
                                    HttpServletResponse httpResponse) {
 
