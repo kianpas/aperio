@@ -19,7 +19,7 @@ type EditData = { name: string; phoneNumber: string };
 function formatJoinedAt(value: unknown): string {
   if (!value) return "";
   try {
-    return new Date(value as any).toLocaleString();
+    return new Date(value as Date).toLocaleString();
   } catch {
     return String(value);
   }
