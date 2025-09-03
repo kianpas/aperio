@@ -4,7 +4,6 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Service;
 
-import com.portfolio.aperio.mypage.repository.MyReservationRepository;
 import com.portfolio.aperio.seat.repository.SeatRepository;
 
 import lombok.RequiredArgsConstructor;

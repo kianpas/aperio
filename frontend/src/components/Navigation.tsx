@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { FaBars, FaTimes } from "react-icons/fa";
 import LoadingSpinner from "./ui/LoadingSpinner";
@@ -16,12 +16,14 @@ interface Menu {
 interface NavigationProps {
   isMobileMenuOpen: boolean;
   onToggleMobileMenu: () => void;
+  mobileExtra?: ReactNode;
 }
 
-const Navigation = ({
+export default function Navigation({
   isMobileMenuOpen,
   onToggleMobileMenu,
-}: NavigationProps) => {
+  mobileExtra,
+}: NavigationProps) {
   const [menus, setMenus] = useState<Menu[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,12 +33,11 @@ const Navigation = ({
         const response = await fetch("/api/v1/menus");
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
-
         const data: Menu[] = await response.json();
-        setMenus(data.filter((menu) => menu.isActive));
-      } catch (error) {
-        console.error("Error fetching menus:", error);
-        // 기본 메뉴 설정
+        setMenus(data.filter((m) => m.isActive));
+      } catch (e) {
+        console.error("Error fetching menus:", e);
+        // Fallback menus
         setMenus([
           {
             menuId: 1,
@@ -71,7 +72,6 @@ const Navigation = ({
         setLoading(false);
       }
     };
-
     fetchMenus();
   }, []);
 
@@ -103,6 +103,8 @@ const Navigation = ({
         <button
           onClick={onToggleMobileMenu}
           className="text-gray-700 hover:text-blue-600 transition-colors duration-200"
+          aria-label="Toggle navigation"
+          aria-expanded={isMobileMenuOpen}
         >
           {isMobileMenuOpen ? (
             <FaTimes className="w-6 h-6" />
@@ -114,8 +116,8 @@ const Navigation = ({
 
       {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
-        <div className="absolute top-16 left-0 right-0 bg-white shadow-lg border-t border-gray-200 md:hidden z-40">
-          <div className="px-4 py-6 space-y-4">
+        <div className="fixed top-16 left-0 right-0 w-full bg-white shadow-lg border-t border-gray-200 md:hidden z-[60] overflow-x-hidden">
+          <div className="px-4 py-6 space-y-4 max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain touch-pan-y">
             {menus.map((menu) => (
               <Link
                 key={menu.menuId}
@@ -126,11 +128,12 @@ const Navigation = ({
                 {menu.name}
               </Link>
             ))}
+            {mobileExtra && (
+              <div className="pt-4 border-t border-gray-200">{mobileExtra}</div>
+            )}
           </div>
         </div>
       )}
     </>
   );
-};
-
-export default Navigation;
+}

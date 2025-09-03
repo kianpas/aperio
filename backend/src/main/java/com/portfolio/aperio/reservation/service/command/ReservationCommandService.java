@@ -2,7 +2,6 @@ package com.portfolio.aperio.reservation.service.command;
 
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.mypage.dto.MyReservationDetailDto;
-import com.portfolio.aperio.mypage.repository.MyReservationRepository;
 import com.portfolio.aperio.pay.domain.Payment;
 import com.portfolio.aperio.pay.repository.PaymentRepository;
 import com.portfolio.aperio.reservation.domain.Reservation;
@@ -45,7 +44,6 @@ public class ReservationCommandService {
 
     private final PaymentRepository paymentRepository;
 
-
     private static final long LOCK_TIMEOUT_SECONDS = 10;
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final LocalTime OPEN_TIME = LocalTime.of(9, 0);
@@ -64,7 +62,7 @@ public class ReservationCommandService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("예약 서비스에서 사용자를 찾을 수 없습니다: " + username));
         Long userNo = user.getUserId();
-        //TODO: 임시 코드
+        // TODO: 임시 코드
         String authCd = "임직원";
         if (userNo == null) {
             throw new IllegalStateException("사용자 번호(userNo)를 가져올 수 없습니다.");
@@ -81,7 +79,8 @@ public class ReservationCommandService {
                 }
                 requestDto.getSelectedTimes().sort(Comparator.naturalOrder());
                 LocalTime startTime = LocalTime.parse(requestDto.getSelectedTimes().get(0), TIME_FORMATTER);
-                LocalTime lastTime = LocalTime.parse(requestDto.getSelectedTimes().get(requestDto.getSelectedTimes().size() - 1), TIME_FORMATTER);
+                LocalTime lastTime = LocalTime.parse(
+                        requestDto.getSelectedTimes().get(requestDto.getSelectedTimes().size() - 1), TIME_FORMATTER);
                 startDateTime = reservationDate.atTime(startTime);
                 endDateTime = reservationDate.atTime(lastTime.plusHours(1));
                 break;
@@ -101,7 +100,8 @@ public class ReservationCommandService {
         String lockValue = UUID.randomUUID().toString();
         Boolean lockAcquired = false;
         try {
-            lockAcquired = redisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, Duration.ofSeconds(LOCK_TIMEOUT_SECONDS));
+            lockAcquired = redisTemplate.opsForValue().setIfAbsent(lockKey, lockValue,
+                    Duration.ofSeconds(LOCK_TIMEOUT_SECONDS));
 
             if (lockAcquired == null || !lockAcquired) {
                 System.out.println("락 획득 실패: " + lockKey);
@@ -123,7 +123,7 @@ public class ReservationCommandService {
             String finalPriceStr = calculateFinalPrice(basePriceStr, discountPriceStr);
 
             boolean isAuth = "임직원".equals(authCd);
-            if(isAuth){
+            if (isAuth) {
                 System.out.println("임직원 권한 유저 확인 0원으로 계산 처리 합시다.");
                 finalPriceStr = "0";
                 discountPriceStr = basePriceStr;
@@ -145,7 +145,8 @@ public class ReservationCommandService {
             System.out.println("[Service] DB 저장 직전 reservation 객체 상태: " + reservation.getResStatus());
 
             Reservation savedReservation = reservationRepository.save(reservation);
-            System.out.println("[Service] >>> DB Reservation 저장 완료! ResNo: " + savedReservation.getResNo() + ", Status: " + savedReservation.getResStatus());
+            System.out.println("[Service] >>> DB Reservation 저장 완료! ResNo: " + savedReservation.getResNo()
+                    + ", Status: " + savedReservation.getResStatus());
             return savedReservation;
 
         } finally {
@@ -163,22 +164,29 @@ public class ReservationCommandService {
 
     private String calculateBasePrice(String planType, List<String> selectedTimes) {
         switch (planType) {
-            case "HOURLY": return String.valueOf((selectedTimes != null ? selectedTimes.size() : 0) * 2000);
-            case "DAILY": return "10000";
-            case "MONTHLY": return "99000";
-            default: return "0";
+            case "HOURLY":
+                return String.valueOf((selectedTimes != null ? selectedTimes.size() : 0) * 2000);
+            case "DAILY":
+                return "10000";
+            case "MONTHLY":
+                return "99000";
+            default:
+                return "0";
         }
     }
-    
+
     private String calculateDiscount(String basePriceStr, String couponId) {
-        if (couponId == null || couponId.isEmpty()) return "0";
+        if (couponId == null || couponId.isEmpty())
+            return "0";
         int basePrice = Integer.parseInt(basePriceStr);
         int discount = 0;
-        if ("D1000".equals(couponId)) discount = 1000;
-        else if ("P10".equals(couponId)) discount = (int) (basePrice * 0.1);
+        if ("D1000".equals(couponId))
+            discount = 1000;
+        else if ("P10".equals(couponId))
+            discount = (int) (basePrice * 0.1);
         return String.valueOf(Math.min(discount, basePrice));
     }
-    
+
     private String calculateFinalPrice(String basePriceStr, String discountPriceStr) {
         return String.valueOf(Integer.parseInt(basePriceStr) - Integer.parseInt(discountPriceStr));
     }
@@ -189,7 +197,7 @@ public class ReservationCommandService {
     @Transactional
     public void cancelReservation(Long resNo, Long currentUserId) {
         System.out.printf("[Service] 예약 취소 요청 수신 - ResNo: %d, Username: %s%n", resNo, currentUserId);
-        
+
         Reservation reservation = reservationRepository.findById(resNo)
                 .orElseThrow(() -> new EntityNotFoundException("취소할 예약 정보를 찾을 수 없습니다: " + resNo));
 
@@ -200,7 +208,7 @@ public class ReservationCommandService {
         if (Boolean.FALSE.equals(reservation.getResStatus())) {
             throw new IllegalStateException("이미 취소 처리된 예약입니다.");
         }
-        
+
         LocalDateTime now = LocalDateTime.now();
         if (reservation.getResStart() != null && now.isAfter(reservation.getResStart())) {
             System.out.println("[Service] 경고: 이미 시작된 예약 취소 시도 (현재 로직 허용)");
@@ -250,6 +258,5 @@ public class ReservationCommandService {
         reservationRepository.save(reservation);
         System.out.println("Reservation 상태 업데이트 완료 (취소)");
     }
-
 
 }

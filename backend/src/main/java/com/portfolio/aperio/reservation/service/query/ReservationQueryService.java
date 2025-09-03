@@ -2,7 +2,6 @@ package com.portfolio.aperio.reservation.service.query;
 
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.mypage.dto.MyReservationDetailDto;
-import com.portfolio.aperio.mypage.repository.MyReservationRepository;
 import com.portfolio.aperio.reservation.domain.Reservation;
 import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
 import com.portfolio.aperio.reservation.repository.ReservationRepository;
@@ -32,8 +31,6 @@ public class ReservationQueryService {
 
     private final ReservationRepository reservationRepository;
 
-    private final MyReservationRepository myReservationRepository; // 예약 리포지토리 주입
-    
     private final SeatRepository seatRepository; // 좌석 리포지토리 주입
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -121,7 +118,7 @@ public class ReservationQueryService {
         LocalDateTime now = LocalDateTime.now();
 
         // 4. Repository 호출하여 예약 내역 조회
-        Page<UserReservationResponse> results = myReservationRepository.findUserReservationsWithStatus(
+        Page<UserReservationResponse> results = reservationRepository.findUserReservationsWithStatus(
                 userNo, startDateTime, endDateTime, tabStatus, now, pageable);
 
         log.debug("findMyReservations Service - Found {} reservations for tab '{}'", results.getTotalElements(), tab);
@@ -163,7 +160,7 @@ public class ReservationQueryService {
         log.debug("findMyReservationDetail Service - userNo: {}, resNo: {}", userNo, resNo);
 
         // 1. 예약 정보 조회 (findById 사용)
-        Reservation reservation = myReservationRepository.findById(resNo)
+        Reservation reservation = reservationRepository.findById(resNo)
                 .orElseThrow(() -> {
                     log.warn("Reservation not found for resNo: {}", resNo);
                     // return new NotFoundException("예약 번호 " + resNo + "에 해당하는 예약 정보를 찾을 수 없습니다.");

@@ -8,13 +8,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { FaUser } from "react-icons/fa";
 import LoadingSpinner from "./ui/LoadingSpinner";
 
-const Header = () => {
+export default function Header() {
   const { user, loading, isAuthenticated, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
-
-  console.log("user =>", user);
-  console.log("user =>", user?.name);
 
   const handleLogout = async () => {
     try {
@@ -26,19 +23,15 @@ const Header = () => {
     }
   };
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
 
-  // 사용자 정보 표시 컴포넌트
   const UserInfo = ({ className = "" }: { className?: string }) => (
     <div className={`flex items-center space-x-2 ${className}`}>
       <FaUser className="w-4 h-4 text-gray-600" />
-      <span className="text-sm text-gray-700 font-medium">{user?.name}님</span>
+      <span className="text-sm text-gray-700 font-medium">{user?.name}</span>
     </div>
   );
 
-  // 인증된 사용자 메뉴
   const AuthenticatedMenu = ({ isMobile = false }: { isMobile?: boolean }) => (
     <div className={isMobile ? "space-y-3" : "flex items-center space-x-4"}>
       <UserInfo />
@@ -63,7 +56,7 @@ const Header = () => {
       </button>
     </div>
   );
-
+  
   // 비인증 사용자 메뉴
   const UnauthenticatedMenu = ({
     isMobile = false,
@@ -96,6 +89,16 @@ const Header = () => {
     </div>
   );
 
+  const mobileAuthArea = loading ? (
+    <div className="py-2">
+      <LoadingSpinner size="sm" />
+    </div>
+  ) : isAuthenticated ? (
+    <AuthenticatedMenu isMobile />
+  ) : (
+    <UnauthenticatedMenu isMobile />
+  );
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -111,13 +114,14 @@ const Header = () => {
           </div>
 
           {/* 네비게이션 + 인증 */}
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-8 relative">
             <Navigation
               isMobileMenuOpen={isMobileMenuOpen}
               onToggleMobileMenu={toggleMobileMenu}
+              mobileExtra={mobileAuthArea}
             />
 
-            {/* 데스크톱 인증 영역 */}
+           {/* 데스크톱 인증 영역 */}
             <div className="hidden md:flex items-center space-x-4">
               {loading ? (
                 <LoadingSpinner size="sm" />
@@ -129,22 +133,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-
-        {/* 모바일 인증 영역 */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 pt-4 pb-4">
-            {loading ? (
-              <LoadingSpinner size="sm" />
-            ) : isAuthenticated ? (
-              <AuthenticatedMenu isMobile />
-            ) : (
-              <UnauthenticatedMenu isMobile />
-            )}
-          </div>
-        )}
       </div>
     </header>
   );
-};
-
-export default Header;
+}

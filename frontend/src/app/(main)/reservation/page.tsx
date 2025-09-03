@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import {
   FaCalendarAlt,
   FaChair,
@@ -11,6 +11,32 @@ import SeatSelectionStep from "@/components/reservation/SeatSelectionStep";
 import DateTimeSelectionStep from "@/components/reservation/DateTimeSelectionStep";
 import PaymentStep from "@/components/reservation/PaymentStep";
 import { Seat, TimeSlot, Coupon, PlanType } from "@/types/reservation";
+
+// Sample coupons as module-level constant (no useMemo needed)
+// 샘플 쿠폰 데이터 (실제로는 API에서 가져올 데이터)
+const SAMPLE_COUPON: Coupon[] = [
+  {
+    id: "WELCOME10",
+    name: "신규 회원 특가",
+    discount: 10,
+    type: "percentage",
+    description: "첫 예약 10% 할인",
+  },
+  {
+    id: "FIXED5000",
+    name: "얼리버드 할인",
+    discount: 5000,
+    type: "fixed",
+    description: "오전 예약 시 5,000원 할인",
+  },
+  {
+    id: "MONTHLY20",
+    name: "월정액 프리미엄",
+    discount: 20,
+    type: "percentage",
+    description: "월정액 20% 할인 + 무료 커피",
+  },
+];
 
 const ReservationPage = () => {
   // 상태 관리
@@ -129,34 +155,6 @@ const ReservationPage = () => {
     { time: "18:00", available: true, selected: false, price: 1800 },
   ];
 
-  // 샘플 쿠폰 데이터 (실제로는 API에서 가져올 데이터)
-  const sampleCoupons: Coupon[] = useMemo(
-    () => [
-      {
-        id: "WELCOME10",
-        name: "신규 회원 특가",
-        discount: 10,
-        type: "percentage",
-        description: "첫 예약 10% 할인",
-      },
-      {
-        id: "FIXED5000",
-        name: "얼리버드 할인",
-        discount: 5000,
-        type: "fixed",
-        description: "오전 예약 시 5,000원 할인",
-      },
-      {
-        id: "MONTHLY20",
-        name: "월정액 프리미엄",
-        discount: 20,
-        type: "percentage",
-        description: "월정액 20% 할인 + 무료 커피",
-      },
-    ],
-    []
-  );
-
   // 좌석 선택 핸들러
   const handleSeatSelect = (seat: Seat) => {
     if (seat.status === "unavailable") return;
@@ -205,7 +203,7 @@ const ReservationPage = () => {
 
     // 쿠폰 할인 적용
     if (selectedCoupon) {
-      const coupon = sampleCoupons.find((c) => c.id === selectedCoupon);
+      const coupon = SAMPLE_COUPON.find((c) => c.id === selectedCoupon);
       if (coupon) {
         if (coupon.type === "percentage") {
           price = price * (1 - coupon.discount / 100);
@@ -216,7 +214,7 @@ const ReservationPage = () => {
     }
 
     setTotalPrice(Math.floor(price));
-  }, [selectedSeat, planType, selectedTimes, selectedCoupon, sampleCoupons]);
+  }, [selectedSeat, planType, selectedTimes, selectedCoupon, SAMPLE_COUPON]);
 
   // 결제 진행
   const handlePayment = () => {
@@ -372,7 +370,7 @@ const ReservationPage = () => {
                 selectedDate={selectedDate}
                 planType={planType}
                 selectedTimes={selectedTimes}
-                coupons={sampleCoupons}
+                coupons={SAMPLE_COUPON}
                 selectedCoupon={selectedCoupon}
                 onCouponChange={setSelectedCoupon}
                 totalPrice={totalPrice}
