@@ -136,7 +136,9 @@ const SignUp = () => {
       await accountAPI.signUp(signUpData);
 
       setSubmitError(null);
-      setSubmitSuccess("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.");
+      setSubmitSuccess(
+        "회원가입이 완료되었습니다. 로그인 페이지로 이동합니다."
+      );
       router.push("/login"); // 로그인 페이지로 이동
     } catch (error: unknown) {
       let message = "회원가입에 실패했습니다. 다시 시도해주세요.";
@@ -146,11 +148,12 @@ const SignUp = () => {
         } else if (error.status === 400) {
           message = error.message || "입력값을 확인해주세요.";
         } else if (error.status && error.status >= 500) {
-          message = error.message?.includes("역할") || error.message?.includes("ROLE")
-            ? "시스템 설정 오류(권한 정보 누락)로 회원가입을 완료할 수 없습니다. 관리자에게 문의해주세요."
-            : "서버 오류로 회원가입을 완료할 수 없습니다. 잠시 후 다시 시도해주세요.";
-        } else if ((error as any)?.message) {
-          message = (error as any).message;
+          message =
+            error.message?.includes("역할") || error.message?.includes("ROLE")
+              ? "시스템 설정 오류(권한 정보 누락)로 회원가입을 완료할 수 없습니다. 관리자에게 문의해주세요."
+              : "서버 오류로 회원가입을 완료할 수 없습니다. 잠시 후 다시 시도해주세요.";
+        } else if (error?.message) {
+          message = error.message;
         }
       }
       setSubmitSuccess(null);

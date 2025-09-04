@@ -1,4 +1,5 @@
 // 예약 관련 타입 정의
+// 화면(UI)에서 사용하는 좌석/타임슬롯/쿠폰과 서버 전송 페이로드/유틸을 한 곳에 모았습니다.
 export interface Seat {
   id: string;
   name: string;
@@ -38,6 +39,9 @@ export interface CreateReservationPayload {
 export type PlanType = "HOURLY" | "DAILY" | "MONTHLY";
 
 // 시간 유틸(간단 예시)
+/**
+ * 날짜(YYYY-MM-DD)와 시각(HH:mm)을 ISO-8601 문자열로 변환합니다.
+ */
 function toIso(date: string, time: string) {
   // date: "2025-03-20", time: "09:00"
   const [y, m, d] = date.split("-").map(Number);
@@ -95,4 +99,32 @@ export function buildPayloadFromState(
   if (selectedCoupon) payload.couponCode = selectedCoupon;
 
   return payload;
+}
+
+/**
+ * CreateReservationPayload 형태 판별 가드
+ * (간단한 런타임 체크로 TypeScript에서 타입을 좁힐 때 사용 가능)
+ */
+export function isCreateReservationPayload(
+  v: unknown
+): v is CreateReservationPayload {
+  if (!v || typeof v !== "object") return false;
+  const o = v as Record<string, unknown>;
+  const hasCoreFields =
+    typeof o.seatId === "number" &&
+    typeof o.planType === "string" &&
+    typeof o.startAt === "string" &&
+    typeof o.endAt === "string";
+  return hasCoreFields;
+}
+
+/**
+ * 서버가 예약 생성 후 반환하는 응답 형태(예시).
+ * 서버 응답 DTO가 확정되면 필드명을 맞춰 주세요.
+ */
+export interface CreateReservationResponse {
+  reservationId: number;
+  status: string; // PENDING | CONFIRMED | ...
+  paymentRequired?: boolean;
+  paymentRedirectUrl?: string;
 }

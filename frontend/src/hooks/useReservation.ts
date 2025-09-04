@@ -1,18 +1,20 @@
 import { reservationAPI } from "@/lib/api/reservation";
-import { useState, useEffect, useCallback } from "react";
-import type { Reservation } from "@/lib/api/reservation";
-
-import {CreateReservationPayload} from "@/types/reservation";
+import { useCallback } from "react";
+import type {
+  CreateReservationPayload,
+  CreateReservationResponse,
+} from "@/types/reservation";
 
 export const useReservation = () => {
   //   const [reservation, setReservation] = useState<Reservation | null>(null);
 
   const createReservation = useCallback(
-    async (data: CreateReservationPayload): Promise<CreateReservationPayload> => {
-      const newReservation = await reservationAPI.createReservation(data);
-      console.log("Created Reservation:", newReservation);
-      //   setReservation(newReservation);
-      return newReservation;
+    async (
+      data: CreateReservationPayload
+    ): Promise<CreateReservationResponse> => {
+      const created = await reservationAPI.createReservation(data);
+      console.log("Created Reservation:", created);
+      return created;
     },
     []
   );

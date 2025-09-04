@@ -76,9 +76,8 @@ const ReservationPage = () => {
       console.log("Reservation created:", result);
       alert("예약 생성이 완료되었습니다.");
       // TODO: 결제 ready API로 이어지게 연결하거나, 예약 상세로 이동
-    } catch (e: any) {
-      const msg =
-        e?.message || "예약에 실패했습니다. 잠시 후 다시 시도해주세요.";
+    } catch (e) {
+      const msg = "예약에 실패했습니다. 잠시 후 다시 시도해주세요.";
       alert(msg);
     }
   };
