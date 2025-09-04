@@ -2,6 +2,7 @@ package com.portfolio.aperio.dashboard.controller;
 
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.mypage.dto.*;
+import com.portfolio.aperio.reservation.dto.response.user.MyReservationDetailDto;
 import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
 import com.portfolio.aperio.reservation.service.query.ReservationQueryService;
 import com.portfolio.aperio.user.domain.User;
@@ -51,7 +52,7 @@ public class DashboardController {
     ) {
 
         log.debug("user = {}", user);
-        UserInfoResponse userInfoResponse = userQueryService.findUserbyId(user.getUserId());
+        UserInfoResponse userInfoResponse = userQueryService.findUserbyId(user.getId());
         log.debug("mypageResponseDto.getName = {}", userInfoResponse.getName());
 
         model.addAttribute("userInfo", userInfoResponse);
@@ -67,7 +68,7 @@ public class DashboardController {
 
         log.debug("user = {}", user);
         //1. 회원정보 조회
-        UserInfoResponse UserInfoResponse = userQueryService.findUserbyId(user.getUserId());
+        UserInfoResponse UserInfoResponse = userQueryService.findUserbyId(user.getId());
 
         model.addAttribute("userInfo", UserInfoResponse);
 
@@ -91,7 +92,7 @@ public class DashboardController {
             log.debug("editProfile|userName = {}", user.getName());
             log.debug("editProfile|userInfoEditReqDto = {}", userInfoEditReqDto);
             //정보 수정
-            UserInfoResponse userInfoResponse = userCommandService.updateUserInfo(user.getUserId(), userInfoEditReqDto);
+            UserInfoResponse userInfoResponse = userCommandService.updateUserInfo(user.getId(), userInfoEditReqDto);
             model.addAttribute("userInfo", userInfoResponse);
 
             return "redirect:/mypage/edit";
@@ -136,7 +137,7 @@ public class DashboardController {
         }
 
         try {
-            userCommandService.changePassword(user.getUserId(),
+            userCommandService.changePassword(user.getId(),
                     userPasswordEditReqDto);
             model.addAttribute("result", "success");
             return "redirect:/mypage";
@@ -176,7 +177,7 @@ public class DashboardController {
         }
 
         //비밀번호 일치 여부
-        boolean passwordMatches = userQueryService.verifyPassword(user.getUserId(), currentPassword);
+        boolean passwordMatches = userQueryService.verifyPassword(user.getId(), currentPassword);
 
         if (passwordMatches) {
             return "redirect:/mypage/accountDeletion";
@@ -216,7 +217,7 @@ public class DashboardController {
 
         try {
             //탈퇴 요청
-            userCommandService.accountDeletion(user.getUserId());
+            userCommandService.accountDeletion(user.getId());
 
             return "redirect:/";
         } catch (Exception e) {
@@ -251,7 +252,7 @@ public class DashboardController {
 //                );
 
         Page<MypageCouponResDto> userCouponList = userQueryService.findCouponListByIdPage(
-                user.getUserId(),
+                user.getId(),
                 tab,
                 startDate,
                 endDate,
@@ -308,7 +309,7 @@ public class DashboardController {
 
     // 예약 내역 조회
             Page<UserReservationResponse> reservationsPage = reservationQueryService.findMyReservations(
-                    user.getUserId(), // 현재 사용자 번호
+                    user.getId(), // 현재 사용자 번호
                     tab,              // 선택된 탭
                     currentStartDate, // 조회 시작일
                     currentEndDate,   // 조회 종료일
@@ -370,7 +371,7 @@ public class DashboardController {
         try {
 
             // Service 호출하여 예약 상세 정보 DTO 조회
-            MyReservationDetailDto reservationDetail = reservationQueryService.findMyReservationDetail(user.getUserId(), resNo);
+            MyReservationDetailDto reservationDetail = reservationQueryService.findMyReservationDetail(user.getId(), resNo);
 
             if (reservationDetail == null) {
                 log.error("Reservation not found or access denied for resNo: {}", resNo);

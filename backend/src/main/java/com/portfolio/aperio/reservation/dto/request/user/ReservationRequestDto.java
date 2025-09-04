@@ -1,4 +1,4 @@
-package com.portfolio.aperio.reservation.dto;
+package com.portfolio.aperio.reservation.dto.request.user;
 
 import lombok.Getter;
 import lombok.Setter;

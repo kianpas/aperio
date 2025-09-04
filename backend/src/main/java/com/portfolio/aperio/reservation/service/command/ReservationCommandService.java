@@ -1,11 +1,13 @@
 package com.portfolio.aperio.reservation.service.command;
 
 import com.portfolio.aperio.common.exception.CustomException;
-import com.portfolio.aperio.mypage.dto.MyReservationDetailDto;
 import com.portfolio.aperio.pay.domain.Payment;
 import com.portfolio.aperio.pay.repository.PaymentRepository;
 import com.portfolio.aperio.reservation.domain.Reservation;
-import com.portfolio.aperio.reservation.dto.ReservationRequestDto;
+import com.portfolio.aperio.reservation.domain.ReservationStatus;
+import com.portfolio.aperio.reservation.dto.request.user.CreateReservationRequest;
+import com.portfolio.aperio.reservation.dto.request.user.ReservationRequestDto;
+import com.portfolio.aperio.reservation.dto.response.user.MyReservationDetailDto;
 import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
 import com.portfolio.aperio.reservation.repository.ReservationRepository;
 import com.portfolio.aperio.seat.domain.Seat;
@@ -53,50 +55,55 @@ public class ReservationCommandService {
      * Redis 락을 사용하여 예약을 생성합니다.
      */
     @Transactional
-    public Reservation createReservationWithLock(ReservationRequestDto requestDto, String username) {
-        Objects.requireNonNull(requestDto.getItemId(), "좌석 ID는 필수입니다.");
-        Objects.requireNonNull(requestDto.getReservationDate(), "예약 날짜는 필수입니다.");
-        Objects.requireNonNull(requestDto.getPlanType(), "요금제는 필수입니다.");
-        Objects.requireNonNull(username, "사용자 정보(username)는 필수입니다.");
+    public Reservation createReservationWithLock(CreateReservationRequest request, String username) {
+       
+        log.debug("Creating reservation with request: {} for user: {}", request, username);
+        log.debug("Request details - SeatId: {}, StartAt: {}, EndAt: {}",
+                request.getSeatId(), request.getStartAt(), request.getEndAt());
+       
+        // Objects.requireNonNull(request.getSeatId(), "좌석 ID는 필수입니다.");
+        // Objects.requireNonNull(request.getReservationDate(), "예약 날짜는 필수입니다.");
+        // Objects.requireNonNull(request.getPlanType(), "요금제는 필수입니다.");
+        // Objects.requireNonNull(username, "사용자 정보(username)는 필수입니다.");
 
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("예약 서비스에서 사용자를 찾을 수 없습니다: " + username));
-        Long userNo = user.getUserId();
+        Long userNo = user.getId();
         // TODO: 임시 코드
         String authCd = "임직원";
         if (userNo == null) {
             throw new IllegalStateException("사용자 번호(userNo)를 가져올 수 없습니다.");
         }
 
-        LocalDate reservationDate = LocalDate.parse(requestDto.getReservationDate());
-        LocalDateTime startDateTime;
-        LocalDateTime endDateTime;
+        // LocalDate reservationDate = LocalDate.parse(request.getReservationDate());
+        LocalDateTime startDateTime = null;
+        LocalDateTime endDateTime= null;
 
-        switch (requestDto.getPlanType()) {
-            case "HOURLY":
-                if (requestDto.getSelectedTimes() == null || requestDto.getSelectedTimes().isEmpty()) {
-                    throw new IllegalArgumentException("시간제는 예약 시간을 선택해야 합니다.");
-                }
-                requestDto.getSelectedTimes().sort(Comparator.naturalOrder());
-                LocalTime startTime = LocalTime.parse(requestDto.getSelectedTimes().get(0), TIME_FORMATTER);
-                LocalTime lastTime = LocalTime.parse(
-                        requestDto.getSelectedTimes().get(requestDto.getSelectedTimes().size() - 1), TIME_FORMATTER);
-                startDateTime = reservationDate.atTime(startTime);
-                endDateTime = reservationDate.atTime(lastTime.plusHours(1));
-                break;
-            case "DAILY":
-                startDateTime = reservationDate.atTime(OPEN_TIME);
-                endDateTime = reservationDate.atTime(CLOSE_TIME);
-                break;
-            case "MONTHLY":
-                startDateTime = reservationDate.atTime(OPEN_TIME);
-                endDateTime = reservationDate.plusMonths(1).atTime(CLOSE_TIME);
-                break;
-            default:
-                throw new IllegalArgumentException("알 수 없는 요금제 타입입니다.");
-        }
+        // switch (request.getPlanType()) {
+        //     case "HOURLY":
+        //         if (request.getSelectedTimes() == null || request.getSelectedTimes().isEmpty()) {
+        //             throw new IllegalArgumentException("시간제는 예약 시간을 선택해야 합니다.");
+        //         }
+        //         request.getSelectedTimes().sort(Comparator.naturalOrder());
+        //         LocalTime startTime = LocalTime.parse(request.getSelectedTimes().get(0), TIME_FORMATTER);
+        //         LocalTime lastTime = LocalTime.parse(
+        //                 request.getSelectedTimes().get(request.getSelectedTimes().size() - 1), TIME_FORMATTER);
+        //         startDateTime = reservationDate.atTime(startTime);
+        //         endDateTime = reservationDate.atTime(lastTime.plusHours(1));
+        //         break;
+        //     case "DAILY":
+        //         startDateTime = reservationDate.atTime(OPEN_TIME);
+        //         endDateTime = reservationDate.atTime(CLOSE_TIME);
+        //         break;
+        //     case "MONTHLY":
+        //         startDateTime = reservationDate.atTime(OPEN_TIME);
+        //         endDateTime = reservationDate.plusMonths(1).atTime(CLOSE_TIME);
+        //         break;
+        //     default:
+        //         throw new IllegalArgumentException("알 수 없는 요금제 타입입니다.");
+        // }
 
-        String lockKey = String.format("lock:seat:%s:%s", requestDto.getItemId(), requestDto.getReservationDate());
+        String lockKey = String.format("lock:seat:%s:%s", request.getSeatId(), request.getStartAt().substring(0, 10));
         String lockValue = UUID.randomUUID().toString();
         Boolean lockAcquired = false;
         try {
@@ -110,7 +117,7 @@ public class ReservationCommandService {
             System.out.println("락 획득 성공: " + lockKey);
 
             long overlappingCount = reservationRepository.countOverlappingReservations(
-                    requestDto.getItemId(), startDateTime, endDateTime);
+                    request.getSeatId(), startDateTime, endDateTime);
 
             if (overlappingCount > 0) {
                 System.out.println("중복 예약 발견됨: " + lockKey);
@@ -118,8 +125,8 @@ public class ReservationCommandService {
             }
             System.out.println("DB 예약 가능 확인 완료");
 
-            String basePriceStr = calculateBasePrice(requestDto.getPlanType(), requestDto.getSelectedTimes());
-            String discountPriceStr = calculateDiscount(basePriceStr, requestDto.getCouponId());
+            String basePriceStr = calculateBasePrice(request.getPlanType(), request.getTimeSlots());
+            String discountPriceStr = calculateDiscount(basePriceStr, request.getCouponCode());
             String finalPriceStr = calculateFinalPrice(basePriceStr, discountPriceStr);
 
             boolean isAuth = "임직원".equals(authCd);
@@ -132,21 +139,32 @@ public class ReservationCommandService {
             boolean isConfirmedImmediately = isAuth && isZeroPrice;
             Boolean statusToSet = isConfirmedImmediately ? Boolean.TRUE : null;
 
-            Reservation reservation = new Reservation();
-            reservation.setUserNo(userNo);
-            reservation.setSeatNo(requestDto.getItemId());
-            reservation.setTotalPrice(finalPriceStr);
-            reservation.setResPrice(basePriceStr);
-            reservation.setDcPrice(discountPriceStr);
-            reservation.setResStart(startDateTime);
-            reservation.setResEnd(endDateTime);
-            reservation.setPlanType(requestDto.getPlanType());
-            reservation.setResStatus(statusToSet);
-            System.out.println("[Service] DB 저장 직전 reservation 객체 상태: " + reservation.getResStatus());
+            Reservation reservation = Reservation.create(
+                    user,
+                    Seat.builder().id(request.getSeatId()).build(),
+                    startDateTime,
+                    endDateTime,
+                    request.getPlanType(),
+                    new java.math.BigDecimal(basePriceStr),
+                    new java.math.BigDecimal(discountPriceStr),
+                    null // userCouponId는 추후 구현 예정
+            );
+
+            // Reservation reservation = new Reservation();
+            // reservation.setUserNo(userNo);
+            // reservation.setSeatNo(request.getItemId());
+            // reservation.setTotalPrice(finalPriceStr);
+            // reservation.setResPrice(basePriceStr);
+            // reservation.setDcPrice(discountPriceStr);
+            // reservation.setResStart(startDateTime);
+            // reservation.setResEnd(endDateTime);
+            // reservation.setPlanType(request.getPlanType());
+            // reservation.setResStatus(statusToSet);
+            System.out.println("[Service] DB 저장 직전 reservation 객체 상태: " + reservation.getStatus());
 
             Reservation savedReservation = reservationRepository.save(reservation);
-            System.out.println("[Service] >>> DB Reservation 저장 완료! ResNo: " + savedReservation.getResNo()
-                    + ", Status: " + savedReservation.getResStatus());
+            System.out.println("[Service] >>> DB Reservation 저장 완료! ResNo: " + savedReservation.getId()
+                    + ", Status: " + savedReservation.getStatus());
             return savedReservation;
 
         } finally {
@@ -201,16 +219,16 @@ public class ReservationCommandService {
         Reservation reservation = reservationRepository.findById(resNo)
                 .orElseThrow(() -> new EntityNotFoundException("취소할 예약 정보를 찾을 수 없습니다: " + resNo));
 
-        if (!reservation.getUserNo().equals(currentUserId)) {
+        if (!reservation.getUser().getId().equals(currentUserId)) {
             throw new SecurityException("해당 예약을 취소할 권한이 없습니다.");
         }
 
-        if (Boolean.FALSE.equals(reservation.getResStatus())) {
+        if (Boolean.FALSE.equals(reservation.getStatus())) {
             throw new IllegalStateException("이미 취소 처리된 예약입니다.");
         }
 
         LocalDateTime now = LocalDateTime.now();
-        if (reservation.getResStart() != null && now.isAfter(reservation.getResStart())) {
+        if (reservation.getStartAt() != null && now.isAfter(reservation.getStartAt())) {
             System.out.println("[Service] 경고: 이미 시작된 예약 취소 시도 (현재 로직 허용)");
         }
 
@@ -253,8 +271,8 @@ public class ReservationCommandService {
             System.out.println("[Service] 해당 예약(" + resNo + ")에 대한 결제 정보 없음. Reservation 상태만 변경.");
         }
 
-        reservation.setResStatus(false);
-        reservation.setMoDt(LocalDateTime.now());
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        reservation.setUpdatedAt(LocalDateTime.now());
         reservationRepository.save(reservation);
         System.out.println("Reservation 상태 업데이트 완료 (취소)");
     }

@@ -106,14 +106,14 @@ public class UserQueryService {
         //사용 가능
         if ("available".equalsIgnoreCase(tab)) {
             //2. 회원의 쿠폰 목록 조회
-            userCouponList = userCouponRepository.findByUserCoupon(user.getUserId(),
+            userCouponList = userCouponRepository.findByUserCoupon(user.getId(),
                     "N",
                     startDateTime,
                     endDateTimePlusOne);
 
         } else if ("expired".equalsIgnoreCase(tab)) {
             //만료
-            userCouponList = userCouponRepository.findExpiredCouponsWithDateFilter(user.getUserId(),
+            userCouponList = userCouponRepository.findExpiredCouponsWithDateFilter(user.getId(),
                     "Y",
                     startDateTime,
                     endDateTimePlusOne);
@@ -150,7 +150,7 @@ public class UserQueryService {
         //사용 가능
         if ("available".equalsIgnoreCase(tab)) {
             //2. 회원의 쿠폰 목록 조회
-            userCouponList = userCouponRepository.findByUserCouponPage(user.getUserId(),
+            userCouponList = userCouponRepository.findByUserCouponPage(user.getId(),
                     "N",
                     now,
                     startDateTime,
@@ -159,7 +159,7 @@ public class UserQueryService {
 
         } else if ("expired".equalsIgnoreCase(tab)) {
             //만료
-            userCouponList = userCouponRepository.findExpiredCouponsWithDateFilterPage(user.getUserId(),
+            userCouponList = userCouponRepository.findExpiredCouponsWithDateFilterPage(user.getId(),
                     now,
                     startDateTime,
                     endDateTimePlusOne,

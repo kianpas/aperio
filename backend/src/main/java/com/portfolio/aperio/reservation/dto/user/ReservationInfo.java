@@ -17,9 +17,9 @@ public class ReservationInfo {
 
     public static ReservationInfo from(Reservation reservation) {
         return ReservationInfo.builder()
-                .startTime(reservation.getResStart())
-                .endTime(reservation.getResEnd())
-                .status(reservation.getResStatus().toString())
+                .startTime(reservation.getStartAt())
+                .endTime(reservation.getEndAt())
+                .status(reservation.getStatus().toString())
                 .build();
     }
 

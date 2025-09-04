@@ -1,7 +1,9 @@
-package com.portfolio.aperio.mypage.dto;
+package com.portfolio.aperio.reservation.dto.response.user;
 
 import lombok.Builder;
 import lombok.Getter;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -25,8 +27,8 @@ public class MyReservationDetailDto {
 
     // Payment Info
     private String resPrice;  // 원래 가격
-    private String dcPrice;   // 할인 금액
-    private String totalPrice; // 최종 결제 금액
+    private BigDecimal discountAmount;   // 할인 금액
+    private BigDecimal totalPrice; // 최종 결제 금액
     private String paymentMethod; // 결제 수단 (예: "카드", "가상계좌") - Payment 테이블 연동 필요
     private LocalDateTime paymentApproveDt; // 결제 승인 시각 - Payment 테이블 연동 필요
     // 필요시 쿠폰 정보 필드 추가 가능 (userCpNo)

@@ -22,7 +22,7 @@ public class UserInfoResponse {
 
     public static UserInfoResponse from(User user) {
         return UserInfoResponse.builder()
-                .userId(user.getUserId())
+                .userId(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .phoneNumber(user.getPhoneNumber())

@@ -137,7 +137,7 @@ public class AdminUserService {
         String mappedStatus = "일반".equals(user.getUserStatus()) ? "정상" : String.valueOf(user.getUserStatus());
 
         return UserListDto.builder()
-                .userNo(user.getUserId())
+                .userNo(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .phoneNo(PhoneNumber(user.getPhoneNumber()))
@@ -156,12 +156,12 @@ public class AdminUserService {
      */
     public UserDetailDto getUserDetail(Long userNo) {
         // 1. 사용자 조회
-        User user = userRepository.findByUserId(userNo)
+        User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다. userNo: " + userNo));
 
         // 2. 최근 예약 5개 조회
         Pageable pageable = PageRequest.of(0, RECENT_RESERVATION_COUNT);
-        List<Reservation> recentReservations = reservationRepository.findByUserNoOrderByResDtDesc(userNo, pageable);
+        List<Reservation> recentReservations = reservationRepository.findByUserIdOrderByCreatedAtDesc(userNo, pageable);
 
         // 3. 예약 엔티티 목록 -> 예약 목록 변환
         List<UserDetailReservationListDto> userDetailReservationListDtos = recentReservations.stream()
@@ -179,7 +179,7 @@ public class AdminUserService {
         String mappedStatus = "일반".equals(user.getUserStatus()) ? "정상" : String.valueOf(user.getUserStatus());
 
         return UserDetailDto.builder()
-                .userNo(user.getUserId())
+                .userNo(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .phoneNo(PhoneNumber(user.getPhoneNumber())) // - 적용
@@ -195,19 +195,19 @@ public class AdminUserService {
         // 예약 상태(Boolean) -> 문자열("완료", "취소") 변환
         String statusString;
 
-        if (reservation.getResStatus() == null) {
+        if (reservation.getStatus() == null) {
             statusString = "확인 불가"; // 또는 "진행중" 등 비즈니스 로직에 맞게
         } else {
-            statusString = Boolean.TRUE.equals(reservation.getResStatus()) ? "완료" : "취소";
+            statusString = Boolean.TRUE.equals(reservation.getStatus()) ? "완료" : "취소";
         }
 
         return UserDetailReservationListDto.builder()
-                .resNo(reservation.getResNo())
-                .resDt(reservation.getResDt())
-                .seatNm(mapSeatNoToSeatNoNm(reservation.getSeatNo())) // 좌석번호 -> 좌석명 변환
+                .resNo(reservation.getId())
+                .resDt(reservation.getCreatedAt())
+                .seatNm(mapSeatNoToSeatNoNm(reservation.getSeat().getId())) // 좌석번호 -> 좌석명 변환
                 .resStatusNm(statusString)
-                .resStart(reservation.getResStart())
-                .resEnd(reservation.getResEnd())
+                .resStart(reservation.getStartAt())
+                .resEnd(reservation.getEndAt())
                 .build();
     }
 

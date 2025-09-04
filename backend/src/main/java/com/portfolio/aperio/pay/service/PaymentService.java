@@ -9,12 +9,14 @@ import com.portfolio.aperio.pay.domain.Payment;
 import com.portfolio.aperio.pay.dto.KakaoPayApproveResponseDto;
 import com.portfolio.aperio.pay.repository.PaymentRepository;
 import com.portfolio.aperio.reservation.domain.Reservation;
+import com.portfolio.aperio.reservation.domain.ReservationStatus;
 import com.portfolio.aperio.reservation.repository.ReservationRepository;
 import jakarta.persistence.EntityNotFoundException; // JPA 예외
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // 트랜잭션 사용
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -65,7 +67,12 @@ public class PaymentService {
             // --- 3. 예약자/금액 검증 ---
             // ... (검증 로직은 이전과 동일) ...
             int approvedAmount = approveResponse.getAmount().getTotal();
-            int expectedAmount = Integer.parseInt(reservation.getTotalPrice());
+            
+            BigDecimal expectedAmountBd = reservation.getTotalPrice();
+
+            int expectedAmount = expectedAmountBd != null ? expectedAmountBd.intValue() : 0;
+
+
             if (approvedAmount != expectedAmount) {
                 System.err.printf("!!! 결제 금액 불일치 !!! 예상: %d, 승인: %d%n", expectedAmount, approvedAmount);
                 // !!! 카카오페이 취소 로직 필요 !!!
@@ -77,7 +84,7 @@ public class PaymentService {
             // --- 4. Payment Entity 생성 ---
             Payment payment = Payment.builder()
                     .paymentKey(approveResponse.getAid())
-                    .resNo(reservation.getResNo())
+                    .resNo(reservation.getId())
                     .payPrice(String.valueOf(approvedAmount))
                     .payStatus("DONE")
                     .payApproveDt(approveResponse.getApprovedAt())
@@ -94,9 +101,9 @@ public class PaymentService {
             System.out.println("[PaymentService] >>> Payment 정보 저장 성공! Key: " + savedPayment.getPaymentKey()); // 성공 로그
 
             System.out.println("[PaymentService] Reservation 상태 업데이트 시도...");
-            reservation.setResStatus(true); // 상태 변경 (Boolean=true 가정)
+            reservation.setStatus(ReservationStatus.COMPLETED); // 상태 변경 (Boolean=true 가정)
             Reservation updatedReservation = reservationRepository.save(reservation); // Update Reservation
-            System.out.println("[PaymentService] >>> Reservation 상태 업데이트 성공! ResNo: " + updatedReservation.getResNo()); // 성공 로그
+            System.out.println("[PaymentService] >>> Reservation 상태 업데이트 성공! ResNo: " + updatedReservation.getId()); // 성공 로그
             // --- DB 작업 끝 ---
 
             // 6. 모든 DB 작업 성공 시 결과 반환
@@ -119,7 +126,7 @@ public class PaymentService {
         System.out.println("임직원 결제 (0원) 결제 로직 실행");
 
         // 해당 좌석 예약 중복 방지 로직
-        Optional<Payment> exisPayment = paymentRepository.findByResNo(reservation.getResNo());
+        Optional<Payment> exisPayment = paymentRepository.findByResNo(reservation.getId());
         if(exisPayment.isPresent()){
              System.out.println("이미 해당 예약에 대한 결제 기록 존재. 건너<0xEB><0x9B><0x84>니다.");
              return exisPayment.get();
@@ -127,8 +134,8 @@ public class PaymentService {
 
         // paymeny Entity 생성
         Payment payment = Payment.builder()
-                .paymentKey("ZERO_" + reservation.getResNo() + System.currentTimeMillis())
-                .resNo(reservation.getResNo())
+                .paymentKey("ZERO_" + reservation.getId() + System.currentTimeMillis())
+                .resNo(reservation.getId())
                 .payPrice("0") // 결제 금액 0원
                 .payStatus("DONE") // 결제 처리 완료
                 .payApproveDt(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))

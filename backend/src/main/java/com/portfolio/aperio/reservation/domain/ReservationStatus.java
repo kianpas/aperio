@@ -4,7 +4,7 @@ public enum ReservationStatus {
     CONFIRMED("확정"),
     CANCELLED("취소"),
     COMPLETED("완료"),
-    NO_SHOW("노쇼");
+    PENDING("보류");
 
     private final String description;
 

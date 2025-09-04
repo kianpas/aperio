@@ -1,4 +1,4 @@
-// API 클라이언트 기본 설정
+// API base URL
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 export interface ApiResponse<T = unknown> {
@@ -14,146 +14,169 @@ export class ApiError extends Error {
     public code?: string
   ) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 }
 
-// 공통 fetch 래퍼
+// Cookie helper (browser only)
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+// Ensure XSRF-TOKEN cookie is issued by backend
+async function ensureCsrfCookie(): Promise<void> {
+  if (typeof window === "undefined") return;
+  const hasToken = document.cookie.includes("XSRF-TOKEN=");
+  if (hasToken) return;
+  try {
+    await fetch(`${API_BASE_URL}/api/csrf`, {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    });
+  } catch {
+    // swallow; downstream request will still surface a meaningful error
+  }
+}
+
 export const apiClient = {
-  // 클라이언트 사이드 요청 (credentials 포함)
-  async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  // Browser request with credentials
+  async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
-    
+    const method = (options.method || "GET").toString().toUpperCase();
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      ...(options.headers as Record<string, string> | undefined),
+    };
+
+    // Attach CSRF header for write methods
+    if (
+      typeof window !== "undefined" &&
+      ["POST", "PUT", "PATCH", "DELETE"].includes(method)
+    ) {
+      if (!document.cookie.includes("XSRF-TOKEN=")) {
+        await ensureCsrfCookie();
+      }
+      const xsrf = getCookie("XSRF-TOKEN");
+      if (xsrf) {
+        headers["X-XSRF-TOKEN"] = xsrf;
+      }
+      headers["X-Requested-With"] = headers["X-Requested-With"] || "XMLHttpRequest";
+    }
+
     const config: RequestInit = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      credentials: 'include', // 세션 쿠키 포함
+      credentials: "include", // include session cookie
       ...options,
+      method,
+      headers,
     };
 
     try {
       const response = await fetch(url, config);
-      
-      // 응답이 JSON이 아닌 경우 처리
-      const contentType = response.headers.get('content-type');
-      if (!contentType?.includes('application/json')) {
+
+      // Non-JSON response handling
+      const contentType = response.headers.get("content-type");
+      if (!contentType?.includes("application/json")) {
         if (!response.ok) {
           throw new ApiError(
             `HTTP ${response.status}: ${response.statusText}`,
             response.status
           );
         }
-        return {} as T; // 빈 응답인 경우
+        return {} as T; // empty success body
       }
 
       const data = await response.json();
 
       if (!response.ok) {
         throw new ApiError(
-          data.message || data.error || '요청 처리 실패',
+          (data && (data.message || data.error)) || "Request failed",
           response.status,
-          data.code
+          data?.code
         );
       }
 
       return data;
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
+      if (error instanceof ApiError) throw error;
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new ApiError("네트워크 오류가 발생했습니다. 연결을 확인해주세요.");
       }
-      
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        throw new ApiError('서버에 연결할 수 없습니다. 네트워크를 확인해주세요.');
-      }
-      
-      throw new ApiError('알 수 없는 오류가 발생했습니다.');
+      throw new ApiError("알 수 없는 오류가 발생했습니다.");
     }
   },
 
-  // 서버 사이드 요청 (credentials 없음)
-  async serverRequest<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
-    const url = process.env.INTERNAL_API_URL 
+  // Server-side request (no credentials)
+  async serverRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const url = process.env.INTERNAL_API_URL
       ? `${process.env.INTERNAL_API_URL}${endpoint}`
       : `${API_BASE_URL}${endpoint}`;
-    
+
     const config: RequestInit = {
       headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
       },
-      // 서버에서는 credentials 제외
       ...options,
     };
 
     try {
       const response = await fetch(url, config);
-      
       if (!response.ok) {
+        // eslint-disable-next-line no-console
         console.error(`Server API Error: ${response.status} ${response.statusText}`);
-        throw new ApiError(
-          `Server request failed: ${response.status}`,
-          response.status
-        );
+        throw new ApiError(`Server request failed: ${response.status}`, response.status);
       }
 
-      const contentType = response.headers.get('content-type');
-      if (!contentType?.includes('application/json')) {
+      const contentType = response.headers.get("content-type");
+      if (!contentType?.includes("application/json")) {
         return {} as T;
       }
-
       return response.json();
     } catch (error) {
-      console.error('Server API request failed:', error);
-      throw error instanceof ApiError ? error : new ApiError('Server request failed');
+      // eslint-disable-next-line no-console
+      console.error("Server API request failed:", error);
+      throw error instanceof ApiError ? error : new ApiError("Server request failed");
     }
   },
 
-  // GET 요청
   get<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    return this.request<T>(endpoint, { method: 'GET', ...options });
+    return this.request<T>(endpoint, { method: "GET", ...options });
   },
 
-  // POST 요청
   post<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
-      method: 'POST',
+      method: "POST",
       body: data ? JSON.stringify(data) : undefined,
       ...options,
     });
   },
 
-  // PUT 요청
   put<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
-      method: 'PUT',
+      method: "PUT",
       body: data ? JSON.stringify(data) : undefined,
       ...options,
     });
   },
 
-  // DELETE 요청
   delete<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    return this.request<T>(endpoint, { method: 'DELETE', ...options });
+    return this.request<T>(endpoint, { method: "DELETE", ...options });
   },
 };
 
-// 서버 컴포넌트용 클라이언트
 export const serverApiClient = {
   get<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    return apiClient.serverRequest<T>(endpoint, { method: 'GET', ...options });
+    return apiClient.serverRequest<T>(endpoint, { method: "GET", ...options });
   },
 
   post<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
     return apiClient.serverRequest<T>(endpoint, {
-      method: 'POST',
+      method: "POST",
       body: data ? JSON.stringify(data) : undefined,
       ...options,
     });

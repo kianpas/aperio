@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RegisterUserResponse {
 
-    private Long userId;
+    private Long id;
     private String email;
     private String name;
     private String message;
@@ -22,7 +22,7 @@ public class RegisterUserResponse {
 
     public static RegisterUserResponse success(User user) {
         return RegisterUserResponse.builder()
-                .userId(user.getUserId())
+                .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .message("회원가입이 완료되었습니다")

@@ -3,6 +3,7 @@ package com.portfolio.aperio.reservation.dto.user;
 import com.portfolio.aperio.reservation.domain.Reservation;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 // 마이페이지 > 예약 내역 조회 DTO
@@ -14,9 +15,9 @@ import java.time.LocalDateTime;
 public class UserReservationResponse {
 
     private Long resNo;                 // 예약 번호
-    private String totalPrice;          // 총 결제 금액
-    private String resPrice;            // 좌석 예약 비용
-    private String dcPrice;             // 할인 비용
+    private BigDecimal totalPrice;          // 총 결제 금액
+    private BigDecimal basePrice;            // 좌석 예약 비용
+    private BigDecimal discountAmount;             // 할인 비용
 
     private String userCpNo;            // 쿠폰 식별 번호
 
@@ -30,35 +31,12 @@ public class UserReservationResponse {
 
     public static UserReservationResponse from(Reservation reservation) {
         return UserReservationResponse.builder()
-                .resNo(reservation.getResNo())
+                .resNo(reservation.getId())
                 .totalPrice(reservation.getTotalPrice())
-                .resPrice(reservation.getResPrice())
-                .dcPrice(reservation.getDcPrice())
+                .basePrice(reservation.getBasePrice())
+                .discountAmount(reservation.getDiscountAmount())
                 .build();
     }
 
-
-    public UserReservationResponse(
-            Long resNo,
-            LocalDateTime resDt,
-            String seatNm,
-            LocalDateTime resStart,
-            LocalDateTime resEnd,
-            String totalPrice,
-            String resPrice,
-            String dcPrice,
-            String resStatus
-        )
-    {
-        this.resNo = resNo;
-        this.resDt = resDt;
-        this.seatNm = seatNm;
-        this.resStart = resStart;
-        this.resEnd = resEnd;
-        this.totalPrice = totalPrice;
-        this.resPrice = resPrice;
-        this.dcPrice = dcPrice;
-        this.resStatus = resStatus;
-    }
 
 }

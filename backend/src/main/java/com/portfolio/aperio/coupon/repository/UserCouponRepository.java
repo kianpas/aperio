@@ -16,7 +16,7 @@ public interface UserCouponRepository extends JpaRepository<UserCoupon, Long> {
 
     // 사용가능 쿠폰
     @Query("SELECT uc FROM UserCoupon uc LEFT JOIN FETCH uc.coupon c " +
-            "WHERE uc.user.userId = :userNo " +
+            "WHERE uc.user.id = :userNo " +
             "AND uc.useAt = :useAt " +
             "AND (:startDate IS NULL OR uc.coupon.cpnStartDt >= :startDate) " + // 시작일 조건
             "AND (:endDatePlusOne IS NULL OR uc.coupon.cpnStartDt < :endDatePlusOne) " + // 종료일 조건
@@ -33,7 +33,7 @@ public interface UserCouponRepository extends JpaRepository<UserCoupon, Long> {
      */
     @Query(value = """
             SELECT uc FROM UserCoupon uc LEFT JOIN FETCH uc.coupon c
-            WHERE uc.user.userId = :userNo
+            WHERE uc.user.id = :userNo
             AND uc.useAt = :useAt
             AND c.cpnStartDt     <= :now
             AND c.cpnEndDt       >= :now             
@@ -45,7 +45,7 @@ public interface UserCouponRepository extends JpaRepository<UserCoupon, Long> {
              SELECT COUNT(uc)
                 FROM UserCoupon uc
                 JOIN uc.coupon c
-                WHERE uc.user.userId   = :userNo
+                WHERE uc.user.id   = :userNo
                   AND uc.useAt         = 'N'
                   AND c.cpnStartDt     <= :now
                   AND c.cpnEndDt       >= :now
@@ -61,7 +61,7 @@ public interface UserCouponRepository extends JpaRepository<UserCoupon, Long> {
 
     // 기간만료 쿠폰
     @Query("SELECT uc FROM UserCoupon uc LEFT JOIN FETCH uc.coupon c " +
-            "WHERE uc.user.userId = :userNo " +
+            "WHERE uc.user.id = :userNo " +
             "AND uc.useAt = :useAt " +
             "AND (:startDate IS NULL OR uc.coupon.cpnStartDt >= :startDate) " + // 시작일 조건
             "AND (:endDatePlusOne IS NULL OR uc.coupon.cpnStartDt < :endDatePlusOne) " + // 종료일 조건
@@ -76,7 +76,7 @@ public interface UserCouponRepository extends JpaRepository<UserCoupon, Long> {
     // 기간만료 쿠폰
     @Query(value = """
             SELECT uc FROM UserCoupon uc LEFT JOIN FETCH uc.coupon c
-            WHERE uc.user.userId = :userNo
+            WHERE uc.user.id = :userNo
             AND c.cpnEndDt       < :now
             AND (:startDate IS NULL OR uc.coupon.cpnStartDt >= :startDate)
             AND (:endDatePlusOne IS NULL OR uc.coupon.cpnStartDt < :endDatePlusOne)
@@ -86,7 +86,7 @@ public interface UserCouponRepository extends JpaRepository<UserCoupon, Long> {
              SELECT COUNT(uc)
                 FROM UserCoupon uc
                 JOIN uc.coupon c
-                WHERE uc.user.userId   = :userNo
+                WHERE uc.user.id   = :userNo
                   AND c.cpnEndDt       < :now
                   AND (:startDate      IS NULL OR c.cpnStartDt >= :startDate)
                   AND (:endDatePlusOne IS NULL OR c.cpnStartDt <  :endDatePlusOne)

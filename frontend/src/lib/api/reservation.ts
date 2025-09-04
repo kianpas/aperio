@@ -1,11 +1,12 @@
-import { apiClient, serverApiClient } from './client';
+import { apiClient, serverApiClient } from "./client";
+import { CreateReservationPayload } from "@/types/reservation";
 
 // 예약 관련 타입들은 별도 파일로 분리 예정
 export interface Seat {
   id: number;
   name: string;
   type: string;
-  status: 'available' | 'occupied' | 'maintenance';
+  status: "available" | "occupied" | "maintenance";
   price: number;
 }
 
@@ -15,30 +16,29 @@ export interface Reservation {
   userId: number;
   startTime: string;
   endTime: string;
-  status: 'active' | 'completed' | 'cancelled';
+  status: "active" | "completed" | "cancelled";
   totalPrice: number;
-}
-
-export interface CreateReservationData {
-  seatId: number;
-  startTime: string;
-  endTime: string;
 }
 
 export const reservationAPI = {
   // 좌석 목록 조회
   getSeats: async (): Promise<Seat[]> => {
-    return apiClient.get<Seat[]>('/api/v1/seats');
+    return apiClient.get<Seat[]>("/api/v1/seats");
   },
 
   // 예약 생성
-  createReservation: async (data: CreateReservationData): Promise<Reservation> => {
-    return apiClient.post<Reservation>('/api/v1/reservations', data);
+  createReservation: async (
+    payload: CreateReservationPayload
+  ): Promise<CreateReservationPayload> => {
+    return apiClient.post<CreateReservationPayload>(
+      "/api/v1/reservations",
+      payload
+    );
   },
 
   // 내 예약 목록 조회
   getMyReservations: async (): Promise<Reservation[]> => {
-    return apiClient.get<Reservation[]>('/api/v1/reservations/my');
+    return apiClient.get<Reservation[]>("/api/v1/reservations/my");
   },
 
   // 예약 취소
@@ -51,6 +51,6 @@ export const reservationAPI = {
 export const serverReservationAPI = {
   // 서버에서 좌석 목록 조회 (SSR용)
   getSeats: async (): Promise<Seat[]> => {
-    return serverApiClient.get<Seat[]>('/api/v1/seats');
+    return serverApiClient.get<Seat[]>("/api/v1/seats");
   },
 };

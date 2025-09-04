@@ -27,7 +27,7 @@ public class UserInfoEditReqDto {
 
     public static UserInfoEditReqDto from(User user) {
         return UserInfoEditReqDto.builder()
-                .userNo(user.getUserId())
+                .userNo(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .phoneNo(user.getPhoneNumber())

@@ -1,8 +1,8 @@
 package com.portfolio.aperio.reservation.service.query;
 
 import com.portfolio.aperio.common.exception.CustomException;
-import com.portfolio.aperio.mypage.dto.MyReservationDetailDto;
 import com.portfolio.aperio.reservation.domain.Reservation;
+import com.portfolio.aperio.reservation.dto.response.user.MyReservationDetailDto;
 import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
 import com.portfolio.aperio.reservation.repository.ReservationRepository;
 import com.portfolio.aperio.seat.domain.Seat;
@@ -118,10 +118,13 @@ public class ReservationQueryService {
         LocalDateTime now = LocalDateTime.now();
 
         // 4. Repository 호출하여 예약 내역 조회
-        Page<UserReservationResponse> results = reservationRepository.findUserReservationsWithStatus(
-                userNo, startDateTime, endDateTime, tabStatus, now, pageable);
+        // Page<UserReservationResponse> results = reservationRepository.findUserReservationsWithStatus(
+        //         userNo, startDateTime, endDateTime, tabStatus, now, pageable);
+            
+        Page<UserReservationResponse> results = null;
 
-        log.debug("findMyReservations Service - Found {} reservations for tab '{}'", results.getTotalElements(), tab);
+
+        // log.debug("findMyReservations Service - Found {} reservations for tab '{}'", results.getTotalElements(), tab);
 
         return results; // 조회 결과(Page 객체) 반환
     }
@@ -136,7 +139,7 @@ public class ReservationQueryService {
         LocalDateTime now = LocalDateTime.now();
 
         // 4. Repository 호출하여 예약 내역 조회
-        List<Reservation> reservationList = reservationRepository.findReservationsById(userId);
+        List<Reservation> reservationList = reservationRepository.findReservationsByUserId(userId);
 
         List<UserReservationResponse> userReservationList = reservationList
                 .stream()
@@ -168,15 +171,15 @@ public class ReservationQueryService {
                 });
 
         // 2. 사용자 권한 확인
-        if (!reservation.getUserNo().equals(userNo)) {
+        if (!reservation.getUser().getId().equals(userNo)) {
             log.warn("Authorization denied for userNo {} trying to access reservation resNo {}", userNo, resNo);
             // throw new AuthorizationDeniedException("해당 예약 정보에 접근할 권한이 없습니다.");
         }
 
         // 3. 좌석 정보 조회
-        Seat seat = seatRepository.findById(reservation.getSeatNo())
+        Seat seat = seatRepository.findById(reservation.getSeat().getId())
                 .orElseGet(() -> {
-                    log.warn("Seat not found for seatNo: {} (referenced by resNo: {})", reservation.getSeatNo(), resNo);
+                    log.warn("Seat not found for seatNo: {} (referenced by resNo: {})", reservation.getSeat().getId(), resNo);
 
                     // 좌석 정보가 없어도 예약을 보여줘야 할 수 있으므로, 기본 Seat 객체나 null 처리 고려
                     Seat unknownSeat = new Seat();
@@ -195,16 +198,15 @@ public class ReservationQueryService {
 
         // MyReservationDetailDto 빌더 사용
         return MyReservationDetailDto.builder()
-                .resNo(reservation.getResNo())
-                .resDt(reservation.getResDt())
+                .resNo(reservation.getId())
+                .resDt(reservation.getCreatedAt())
                 .statusCode(statusCode)
                 .displayStatus(displayStatus)
                 .seatNm(seat.getName())
                 // .seatSort(seat.getSeatSort()) // SeatSort가 null일 수 있음에 유의
-                .resStart(reservation.getResStart())
-                .resEnd(reservation.getResEnd())
-                .resPrice(reservation.getResPrice()) // 필요시 Long/BigDecimal 변환
-                .dcPrice(reservation.getDcPrice()) // 필요시 Long/BigDecimal 변환 및 null 처리
+                .resStart(reservation.getStartAt())
+                .resEnd(reservation.getEndAt())
+                .discountAmount(reservation.getDiscountAmount()) // 필요시 Long/BigDecimal 변환 및 null 처리
                 .totalPrice(reservation.getTotalPrice()) // 필요시 Long/BigDecimal 변환
                 // --- 결제 정보 ---
                 // 현재 Reservation 엔티티에 없으므로 임시로 null 또는 기본값 처리
@@ -219,10 +221,10 @@ public class ReservationQueryService {
 
     private String calculateStatusCode(Reservation reservation, LocalDateTime now) {
 
-        if (Boolean.FALSE.equals(reservation.getResStatus())) { // resStatus가 false (0) 이면 취소
+        if (Boolean.FALSE.equals(reservation.getStatus())) { // resStatus가 false (0) 이면 취소
             return "3"; // 취소됨
-        } else if (Boolean.TRUE.equals(reservation.getResStatus())) { // resStatus가 true (1) 이면 예약완료 상태
-            if (reservation.getResEnd() != null && reservation.getResEnd().isAfter(now)) {
+        } else if (Boolean.TRUE.equals(reservation.getStatus())) { // resStatus가 true (1) 이면 예약완료 상태
+            if (reservation.getEndAt() != null && reservation.getEndAt().isAfter(now)) {
                 return "1"; // 이용예정
             } else {
                 return "2"; // 이용완료
@@ -230,8 +232,8 @@ public class ReservationQueryService {
         }
 
         // resStatus가 null이거나 예상치 못한 경우 (정책에 따라 처리)
-        log.warn("Unknown reservation status for resNo: {}, resStatus: {}", reservation.getResNo(),
-                reservation.getResStatus());
+        log.warn("Unknown reservation status for resNo: {}, resStatus: {}", reservation.getId(),
+                reservation.getStatus());
         return "UNKNOWN"; // 또는 기본 상태
     }
 
@@ -252,14 +254,14 @@ public class ReservationQueryService {
     // --- 예약 변경 가능 여부 계산 로직 (예시) ---
     private boolean calculateCanModify(Reservation reservation, LocalDateTime now) {
         // 예시: 이용 시작 전이고, 취소되지 않은 예약만 변경 가능
-        return "1".equals(calculateStatusCode(reservation, now)) && reservation.getResStart().isAfter(now);
+        return "1".equals(calculateStatusCode(reservation, now)) && reservation.getStartAt().isAfter(now);
         // TODO: 실제 비즈니스 규칙에 맞게 수정
     }
 
     // --- 예약 취소 가능 여부 계산 로직 (예시) ---
     private boolean calculateCanCancel(Reservation reservation, LocalDateTime now) {
         // 예시: 이용 시작 전이고, 취소되지 않은 예약만 취소 가능
-        return "1".equals(calculateStatusCode(reservation, now)) && reservation.getResStart().isAfter(now);
+        return "1".equals(calculateStatusCode(reservation, now)) && reservation.getStartAt().isAfter(now);
         // TODO: 실제 비즈니스 규칙에 맞게 수정 (취소 정책 반영 - 예: 1시간 전까지만 가능)
     }
 

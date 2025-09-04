@@ -11,6 +11,8 @@ import SeatSelectionStep from "@/components/reservation/SeatSelectionStep";
 import DateTimeSelectionStep from "@/components/reservation/DateTimeSelectionStep";
 import PaymentStep from "@/components/reservation/PaymentStep";
 import { Seat, TimeSlot, Coupon, PlanType } from "@/types/reservation";
+import { useReservation } from "@/hooks/useReservation";
+import { buildPayloadFromState } from "@/types/reservation";
 
 // Sample coupons as module-level constant (no useMemo needed)
 // 샘플 쿠폰 데이터 (실제로는 API에서 가져올 데이터)
@@ -47,11 +49,44 @@ const ReservationPage = () => {
   const [selectedCoupon, setSelectedCoupon] = useState<string>("");
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [currentStep, setCurrentStep] = useState<number>(1);
+  // Hydration mismatch 방지: 클라이언트 마운트 후에만 시간 렌더
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { createReservation } = useReservation();
+
+  const handlePayment = async () => {
+    const payload = buildPayloadFromState(
+      selectedSeat,
+      planType,
+      selectedDate,
+      selectedTimes,
+      selectedCoupon || undefined
+    );
+
+    if (!payload) {
+      alert("좌석/날짜/시간 선택을 확인해주세요.");
+      return;
+    }
+
+    try {
+      const result = await createReservation(payload);
+      console.log("Reservation created:", result);
+      alert("예약 생성이 완료되었습니다.");
+      // TODO: 결제 ready API로 이어지게 연결하거나, 예약 상세로 이동
+    } catch (e: any) {
+      const msg =
+        e?.message || "예약에 실패했습니다. 잠시 후 다시 시도해주세요.";
+      alert(msg);
+    }
+  };
 
   // 샘플 데이터
   const sampleSeats: Seat[] = [
     {
-      id: "A1",
+      id: "1",
       name: "Focus Zone A1",
       type: "individual",
       status: "available",
@@ -60,7 +95,7 @@ const ReservationPage = () => {
       capacity: 1,
     },
     {
-      id: "A2",
+      id: "2",
       name: "Focus Zone A2",
       type: "individual",
       status: "unavailable",
@@ -69,7 +104,7 @@ const ReservationPage = () => {
       capacity: 1,
     },
     {
-      id: "A3",
+      id: "3",
       name: "Focus Zone A3",
       type: "individual",
       status: "available",
@@ -78,7 +113,7 @@ const ReservationPage = () => {
       capacity: 1,
     },
     {
-      id: "A4",
+      id: "4",
       name: "Focus Zone A4",
       type: "individual",
       status: "available",
@@ -87,7 +122,7 @@ const ReservationPage = () => {
       capacity: 1,
     },
     {
-      id: "B1",
+      id: "5",
       name: "Premium Desk B1",
       type: "individual",
       status: "available",
@@ -96,7 +131,7 @@ const ReservationPage = () => {
       capacity: 1,
     },
     {
-      id: "B2",
+      id: "6",
       name: "Premium Desk B2",
       type: "individual",
       status: "selected",
@@ -105,7 +140,7 @@ const ReservationPage = () => {
       capacity: 1,
     },
     {
-      id: "M1",
+      id: "7",
       name: "Innovation Room",
       type: "meeting",
       status: "available",
@@ -114,7 +149,7 @@ const ReservationPage = () => {
       capacity: 8,
     },
     {
-      id: "M2",
+      id: "8",
       name: "Collaboration Hub",
       type: "meeting",
       status: "available",
@@ -123,7 +158,7 @@ const ReservationPage = () => {
       capacity: 6,
     },
     {
-      id: "P1",
+      id: "9",
       name: "Phone Booth Alpha",
       type: "phone",
       status: "available",
@@ -216,25 +251,6 @@ const ReservationPage = () => {
     setTotalPrice(Math.floor(price));
   }, [selectedSeat, planType, selectedTimes, selectedCoupon, SAMPLE_COUPON]);
 
-  // 결제 진행
-  const handlePayment = () => {
-    if (!selectedSeat || !selectedDate) {
-      alert("좌석과 날짜를 선택해주세요.");
-      return;
-    }
-
-    if (planType === "HOURLY" && selectedTimes.length === 0) {
-      alert("시간을 선택해주세요.");
-      return;
-    }
-
-    alert(
-      `결제 진행!\n좌석: ${
-        selectedSeat.name
-      }\n날짜: ${selectedDate}\n요금제: ${planType}\n총 금액: ${totalPrice.toLocaleString()}원`
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 간단한 헤더 */}
@@ -249,8 +265,19 @@ const ReservationPage = () => {
             </div>
             <div className="text-right">
               <div className="text-sm text-gray-700">실시간 업데이트</div>
-              <div className="text-sm font-medium text-gray-900">
-                {new Date().toLocaleTimeString()}
+              <div
+                className="text-sm font-medium text-gray-900"
+                suppressHydrationWarning
+              >
+                {mounted
+                  ? new Intl.DateTimeFormat("ko-KR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      hour12: false,
+                      timeZone: "Asia/Seoul",
+                    }).format(new Date())
+                  : ""}
               </div>
             </div>
           </div>

@@ -49,7 +49,7 @@ public class AccountController {
         // try {
         // couponIssueService.issueSignUpCoupon(user);
         // } catch (Exception e) {
-        // log.error("회원가입 성공 후 쿠폰 발급 실패. 사용자: {}, 에러: {}", user.getUserId(),
+        // log.error("회원가입 성공 후 쿠폰 발급 실패. 사용자: {}, 에러: {}", user.getId(),
         // e.getMessage(), e);
         // }
         // }

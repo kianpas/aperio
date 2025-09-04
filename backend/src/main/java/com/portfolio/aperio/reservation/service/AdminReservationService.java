@@ -137,21 +137,21 @@ public class AdminReservationService {
 
         // 예약 상태(Boolean)를 화면에 표시할 문자열("완료", "취소" 등)로 변환
         String statusString;
-        if (reservation.getResStatus() == null) {
+        if (reservation.getStatus() == null) {
             statusString = "확인 불가"; // DB 값이 null 일 때
         } else {
-            statusString = Boolean.TRUE.equals(reservation.getResStatus()) ? "완료" : "취소"; // true면 "완료", false면 "취소"
+            statusString = Boolean.TRUE.equals(reservation.getStatus()) ? "완료" : "취소"; // true면 "완료", false면 "취소"
         }
 
         // ReservationListDto 객체를 빌더 패턴으로 생성하여 반환
         return ReservationListDto.builder()
-                .resNo(reservation.getResNo())                             // 예약 번호
-                .resDt(reservation.getResDt())                             // 예약 신청 일시
+                .resNo(reservation.getId())                             // 예약 번호
+                .resDt(reservation.getCreatedAt())                             // 예약 신청 일시
                 .userEmail(user != null ? user.getEmail() : "정보 없음")    // User 객체가 null이 아니면 이메일, null이면 "정보 없음"
                 .userName(user != null ? user.getName() : "정보 없음")      // User 객체가 null이 아니면 이름, null이면 "정보 없음"
                 .seatNm(seat != null ? seat.getName() : "정보 없음")      // Seat 객체가 null이 아니면 좌석 이름, null이면 "정보 없음"
-                .resStart(reservation.getResStart()) // 이용 시작 시간
-                .resEnd(reservation.getResEnd())                          // 이용 종료 시간
+                .resStart(reservation.getStartAt()) // 이용 시작 시간
+                .resEnd(reservation.getEndAt())                          // 이용 종료 시간
                 .totalPrice(reservation.getTotalPrice())                  // 결제 금액 (Integer)
                 .resStatus(statusString)                                  // 변환된 상태 문자열
                 .build();

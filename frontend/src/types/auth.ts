@@ -25,3 +25,12 @@ export interface User {
   plan?: string;
   createdAt?: string;
 }
+
+// 회원가입 성공 응답 타입
+export interface RegisterUserResponse {
+  id: number;
+  email: string;
+  name: string;
+  message: string;
+  createdAt: string; // ISO 문자열(백엔드 LocalDateTime 직렬화)
+}

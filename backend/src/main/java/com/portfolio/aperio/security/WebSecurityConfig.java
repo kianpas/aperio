@@ -22,6 +22,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -45,17 +46,22 @@ public class WebSecurityConfig {
     // 특정 HTTP 요청에 대한 웹 기반 보안 구성
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        CookieCsrfTokenRepository repo = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+        requestHandler.setCsrfRequestAttributeName("_csrf"); // 요청 처리 시 토큰 접근 명시
+
         http
-                //CORS
+                // CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                //세션/쿠키 기반이면 활성 권장
+                // 세션/쿠키 기반이면 활성 권장
                 .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/api/v1/auth/login", "/api/v1/accounts/signup", "/api/v1/auth/logout")
-                )
+                        .csrfTokenRepository(repo)
+                        .csrfTokenRequestHandler(requestHandler)
+                        .ignoringRequestMatchers("/api/v1/auth/login", "/api/v1/accounts/signup",
+                                "/api/v1/auth/logout", "/api/csrf"))
 
                 // 예: 일부 훅/헬스체크나 외부콜백은 CSRF 제외
-                //.ignoringRequestMatchers("/actuator/**", "/webhook/**")
+                // .ignoringRequestMatchers("/actuator/**", "/webhook/**")
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/css/**", "/js/**", "/img/**",
@@ -77,8 +83,7 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요시 세션 생성
                         .maximumSessions(1) // 동시 세션 1개
                         .maxSessionsPreventsLogin(false) // 새 로그인 시 기존 세션 만료
-                        .sessionRegistry(sessionRegistry())
-                )
+                        .sessionRegistry(sessionRegistry()))
                 // 4. 폼 기반 로그인 설정
                 .formLogin(form -> form
                         .loginPage("/login") // 커스텀 로그인 페이지 지정
@@ -91,10 +96,10 @@ public class WebSecurityConfig {
                         .logoutSuccessUrl("/") // 로그아웃 성공 시 이동할 URL
                         .invalidateHttpSession(true) // 로그아웃 시 세션 무효화
                         .clearAuthentication(true)
-                        .deleteCookies("JSESSIONID", "XSRF-TOKEN")
-                )
-//                // 6. CSRF 비활성화
-//                .csrf(AbstractHttpConfigurer::disable) // .csrf(csrf -> csrf.disable()) 와 동일, 메서드 레퍼런스 사용
+                        .deleteCookies("JSESSIONID", "XSRF-TOKEN"))
+                // // 6. CSRF 비활성화
+                // .csrf(AbstractHttpConfigurer::disable) // .csrf(csrf -> csrf.disable()) 와 동일,
+                // 메서드 레퍼런스 사용
                 // 7. OAuth2 소셜 로그인 설정 추가
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login") // 로그인 페이지 지정 (인증이 필요할 때 이동)
@@ -143,13 +148,15 @@ public class WebSecurityConfig {
         CorsConfiguration cfg = new CorsConfiguration();
         // 프론트 개발/운영 URL로 교체
         cfg.setAllowedOrigins(List.of(
-                "http://localhost:3000",           // React 개발 서버
-                "http://localhost:3001",           // 추가 개발 포트
-                "http://localhost:63342",          // IntelliJ 내장 서버
-                "https://your-app.vercel.app"      // 프로덕션 환경 (실제 도메인으로 변경 필요)
+                "http://localhost:3000", // React 개발 서버
+                "http://localhost:3001", // 추가 개발 포트
+                "http://localhost:63342", // IntelliJ 내장 서버
+                "https://your-app.vercel.app" // 프로덕션 환경 (실제 도메인으로 변경 필요)
         ));
-        cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
-        cfg.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-XSRF-TOKEN"));
+        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        cfg.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept",
+                "X-Requested-With", " X-XSRF-TOKEN",
+                "X-XSRF-TOKEN"));
         cfg.setAllowCredentials(true); // ★ 쿠키 전송 허용
         cfg.setMaxAge(3600L);
 

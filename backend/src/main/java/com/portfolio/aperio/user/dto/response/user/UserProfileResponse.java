@@ -22,7 +22,7 @@ public class UserProfileResponse {
 
     public static UserProfileResponse from(User user) {
         return UserProfileResponse.builder()
-                .userId(user.getUserId())
+                .userId(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .phoneNumber(user.getPhoneNumber())

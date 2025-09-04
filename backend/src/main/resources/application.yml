@@ -53,6 +53,6 @@ spring:
 logging:
   level:
     root: INFO
-    com.portfolio.aperio: INFO
+    com.portfolio.aperio: DEBUG
 
 

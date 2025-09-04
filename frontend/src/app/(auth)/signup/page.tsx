@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import { SiKakao, SiNaver } from "react-icons/si";
 import { accountAPI } from "@/lib/api";
+import { ApiError } from "@/lib/api/client";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
@@ -33,6 +34,8 @@ const SignUp = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [phoneError, setPhoneError] = useState("");
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
   // 전화번호 포맷팅 함수
   const formatPhoneNumber = (value: string) => {
@@ -119,10 +122,9 @@ const SignUp = () => {
       return;
     }
 
+    setSubmitError(null);
+    setSubmitSuccess(null);
     setIsLoading(true);
-
-    // TODO: 회원가입 API 연동
-    console.log("SignUp attempt:", formData);
 
     try {
       const signUpData = {
@@ -133,11 +135,26 @@ const SignUp = () => {
       };
       await accountAPI.signUp(signUpData);
 
-      alert("회원가입이 완료되었습니다!");
+      setSubmitError(null);
+      setSubmitSuccess("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.");
       router.push("/login"); // 로그인 페이지로 이동
-    } catch (error) {
-      console.error("회원가입 실패:", error);
-      alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+    } catch (error: unknown) {
+      let message = "회원가입에 실패했습니다. 다시 시도해주세요.";
+      if (error instanceof ApiError) {
+        if (error.status === 409) {
+          message = "이미 사용 중인 이메일입니다.";
+        } else if (error.status === 400) {
+          message = error.message || "입력값을 확인해주세요.";
+        } else if (error.status && error.status >= 500) {
+          message = error.message?.includes("역할") || error.message?.includes("ROLE")
+            ? "시스템 설정 오류(권한 정보 누락)로 회원가입을 완료할 수 없습니다. 관리자에게 문의해주세요."
+            : "서버 오류로 회원가입을 완료할 수 없습니다. 잠시 후 다시 시도해주세요.";
+        } else if ((error as any)?.message) {
+          message = (error as any).message;
+        }
+      }
+      setSubmitSuccess(null);
+      setSubmitError(message);
     } finally {
       setIsLoading(false);
     }
@@ -161,6 +178,16 @@ const SignUp = () => {
 
         {/* 회원가입 폼 */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+          {submitError && (
+            <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {submitError}
+            </div>
+          )}
+          {submitSuccess && (
+            <div className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+              {submitSuccess}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* 이름 입력 */}
             <div>
@@ -341,6 +368,9 @@ const SignUp = () => {
                   <Link
                     href="/terms"
                     className="text-blue-600 hover:text-blue-800 ml-1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     (보기)
                   </Link>
@@ -365,6 +395,9 @@ const SignUp = () => {
                   <Link
                     href="/privacy"
                     className="text-blue-600 hover:text-blue-800 ml-1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     (보기)
                   </Link>
