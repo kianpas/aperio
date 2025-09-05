@@ -1,31 +1,57 @@
 package com.portfolio.aperio.banner.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Data
-@Table(name = "banner")
+@Getter
+@Builder
+@Table(name = "banners")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EqualsAndHashCode(of = "id")
+@EntityListeners(AuditingEntityListener.class)
 public class Banner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bannerNo;
+    private Long id;
 
-    private String bannerTitle;
+    @Column(nullable = false, length = 200)
+    private String title;
 
-    private String bannerImageUrl;
+    @Column(name = "image_url", nullable = false, length = 2048)
+    private String imageUrl;
 
-    private Date startDt;
+    @Column(name = "start_at", nullable = false)
+    private LocalDateTime startAt;
 
-    private Date endDt;
+    @Column(name = "end_at", nullable = false)
+    private LocalDateTime endAt;
 
+    // 등록자
+    @Column(length = 50, nullable = false)
     private String register;
 
-    private Date createDt;
+    @CreatedDate
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    @Column(name = "useAt", length = 10)
-    private String useAt;
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "active", nullable = false)
+    private Boolean active;
 }

@@ -1,6 +1,6 @@
 package com.portfolio.aperio.main.dto.response.user;
 
-import com.portfolio.aperio.banner.dto.response.user.BannerListResponseDto;
+import com.portfolio.aperio.banner.dto.response.user.BannerResponse;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 public class MainDataResponse {
 
-        private List<BannerListResponseDto> bannerList;
+        private List<BannerResponse> bannerList;
         private String message;
 
 }

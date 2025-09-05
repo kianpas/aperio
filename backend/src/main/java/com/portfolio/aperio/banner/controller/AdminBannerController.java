@@ -1,7 +1,7 @@
 package com.portfolio.aperio.banner.controller;
 
-import com.portfolio.aperio.banner.dto.response.admin.AdminBannerResDto;
-import com.portfolio.aperio.banner.service.AdminBannerService;
+import com.portfolio.aperio.banner.dto.response.admin.AdminBannerResponse;
+import com.portfolio.aperio.banner.service.query.BannerQueryService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,16 +17,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminBannerController {
 
-    private final AdminBannerService adminMainService;
+    private final BannerQueryService bannerQueryService;
 
     /**
      * 관리자 > 메인관리
+     * 
      * @return
      */
     @GetMapping
     public String getMainManagementView(Model model) {
 
-        List<AdminBannerResDto> bannerList = adminMainService.findAll();
+        List<AdminBannerResponse> bannerList = bannerQueryService.findAll();
 
         model.addAttribute("bannerList", bannerList);
 
@@ -40,6 +41,7 @@ public class AdminBannerController {
 
     /**
      * 관리자 > 메인관리
+     * 
      * @return
      */
     @GetMapping("/edit/{bNo}")

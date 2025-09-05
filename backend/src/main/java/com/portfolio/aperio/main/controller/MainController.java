@@ -1,7 +1,7 @@
 package com.portfolio.aperio.main.controller;
 
-import com.portfolio.aperio.banner.dto.response.user.BannerListResponseDto;
-import com.portfolio.aperio.banner.service.BannerService;
+import com.portfolio.aperio.banner.dto.response.user.BannerResponse;
+import com.portfolio.aperio.banner.service.query.BannerQueryService;
 import com.portfolio.aperio.main.dto.response.user.MainDataResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MainController {
 
-    private final BannerService bannerService;
+    private final BannerQueryService bannerQueryService;
 
     /**
      * 프론트엔드 메인 화면용 API
@@ -30,7 +30,7 @@ public class MainController {
     @GetMapping
     public ResponseEntity<?> getMainData() {
 
-        List<BannerListResponseDto> bannerList = bannerService.findBannerList();
+        List<BannerResponse> bannerList = bannerQueryService.findBannerList();
 
         // 메인 화면 데이터를 담는 응답 객체
         MainDataResponse response = MainDataResponse.builder()
