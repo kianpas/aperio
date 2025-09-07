@@ -4,6 +4,8 @@ import com.portfolio.aperio.menu.dto.response.user.MenuListResponseDto;
 import com.portfolio.aperio.menu.service.MenuService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -11,36 +13,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class MenuCache {
 
-    //메뉴 관련 서비스
+    // 메뉴 관련 서비스
     private final MenuService menuService;
 
-    //권한별 메뉴 리스트 담길 맵
+    // 권한별 메뉴 리스트 담길 맵
     private final Map<String, List<MenuListResponseDto>> roleMenuCache = new ConcurrentHashMap<>();
 
-    //스프링이 빈을 생성하고 의존성 주입이 끝난 직후 실행
-    //초기화 코드 및 캐시 세팅에 사용
+    // 스프링이 빈을 생성하고 의존성 주입이 끝난 직후 실행
+    // 초기화 코드 및 캐시 세팅에 사용
     @PostConstruct
     public void init() {
         loadMenus(); // 서버 시작 시 최초 캐싱
     }
-
 
     public void reload() {
         roleMenuCache.clear();
         loadMenus(); // 서버 시작 시 최초 캐싱
     }
 
-    //메뉴 호출 메소드
+    // 메뉴 호출 메소드
     public void loadMenus() {
         // 1.전체 목록 조회
         List<MenuListResponseDto> menuListResponseDtoList = menuService.findByActive();
-        for(MenuListResponseDto dto : menuListResponseDtoList) {
-            System.out.println("dto => " + dto.getName());
-            System.out.println("dto => " + dto.getName());
+        for (MenuListResponseDto dto : menuListResponseDtoList) {
+            log.debug("dto => {}", dto);
         }
 
         // 2. 메뉴별 역할 정보 조회 (추후)
@@ -48,16 +49,16 @@ public class MenuCache {
         // 3. 역할 목록 정의 (DB에서 가져오거나 하드코딩)
         List<String> allRoles = List.of("user", "ROLE_ADMIN", "ROLE_USER", "ROLE_MANAGER", "ROLE_ANONYMOUS");
 
-        //TODO: 권한에 따른 메뉴처리 추가 필요
-        
-        for(String role : allRoles) {
+        // TODO: 권한에 따른 메뉴처리 추가 필요
+
+        for (String role : allRoles) {
             List<MenuListResponseDto> menusForRole = menuListResponseDtoList.stream()
                     .filter(menu -> {
-                        if("user".equals(role) || "일반".equals(role) || "ROLE_USER".equals(role)) {
+                        if ("user".equals(role) || "일반".equals(role) || "ROLE_USER".equals(role)) {
                             return !menu.getName().equals("로그인") &&
                                     !menu.getName().equals("회원가입") &&
                                     !menu.getName().equals("관리");
-                        } else if("admin".equals(role) || "관리자".equals(role) || "ROLE_ADMIN".equals(role)) {
+                        } else if ("admin".equals(role) || "관리자".equals(role) || "ROLE_ADMIN".equals(role)) {
                             return !menu.getName().equals("로그인") &&
                                     !menu.getName().equals("회원가입");
                         } else {

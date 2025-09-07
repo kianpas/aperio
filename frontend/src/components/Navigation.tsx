@@ -6,11 +6,11 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import LoadingSpinner from "./ui/LoadingSpinner";
 
 interface Menu {
-  menuId: number;
+  id: number;
   name: string;
-  menuUrl: string;
+  url: string;
   sortOrder: number;
-  isActive: boolean;
+  active: boolean;
 }
 
 interface NavigationProps {
@@ -33,39 +33,35 @@ export default function Navigation({
         const response = await fetch("/api/v1/menus");
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
-        const data: Menu[] = await response.json();
-        setMenus(data.filter((m) => m.isActive));
+        const menu: Menu[] = await response.json();
+
+        console.log("menulist.data => ", menu);
+
+        setMenus(menu);
       } catch (e) {
         console.error("Error fetching menus:", e);
         // Fallback menus
         setMenus([
           {
-            menuId: 1,
+            id: 1,
             name: "예약하기",
-            menuUrl: "/reservation",
+            url: "/reservation",
             sortOrder: 1,
-            isActive: true,
+            active: true,
           },
           {
-            menuId: 2,
-            name: "요금안내",
-            menuUrl: "#pricing-section",
-            sortOrder: 2,
-            isActive: true,
-          },
-          {
-            menuId: 3,
+            id: 2,
             name: "문의하기",
-            menuUrl: "/contact",
-            sortOrder: 3,
-            isActive: true,
+            url: "/contact",
+            sortOrder: 2,
+            active: true,
           },
           {
-            menuId: 4,
+            id: 3,
             name: "FaQ",
-            menuUrl: "/faq",
-            sortOrder: 4,
-            isActive: true,
+            url: "/faq",
+            sortOrder: 3,
+            active: true,
           },
         ]);
       } finally {
@@ -89,8 +85,8 @@ export default function Navigation({
       <nav className="hidden md:flex items-center space-x-8">
         {menus.map((menu) => (
           <Link
-            key={menu.menuId}
-            href={menu.menuUrl}
+            key={menu.id}
+            href={menu.url}
             className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
           >
             {menu.name}
@@ -120,8 +116,8 @@ export default function Navigation({
           <div className="px-4 py-6 space-y-4 max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain touch-pan-y">
             {menus.map((menu) => (
               <Link
-                key={menu.menuId}
-                href={menu.menuUrl}
+                key={menu.id}
+                href={menu.url}
                 className="block text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
                 onClick={onToggleMobileMenu}
               >

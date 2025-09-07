@@ -56,7 +56,7 @@ export default function Header() {
       </button>
     </div>
   );
-  
+
   // 비인증 사용자 메뉴
   const UnauthenticatedMenu = ({
     isMobile = false,
@@ -121,7 +121,7 @@ export default function Header() {
               mobileExtra={mobileAuthArea}
             />
 
-           {/* 데스크톱 인증 영역 */}
+            {/* 데스크톱 인증 영역 */}
             <div className="hidden md:flex items-center space-x-4">
               {loading ? (
                 <LoadingSpinner size="sm" />

@@ -29,6 +29,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -42,25 +44,46 @@ public class ReservationCommandService {
 
     private final ReservationRepository reservationRepository;
 
+    private final SeatRepository seatRepository;
+
     private final UserRepository userRepository;
 
     private final PaymentRepository paymentRepository;
 
     private static final long LOCK_TIMEOUT_SECONDS = 10;
+
+    private static final ZoneId KST = ZoneId.of("Asia/Seoul");
+
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final LocalTime OPEN_TIME = LocalTime.of(9, 0);
     private static final LocalTime CLOSE_TIME = LocalTime.of(22, 0);
+
+    // 문자열 ISO(오프셋 포함/미포함)를 KST LocalDateTime으로 변환
+    private LocalDateTime toKstLocalDateTime(String iso) {
+        if (iso == null || iso.isBlank()) {
+            throw new IllegalArgumentException("Datetime string is null/blank");
+        }
+        try {
+            // +09:00 또는 Z 등이 포함된 경우
+            OffsetDateTime odt = OffsetDateTime.parse(iso);
+            return odt.atZoneSameInstant(KST).toLocalDateTime();
+        } catch (DateTimeParseException ignore) {
+            // 오프셋 없는 경우: "2025-09-08T16:00:00" 등 → KST로 해석
+            LocalDateTime ldt = LocalDateTime.parse(iso);
+            return ldt.atZone(KST).toLocalDateTime();
+        }
+    }
 
     /**
      * Redis 락을 사용하여 예약을 생성합니다.
      */
     @Transactional
     public Reservation createReservationWithLock(CreateReservationRequest request, String username) {
-       
+
         log.debug("Creating reservation with request: {} for user: {}", request, username);
         log.debug("Request details - SeatId: {}, StartAt: {}, EndAt: {}",
                 request.getSeatId(), request.getStartAt(), request.getEndAt());
-       
+
         // Objects.requireNonNull(request.getSeatId(), "좌석 ID는 필수입니다.");
         // Objects.requireNonNull(request.getReservationDate(), "예약 날짜는 필수입니다.");
         // Objects.requireNonNull(request.getPlanType(), "요금제는 필수입니다.");
@@ -69,38 +92,47 @@ public class ReservationCommandService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("예약 서비스에서 사용자를 찾을 수 없습니다: " + username));
         Long userNo = user.getId();
+
+        log.debug("userNo {}", userNo);
+
         // TODO: 임시 코드
         String authCd = "임직원";
         if (userNo == null) {
             throw new IllegalStateException("사용자 번호(userNo)를 가져올 수 없습니다.");
         }
 
-        // LocalDate reservationDate = LocalDate.parse(request.getReservationDate());
-        LocalDateTime startDateTime = null;
-        LocalDateTime endDateTime= null;
+        Long seatId = request.getSeatId();
+        Seat seat = seatRepository.findById(seatId)
+                .orElseThrow(() -> new IllegalArgumentException("좌석이 존재하지 않습니다. seatId=" + seatId));
+
+        LocalDateTime startDateTime = toKstLocalDateTime(request.getStartAt());
+        LocalDateTime endDateTime = toKstLocalDateTime(request.getEndAt());
 
         // switch (request.getPlanType()) {
-        //     case "HOURLY":
-        //         if (request.getSelectedTimes() == null || request.getSelectedTimes().isEmpty()) {
-        //             throw new IllegalArgumentException("시간제는 예약 시간을 선택해야 합니다.");
-        //         }
-        //         request.getSelectedTimes().sort(Comparator.naturalOrder());
-        //         LocalTime startTime = LocalTime.parse(request.getSelectedTimes().get(0), TIME_FORMATTER);
-        //         LocalTime lastTime = LocalTime.parse(
-        //                 request.getSelectedTimes().get(request.getSelectedTimes().size() - 1), TIME_FORMATTER);
-        //         startDateTime = reservationDate.atTime(startTime);
-        //         endDateTime = reservationDate.atTime(lastTime.plusHours(1));
-        //         break;
-        //     case "DAILY":
-        //         startDateTime = reservationDate.atTime(OPEN_TIME);
-        //         endDateTime = reservationDate.atTime(CLOSE_TIME);
-        //         break;
-        //     case "MONTHLY":
-        //         startDateTime = reservationDate.atTime(OPEN_TIME);
-        //         endDateTime = reservationDate.plusMonths(1).atTime(CLOSE_TIME);
-        //         break;
-        //     default:
-        //         throw new IllegalArgumentException("알 수 없는 요금제 타입입니다.");
+        // case "HOURLY":
+        // if (request.getSelectedTimes() == null ||
+        // request.getSelectedTimes().isEmpty()) {
+        // throw new IllegalArgumentException("시간제는 예약 시간을 선택해야 합니다.");
+        // }
+        // request.getSelectedTimes().sort(Comparator.naturalOrder());
+        // LocalTime startTime = LocalTime.parse(request.getSelectedTimes().get(0),
+        // TIME_FORMATTER);
+        // LocalTime lastTime = LocalTime.parse(
+        // request.getSelectedTimes().get(request.getSelectedTimes().size() - 1),
+        // TIME_FORMATTER);
+        // startDateTime = reservationDate.atTime(startTime);
+        // endDateTime = reservationDate.atTime(lastTime.plusHours(1));
+        // break;
+        // case "DAILY":
+        // startDateTime = reservationDate.atTime(OPEN_TIME);
+        // endDateTime = reservationDate.atTime(CLOSE_TIME);
+        // break;
+        // case "MONTHLY":
+        // startDateTime = reservationDate.atTime(OPEN_TIME);
+        // endDateTime = reservationDate.plusMonths(1).atTime(CLOSE_TIME);
+        // break;
+        // default:
+        // throw new IllegalArgumentException("알 수 없는 요금제 타입입니다.");
         // }
 
         String lockKey = String.format("lock:seat:%s:%s", request.getSeatId(), request.getStartAt().substring(0, 10));
@@ -141,7 +173,7 @@ public class ReservationCommandService {
 
             Reservation reservation = Reservation.create(
                     user,
-                    Seat.builder().id(request.getSeatId()).build(),
+                    seat,
                     startDateTime,
                     endDateTime,
                     request.getPlanType(),

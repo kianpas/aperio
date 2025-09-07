@@ -71,6 +71,8 @@ const ReservationPage = () => {
       return;
     }
 
+    console.log("payload =>", payload)
+
     try {
       const result = await createReservation(payload);
       console.log("Reservation created:", result);

@@ -9,9 +9,11 @@ import com.portfolio.aperio.menu.dto.response.user.MenuListResponseDto;
 import com.portfolio.aperio.menu.service.MenuService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/menus") // 리소스 기반 + 버전 관리
@@ -30,6 +32,9 @@ public class MenuController {
         try {
 
             List<MenuListResponseDto> menus = menuService.findByActive();
+
+
+            log.debug("menuListResponse " , menus);
 
             return ResponseEntity.ok(menus);
         } catch (Exception e) {

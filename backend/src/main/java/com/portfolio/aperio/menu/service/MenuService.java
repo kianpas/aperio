@@ -60,6 +60,8 @@ public class MenuService {
     public List<MenuListResponseDto> findByActive() {
         List<Menu> menuList = menuRepository.findByActive(true, Sort.by(Sort.Direction.ASC, "sortOrder"));
 
+        log.debug("menuList => {}", menuList);
+
         return menuList.stream()
                 .map(MenuListResponseDto::from).toList();
     }

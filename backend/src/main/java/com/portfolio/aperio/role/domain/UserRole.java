@@ -22,11 +22,11 @@ public class UserRole {
     private Long userRoleId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userNo", nullable = false)
+    @JoinColumn(name = "user_Id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roleId", nullable = false)
+    @JoinColumn(name = "role_Id", nullable = false)
     private Role role;
 
     @CreationTimestamp

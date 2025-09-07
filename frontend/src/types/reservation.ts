@@ -38,16 +38,40 @@ export interface CreateReservationPayload {
 
 export type PlanType = "HOURLY" | "DAILY" | "MONTHLY";
 
-// 시간 유틸(간단 예시)
-/**
- * 날짜(YYYY-MM-DD)와 시각(HH:mm)을 ISO-8601 문자열로 변환합니다.
- */
+// 로컬 시각을 ISO-8601(+오프셋 포함)로 포맷
+function formatLocalISOWithOffset(dt: Date) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const yyyy = dt.getFullYear();
+  const MM = pad(dt.getMonth() + 1);
+  const dd = pad(dt.getDate());
+  const HH = pad(dt.getHours());
+  const mm = pad(dt.getMinutes());
+  const ss = pad(dt.getSeconds());
+
+  const tzMin = -dt.getTimezoneOffset(); // KST면 -(-540)=+540
+  const sign = tzMin >= 0 ? "+" : "-";
+  const abs = Math.abs(tzMin);
+  const oh = pad(Math.floor(abs / 60));
+  const om = pad(abs % 60);
+
+  return `${yyyy}-${MM}-${dd}T${HH}:${mm}:${ss}${sign}${oh}:${om}`;
+}
+
+// 날짜(YYYY-MM-DD) + 시각(HH:mm) -> 로컬 ISO(+오프셋)
 function toIso(date: string, time: string) {
-  // date: "2025-03-20", time: "09:00"
   const [y, m, d] = date.split("-").map(Number);
   const [hh, mm] = time.split(":").map(Number);
-  const dt = new Date(y, m - 1, d, hh, mm, 0);
-  return dt.toISOString();
+  const dt = new Date(y, m - 1, d, hh, mm, 0, 0);
+  return formatLocalISOWithOffset(dt);
+}
+
+// "마지막 선택 시간 + 1시간" 계산 시, 날짜 넘어감 처리
+function addOneHour(time: string) {
+  const [hh, mm] = time.split(":").map(Number);
+  const base = new Date(2000, 0, 1, hh, mm, 0, 0); // 임의의 기준일
+  base.setHours(base.getHours() + 1);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(base.getHours())}:${pad(base.getMinutes())}`;
 }
 
 export function buildPayloadFromState(
@@ -68,25 +92,23 @@ export function buildPayloadFromState(
     const sorted = [...selectedTimes].sort(); // "09:00", "10:00"...
     const first = sorted[0];
     const last = sorted[sorted.length - 1];
-    const [lh, lm] = last.split(":").map(Number);
-    const endHourPlus1 = `${String(lh + 1).padStart(2, "0")}:${String(
-      lm
-    ).padStart(2, "0")}`;
+    const endPlus1 = addOneHour(last);
 
     startAt = toIso(selectedDate, first);
-    endAt = toIso(selectedDate, endHourPlus1);
+    endAt = toIso(selectedDate, endPlus1);
     timeSlots = sorted; // 서버에서 검증/보조 계산용
   } else if (planType === "DAILY") {
     startAt = toIso(selectedDate, "09:00");
     endAt = toIso(selectedDate, "18:00");
   } else {
-    // MONTHLY(정책에 맞게)
-    startAt = toIso(selectedDate, "00:00");
-    // 간단하게 +30일(정확한 월말 계산은 별도 유틸 권장)
-    const dt = new Date(selectedDate + "T00:00:00");
-    const end = new Date(dt);
+    // MONTHLY: 로컬 기준으로 +1개월
+    const [y, m, d] = selectedDate.split("-").map(Number);
+    const start = new Date(y, m - 1, d, 0, 0, 0, 0);
+    const end = new Date(start);
     end.setMonth(end.getMonth() + 1);
-    endAt = end.toISOString();
+
+    startAt = formatLocalISOWithOffset(start);
+    endAt = formatLocalISOWithOffset(end);
   }
 
   const payload: CreateReservationPayload = {
