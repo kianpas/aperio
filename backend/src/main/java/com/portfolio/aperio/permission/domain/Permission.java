@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "permission")
+@Table(name = "permissions")
 @EqualsAndHashCode(of = "permissionId")
 public class Permission {
 

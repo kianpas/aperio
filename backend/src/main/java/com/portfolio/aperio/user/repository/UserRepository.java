@@ -35,7 +35,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Fetch Join을 사용하여 연관된 모든 정보를 한 번에 조회
     @Query("SELECT DISTINCT u FROM User u " +
-            "LEFT JOIN FETCH u.userRole ur " + // User와 UserRole 조인 및 즉시 로딩
+            "LEFT JOIN FETCH u.userRoles ur " + // User와 UserRole 조인 및 즉시 로딩
             "LEFT JOIN FETCH ur.role r " +       // UserRole과 Role 조인 및 즉시 로딩
 //            "LEFT JOIN FETCH r.rolePermission rp " + // Role과 RolePermission 조인 및 즉시 로딩
 //            "LEFT JOIN FETCH rp.permission p " +   // RolePermission과 Permission 조인 및 즉시 로딩

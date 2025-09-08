@@ -84,20 +84,15 @@ public class ReservationCommandService {
         log.debug("Request details - SeatId: {}, StartAt: {}, EndAt: {}",
                 request.getSeatId(), request.getStartAt(), request.getEndAt());
 
-        // Objects.requireNonNull(request.getSeatId(), "좌석 ID는 필수입니다.");
-        // Objects.requireNonNull(request.getReservationDate(), "예약 날짜는 필수입니다.");
-        // Objects.requireNonNull(request.getPlanType(), "요금제는 필수입니다.");
-        // Objects.requireNonNull(username, "사용자 정보(username)는 필수입니다.");
-
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("예약 서비스에서 사용자를 찾을 수 없습니다: " + username));
-        Long userNo = user.getId();
+        Long userId = user.getId();
 
-        log.debug("userNo {}", userNo);
+        log.debug("userId {}", userId);
 
         // TODO: 임시 코드
-        String authCd = "임직원";
-        if (userNo == null) {
+        String authCd = "ROLE_ADMIN"; // 임직원 권한 코드 (예시)
+        if (userId == null) {
             throw new IllegalStateException("사용자 번호(userNo)를 가져올 수 없습니다.");
         }
 
@@ -161,12 +156,17 @@ public class ReservationCommandService {
             String discountPriceStr = calculateDiscount(basePriceStr, request.getCouponCode());
             String finalPriceStr = calculateFinalPrice(basePriceStr, discountPriceStr);
 
-            boolean isAuth = "임직원".equals(authCd);
+            boolean isAuth = user.getUserRoles().stream()
+                    .map(ur -> ur.getRole().getCode())
+                    .filter(Objects::nonNull)
+                    .anyMatch(code -> code.equalsIgnoreCase("ROLE_ADMIN") || code.equalsIgnoreCase("ROLE_MANAGER"));
+
             if (isAuth) {
                 System.out.println("임직원 권한 유저 확인 0원으로 계산 처리 합시다.");
                 finalPriceStr = "0";
                 discountPriceStr = basePriceStr;
             }
+
             boolean isZeroPrice = "0".equals(finalPriceStr);
             boolean isConfirmedImmediately = isAuth && isZeroPrice;
             Boolean statusToSet = isConfirmedImmediately ? Boolean.TRUE : null;
@@ -182,16 +182,6 @@ public class ReservationCommandService {
                     null // userCouponId는 추후 구현 예정
             );
 
-            // Reservation reservation = new Reservation();
-            // reservation.setUserNo(userNo);
-            // reservation.setSeatNo(request.getItemId());
-            // reservation.setTotalPrice(finalPriceStr);
-            // reservation.setResPrice(basePriceStr);
-            // reservation.setDcPrice(discountPriceStr);
-            // reservation.setResStart(startDateTime);
-            // reservation.setResEnd(endDateTime);
-            // reservation.setPlanType(request.getPlanType());
-            // reservation.setResStatus(statusToSet);
             System.out.println("[Service] DB 저장 직전 reservation 객체 상태: " + reservation.getStatus());
 
             Reservation savedReservation = reservationRepository.save(reservation);

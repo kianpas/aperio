@@ -52,13 +52,13 @@ public class AdminCouponEditReqDto {
 
     public static AdminCouponResDto from(Coupon coupon) {
         return AdminCouponResDto.builder()
-                .cpNo(coupon.getCpNo())
-                .cpnNm(coupon.getCpnNm())
-                .discount(coupon.getDiscount())
-                .discountAt(coupon.getDiscountAt())
-                .cpnStartDt(coupon.getCpnStartDt())
-                .cpnEndDt(coupon.getCpnEndDt())
-                .cpnDsc(coupon.getCpnDsc())
+                .cpNo(coupon.getId())
+                .cpnNm(coupon.getName())
+                // .discount(coupon.getDiscount())
+                // .discountAt(coupon.getDiscountAt())
+                .cpnStartDt(coupon.getStartAt())
+                .cpnEndDt(coupon.getEndAt())
+                .cpnDsc(coupon.getDescription())
                 .build();
     }
 }

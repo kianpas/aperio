@@ -106,7 +106,7 @@ public class AccountCommandService {
         // 만약 UserRole에 복합키나 빌더가 있으면 적절히 세팅
 
         // 4) User 쪽 컬렉션에 추가
-        user.getUserRole().add(ur);
+        user.getUserRoles().add(ur);
 
         // 저장 및 반환
         return userRepository.save(user);

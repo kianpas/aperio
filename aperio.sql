@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS schema.seat CASCADE;
+
 
 INSERT INTO seats
   (name, seat_type, hourly_price, daily_price, monthly_price, capacity, floor, location, created_at, updated_at, register, active)
@@ -19,7 +19,7 @@ VALUES
   ('ROLE_USER', '일반 사용자', '일반적인 접근 권한만 보유', true, NOW(), NOW());
 
 DROP TABLE public.users CASCADE;
-DROP TABLE public.userrole  CASCADE;
+DROP TABLE public.coupon CASCADE;
 
 
 INSERT INTO "faq" (category, category_order, question, answer, display_order, active, created_at, updated_at) VALUES

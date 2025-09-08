@@ -42,12 +42,12 @@ public class UserDetailService implements UserDetailsService {
 //            throw new DisabledException("계정이 비활성화되었습니다.");
 //        }
 
-        for (UserRole userRole : user.getUserRole()) {
+        for (UserRole userRole : user.getUserRoles()) {
             log.debug("role => {}", userRole.getRole());
         }
 
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (UserRole ur : user.getUserRole()) {
+        for (UserRole ur : user.getUserRoles()) {
             authorities.add(new SimpleGrantedAuthority(ur.getRole().getCode())); // "ROLE_..."
         }
 

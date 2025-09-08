@@ -92,16 +92,6 @@ public class AccountController {
         return ResponseEntity.status(429).body(response);
     }
 
-    // 회원정보(email/pwd) 확인 페이지 호출
-    @GetMapping("/findUserInfo")
-    public String findUserInfoForm(Model model) {
-
-        model.addAttribute("user", new User());
-
-        return "login/findUserInfo";
-    }
-
-
 
 
     // 휴대폰번호 인증번호 전송

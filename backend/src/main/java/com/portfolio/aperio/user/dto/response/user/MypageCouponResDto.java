@@ -42,16 +42,16 @@ public class MypageCouponResDto {
 
     public static MypageCouponResDto from(UserCoupon usercoupon) {
         return MypageCouponResDto.builder()
-                .userCpNo(usercoupon.getUserCpNo())
-                .cpNo(usercoupon.getCoupon().getCpNo())
-                .cpnNm(usercoupon.getCoupon().getCpnNm())
-                .discount(usercoupon.getCoupon().getDiscount())
-                .discountAt(usercoupon.getCoupon().getDiscountAt())
-                .cpnStartDt(usercoupon.getCoupon().getCpnStartDt())
-                .cpnEndDt(usercoupon.getCoupon().getCpnEndDt())
-                .cpnDsc(usercoupon.getCoupon().getCpnDsc())
-                .issueDt(usercoupon.getIssueDt())
-                .useDt(usercoupon.getUseDt())
+                .userCpNo(usercoupon.getId())
+                .cpNo(usercoupon.getCoupon().getId())
+                .cpnNm(usercoupon.getCoupon().getName())
+                // .discount(usercoupon.getCoupon().getDiscount())
+                // .discountAt(usercoupon.getCoupon().getDiscountAt())
+                .cpnStartDt(usercoupon.getCoupon().getStartAt())
+                .cpnEndDt(usercoupon.getCoupon().getEndAt())
+                .cpnDsc(usercoupon.getCoupon().getDescription())
+                .issueDt(usercoupon.getCreatedAt())
+                .useDt(usercoupon.getUsedAt())
                 .build();
     }
 

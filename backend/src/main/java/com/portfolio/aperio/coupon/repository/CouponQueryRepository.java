@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CouponQueryRepository extends JpaRepository<Coupon, Long> {
 
-    @Query("SELECT c FROM Coupon c WHERE c.cpnNm LIKE CONCAT('%', :searchCpnNm, '%')")
+    @Query("SELECT c FROM Coupon c WHERE c.name LIKE CONCAT('%', :searchCpnNm, '%')")
     Page<Coupon> findCouponsWithFilter(Pageable pageable,
                                        @Param("searchCpnNm") String searchCouponName);
 }

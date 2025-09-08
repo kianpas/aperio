@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(of = "rolePermissionId")
-@Table(name = "rolepermission")
+@Table(name = "role_permissions")
 public class RolePermission {
 
     @Id

@@ -15,9 +15,9 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     // save, findById, delete, findAll 등
     
     // 간단한 조건 조회만 포함
-    List<Coupon> findByActiveYn(String activeYn);
+    List<Coupon> findByActiveTrue();
     
-    Optional<Coupon> findByCpnNm(String couponName);
+    Optional<Coupon> findByName(String couponName);
     
     // 복잡한 조회는 CouponQueryRepository로 이동
 }

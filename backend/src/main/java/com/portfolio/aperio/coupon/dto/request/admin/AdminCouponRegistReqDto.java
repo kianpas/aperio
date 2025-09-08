@@ -45,19 +45,18 @@ public class AdminCouponRegistReqDto {
     @Size(max = 500, message = "쿠폰 설명은 최대 500자까지 입력 가능합니다.")
     private String cpnDsc;
 
-    @Pattern(regexp = "[YN]", message = "활성 여부는 'Y' 또는 'N'이어야 합니다.")
-    private String activeYn;
+    private Boolean active;
 
 
     public static AdminCouponResDto from(Coupon coupon) {
         return AdminCouponResDto.builder()
-                .cpNo(coupon.getCpNo())
-                .cpnNm(coupon.getCpnNm())
-                .discount(coupon.getDiscount())
-                .discountAt(coupon.getDiscountAt())
-                .cpnStartDt(coupon.getCpnStartDt())
-                .cpnEndDt(coupon.getCpnEndDt())
-                .cpnDsc(coupon.getCpnDsc())
+                .cpNo(coupon.getId())
+                .cpnNm(coupon.getName())
+                // .discount(coupon.getDiscount())
+                // .discountAt(coupon.getDiscountAt())
+                .cpnStartDt(coupon.getStartAt())
+                .cpnEndDt(coupon.getEndAt())
+                .cpnDsc(coupon.getDescription())
                 .build();
     }
 }

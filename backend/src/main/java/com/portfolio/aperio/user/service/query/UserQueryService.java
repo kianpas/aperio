@@ -49,13 +49,12 @@ public class UserQueryService {
         return user;
     }
 
-
     /**
      * 아이디로 유저 프로필 조회
      */
     public UserProfileResponse getUserProfileById(Long userId) {
 
-        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return UserProfileResponse.from(user);
     }
@@ -65,7 +64,7 @@ public class UserQueryService {
      */
     public UserProfileResponse getUserProfileByEmail(String email) {
 
-        User user = userRepository.findByEmail(email).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return UserProfileResponse.from(user);
     }
@@ -75,46 +74,44 @@ public class UserQueryService {
      */
     public UserInfoResponse findUserbyId(Long userNo) {
 
-        User user = userRepository.findById(userNo).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userNo).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         log.debug("findUserbyId|user = {}", user);
         return UserInfoResponse.from(user);
     }
 
-
     /**
      * 마이페이지 > 쿠폰목록
+     * 
      * @param userNo
      * @return
      */
-    public  List<MypageCouponResDto> findCouponListById(Long userNo,
-                                                        String tab,
-                                                        LocalDate startDate,
-                                                        LocalDate endDate) {
+    public List<MypageCouponResDto> findCouponListById(Long userNo,
+            String tab,
+            LocalDate startDate,
+            LocalDate endDate) {
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startDateTime = (startDate != null) ? startDate.atStartOfDay() : null;
         LocalDateTime endDateTimePlusOne = (endDate != null) ? endDate.plusDays(1).atStartOfDay() : null;
 
-        //1. 회원정보 조회
-        User user = userRepository.findById(userNo).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        // 1. 회원정보 조회
+        User user = userRepository.findById(userNo).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         log.debug("MypageService|findCouponListById => {}", user);
 
-        //사용 가능 쿠폰, 기간만료 쿠폰 조회 처리
-        //추후에 queryDsl 변경 고려
+        // 사용 가능 쿠폰, 기간만료 쿠폰 조회 처리
+        // 추후에 queryDsl 변경 고려
         List<UserCoupon> userCouponList;
 
-        //사용 가능
+        // 사용 가능
         if ("available".equalsIgnoreCase(tab)) {
-            //2. 회원의 쿠폰 목록 조회
+            // 2. 회원의 쿠폰 목록 조회
             userCouponList = userCouponRepository.findByUserCoupon(user.getId(),
-                    "N",
                     startDateTime,
                     endDateTimePlusOne);
 
         } else if ("expired".equalsIgnoreCase(tab)) {
-            //만료
+            // 만료
             userCouponList = userCouponRepository.findExpiredCouponsWithDateFilter(user.getId(),
-                    "Y",
                     startDateTime,
                     endDateTimePlusOne);
         } else {
@@ -126,39 +123,39 @@ public class UserQueryService {
 
     /**
      * 마이페이지 > 쿠폰목록
+     * 
      * @param userNo
      * @return
      */
-    public  Page<MypageCouponResDto> findCouponListByIdPage(Long userNo,
-                                                            String tab,
-                                                            LocalDate startDate,
-                                                            LocalDate endDate,
-                                                            Pageable pageable) {
+    public Page<MypageCouponResDto> findCouponListByIdPage(Long userNo,
+            String tab,
+            LocalDate startDate,
+            LocalDate endDate,
+            Pageable pageable) {
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startDateTime = (startDate != null) ? startDate.atStartOfDay() : null;
         LocalDateTime endDateTimePlusOne = (endDate != null) ? endDate.plusDays(1).atStartOfDay() : null;
 
-        //1. 회원정보 조회
-        User user = userRepository.findById(userNo).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        // 1. 회원정보 조회
+        User user = userRepository.findById(userNo).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         log.debug("MypageService|findCouponListByIdPage => {}", user);
         log.debug("MypageService|findCouponListByIdPage|tab => {}", tab);
-        //사용 가능 쿠폰, 기간만료 쿠폰 조회 처리
-        //추후에 queryDsl 변경 고려
+        // 사용 가능 쿠폰, 기간만료 쿠폰 조회 처리
+        // 추후에 queryDsl 변경 고려
         Page<UserCoupon> userCouponList;
 
-        //사용 가능
+        // 사용 가능
         if ("available".equalsIgnoreCase(tab)) {
-            //2. 회원의 쿠폰 목록 조회
+            // 2. 회원의 쿠폰 목록 조회
             userCouponList = userCouponRepository.findByUserCouponPage(user.getId(),
-                    "N",
                     now,
                     startDateTime,
                     endDateTimePlusOne,
                     pageable);
 
         } else if ("expired".equalsIgnoreCase(tab)) {
-            //만료
+            // 만료
             userCouponList = userCouponRepository.findExpiredCouponsWithDateFilterPage(user.getId(),
                     now,
                     startDateTime,

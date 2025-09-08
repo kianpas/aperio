@@ -28,7 +28,7 @@ public class CouponService {
      */
     @Transactional(readOnly = true)
     public Coupon findById(Long couponId) {
-       return couponRepository.findById(couponId).orElseThrow(()-> new CustomException(ErrorCode.INVALID_INPUT));
+        return couponRepository.findById(couponId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT));
     }
 
     /**
@@ -48,17 +48,17 @@ public class CouponService {
 
         // 쿠폰 객체 생성
         Coupon coupon = Coupon.builder()
-                .cpnNm(adminCouponRegistReqDto.getCpnNm())
-                .discount(adminCouponRegistReqDto.getDiscount()) // DTO와 Entity의 타입이 맞아야 함
-                .discountAt(adminCouponRegistReqDto.getDiscountAt())
-                .cpnStartDt(adminCouponRegistReqDto.getCpnStartDt())
-                .cpnEndDt(adminCouponRegistReqDto.getCpnEndDt())
-                .cpnDsc(adminCouponRegistReqDto.getCpnDsc())
+                .name(adminCouponRegistReqDto.getCpnNm())
+                // .discount(adminCouponRegistReqDto.getDiscount()) // DTO와 Entity의 타입이 맞아야 함
+                // .discountAt(adminCouponRegistReqDto.getDiscountAt())
+                .startAt(adminCouponRegistReqDto.getCpnStartDt())
+                .endAt(adminCouponRegistReqDto.getCpnEndDt())
+                .description(adminCouponRegistReqDto.getCpnDsc())
                 // activeYn은 DTO에서 받거나, 서비스에서 기본값 설정 가능
-                .activeYn(adminCouponRegistReqDto.getActiveYn() != null ? adminCouponRegistReqDto.getActiveYn() : "Y") // 예:
+                .active(adminCouponRegistReqDto.getActive())
                 // 기본값
                 // 'Y'
-                .createDate(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         // === 데이터 영속화 ===
@@ -76,13 +76,13 @@ public class CouponService {
         Coupon coupon = couponRepository.findById(cpNo).orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT));
         log.debug("findAdminCoupon|coupon => {}", coupon);
 
-        coupon.setCpnNm(adminCouponEditReqDto.getCpnNm());
+        coupon.setName(adminCouponEditReqDto.getCpnNm());
         // 사용여부 수정
-        coupon.setActiveYn(adminCouponEditReqDto.getActiveYn());
-        coupon.setDiscount(adminCouponEditReqDto.getDiscount());
-        coupon.setCpnDsc(adminCouponEditReqDto.getCpnDsc());
-        coupon.setCpnStartDt(adminCouponEditReqDto.getCpnStartDt());
-        coupon.setCpnEndDt(adminCouponEditReqDto.getCpnEndDt());
+        // coupon.setActiveYn(adminCouponEditReqDto.getActiveYn());
+        // coupon.setDiscount(adminCouponEditReqDto.getDiscount());
+        coupon.setDescription(adminCouponEditReqDto.getCpnDsc());
+        coupon.setStartAt(adminCouponEditReqDto.getCpnStartDt());
+        coupon.setEndAt(adminCouponEditReqDto.getCpnEndDt());
 
         return AdminCouponResDto.from(coupon);
     }
