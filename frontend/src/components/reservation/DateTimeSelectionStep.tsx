@@ -33,11 +33,11 @@ const SelectedSeatInfo = ({ seat }: { seat: Seat }) => (
   <div className="bg-gray-50 rounded-xl p-4">
     <h3 className="font-semibold text-gray-900 mb-2">선택된 공간</h3>
     <div className="flex items-center">
-      {getSeatIcon(seat.type)}
+      {getSeatIcon(seat.seatType)}
       <div className="ml-3">
         <p className="font-medium text-gray-900">{seat.name}</p>
         <p className="text-sm text-gray-800">
-          {seat.price.toLocaleString()}원/시간
+          {seat.hourlyPrice}원/시간
         </p>
       </div>
     </div>
