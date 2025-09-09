@@ -3,11 +3,15 @@
 export interface Seat {
   id: string;
   name: string;
-  type: "individual" | "meeting" | "phone";
+  seatType: "SINGLE" | "MEETING" | "phone";
   status: "available" | "selected" | "unavailable";
-  price: number;
-  features: string[];
-  capacity?: number;
+  description: string;
+  hourlyPrice: number;
+  dailyPrice: number;
+  monthlyPrice?: number | null;
+  capacity: number;
+  floor?: string;
+  location?: string;
 }
 
 export interface TimeSlot {

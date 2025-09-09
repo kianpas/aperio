@@ -111,8 +111,8 @@ const SeatGroup = ({
             onSelect={() => onSeatSelect(seat)}
             getSeatIcon={getSeatIcon}
             getFeatureIcon={getFeatureIcon}
-            selectedColorClass={getSelectedColorClass(seat.type)}
-            hoverColorClass={getHoverColorClass(seat.type)}
+            selectedColorClass={getSelectedColorClass(seat.seatType)}
+            hoverColorClass={getHoverColorClass(seat.seatType)}
             size={cardSize}
           />
         ))}
@@ -160,7 +160,7 @@ const SeatCard = ({
   return (
     <div className={getCardClasses()} onClick={onSelect}>
       <div className="text-center">
-        {getSeatIcon(seat.type)}
+        {getSeatIcon(seat.seatType)}
         <h4
           className={`font-semibold mt-2 ${
             size === "large" ? "text-base mt-3" : "text-sm"
@@ -174,9 +174,9 @@ const SeatCard = ({
           } ${isSelected ? "text-white/90" : ""}`}
         >
           {seat.capacity && `최대 ${seat.capacity}인 • `}
-          {seat.price.toLocaleString()}원/시간
+          {seat.hourlyPrice}원/시간
         </p>
-        {size === "large" && seat.features && (
+        {/* {size === "large" && seat.features && (
           <div className="flex justify-center mt-2 space-x-1">
             {seat.features.slice(0, 3).map((feature, idx) => (
               <span key={idx} className={`text-xs ${isSelected ? "text-white/80" : "text-gray-600"}`}>
@@ -184,7 +184,7 @@ const SeatCard = ({
               </span>
             ))}
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
@@ -196,10 +196,10 @@ const SeatSelectionStep = ({
   selectedSeat,
   onSeatSelect,
 }: SeatSelectionStepProps) => {
-  const individualSeats = seats.filter((seat) => seat.type === "individual");
-  const meetingSeats = seats.filter((seat) => seat.type === "meeting");
-  const phoneSeats = seats.filter((seat) => seat.type === "phone");
-
+  const individualSeats = seats.filter((seat) => seat.seatType === "SINGLE");
+  const meetingSeats = seats.filter((seat) => seat.seatType === "MEETING");
+  const phoneSeats = seats.filter((seat) => seat.seatType === "phone");
+  console.log("individualSeats =>", individualSeats);
   return (
     <div>
       <div className="mb-6">
