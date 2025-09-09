@@ -8,7 +8,7 @@ export interface Seat {
   description: string;
   hourlyPrice: number;
   dailyPrice: number;
-  monthlyPrice?: number | null;
+  monthlyPrice: number;
   capacity: number;
   floor?: string;
   location?: string;

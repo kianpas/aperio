@@ -226,13 +226,13 @@ export default function SeatSelector({
 
     switch (planType) {
       case "HOURLY":
-        price = selectedSeat.price * selectedTimes.length;
+        price = selectedSeat.hourlyPrice * selectedTimes.length;
         break;
       case "DAILY":
-        price = 10000;
+        price = selectedSeat.dailyPrice;
         break;
       case "MONTHLY":
-        price = 99000;
+        price = selectedSeat.monthlyPrice;
         break;
     }
 
