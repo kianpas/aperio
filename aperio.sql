@@ -10,6 +10,8 @@ INSERT INTO menus (parent_id, name, description, url, active, type, sort_order, 
 INSERT INTO menus (parent_id, name, description, url, active, type, sort_order, created_at, updated_at) VALUES (NULL, '문의하기', '문의/연락처 페이지', '/contact', TRUE, 'MAIN_MENU', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO menus (parent_id, name, description, url, active, type, sort_order, created_at, updated_at) VALUES (NULL, 'FAQ', '자주 묻는 질문', '/faq', TRUE, 'MAIN_MENU', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
+insert into userroles (role_id, user_id, created_at )
+values (3, 1, now());
 
 
 INSERT INTO roles (code, name, description, active, created_at, updated_at)
@@ -19,7 +21,7 @@ VALUES
   ('ROLE_USER', '일반 사용자', '일반적인 접근 권한만 보유', true, NOW(), NOW());
 
 DROP TABLE public.users CASCADE;
-DROP TABLE public.coupon CASCADE;
+DROP TABLE public.usercoupon CASCADE;
 
 
 INSERT INTO "faq" (category, category_order, question, answer, display_order, active, created_at, updated_at) VALUES

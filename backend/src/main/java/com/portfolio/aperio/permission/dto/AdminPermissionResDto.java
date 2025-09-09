@@ -18,9 +18,9 @@ public class AdminPermissionResDto {
 
     public static AdminPermissionResDto from(Permission permission) {
         return AdminPermissionResDto.builder()
-                .permissionId(permission.getPermissionId())
-                .permissionCode(permission.getPermissionCode())
-                .permissionName(permission.getPermissionName())
+                .permissionId(permission.getId())
+                .permissionCode(permission.getCode())
+                .permissionName(permission.getName())
                 .description(permission.getDescription())
                 .build();
     }

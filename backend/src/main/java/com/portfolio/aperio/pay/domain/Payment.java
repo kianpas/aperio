@@ -2,48 +2,46 @@ package com.portfolio.aperio.pay.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@Table(name = "payments")
 @Getter
 @Setter
-@NoArgsConstructor // 기본 생성자
-@AllArgsConstructor // 모든 필드 생성자
-@Builder // 빌더 패턴 사용 (객체 생성 시 편리)
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EntityListeners(AuditingEntityListener.class)
 public class Payment {
 
-    @Id // 기본 키
-    @Column(length = 255)
-    private String paymentKey; // 카카오페이: aid 또는 tid (aid가 승인 후 고유값)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "payment_key", nullable = false, unique = true, length = 64)
+    private String paymentKey;
 
     @Column(nullable = false)
     private Long resNo; // 연결된 예약 번호 (Reservation 테이블 FK)
 
-    @Column(length = 255)
-    private String payPrice; // 최종 결제 금액 (VARCHAR)
+    @Column(name = "amount", precision = 15, scale = 2, nullable = false)
+    private BigDecimal amount;
 
     @Column(length = 255)
-    private String payStatus; // 결제 상태 ("DONE", "CANCELED", "FAILED" 등)
-
-    @Column(length = 255)
-    private String payApproveDt; // 결제 승인 시각 (카카오 응답 그대로 저장)
-
-    @Column(length = 255)
-    private String payCanclDt; // 결제 취소 시각 (String)
-
-    @Builder.Default
-    @Column(nullable = false, length = 255)
-    private String errCode = ""; // 오류 코드 (성공 시 빈 문자열)
-
-    @Builder.Default
-    @Column(nullable = false, length = 255)
-    private String errMsg = ""; // 오류 메시지 (성공 시 빈 문자열)
-
-    @Column(length = 255)
-    private String registDt; // 결제 준비 요청 시각 (카카오 응답 created_at)
+    private String status; // 결제 상태 ("DONE", "CANCELED", "FAILED" 등)
 
     @Column(length = 255)
     private String method; // 결제 수단 ("CARD", "MONEY" 등)
@@ -52,9 +50,29 @@ public class Payment {
     @Column(length = 255)
     private String payProvider = "KAKAO"; // 결제 제공자
 
-    // @UpdateTimestamp // 수정 시 자동 업데이트 (필요시 활성화)
-    // private LocalDateTime updateDt; // LocalDateTime 타입 권장
-    @Column(length = 255)
-    private String updateDt; // 스키마에 맞춰 String 유지
+    // 결제 준비 요청 시각 (카카오 응답 created_at)
+    @Column(name = "requested_at")
+    private LocalDateTime requestedAt;
+
+    //결제 승인 시각 (카카오 응답 approved_at)
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt;
+
+    @Column(name = "canceled_at")
+    private LocalDateTime canceledAt;
+
+    @Column(name = "error_code", length = 64)
+    private String errorCode;
+
+    @Column(name = "error_message", length = 255)
+    private String errorMessage;
+
+    @CreatedDate
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
 }

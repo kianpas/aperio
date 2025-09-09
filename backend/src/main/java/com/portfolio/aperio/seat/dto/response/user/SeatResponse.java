@@ -1,5 +1,7 @@
 package com.portfolio.aperio.seat.dto.response.user;
 
+import java.math.BigDecimal;
+
 import com.portfolio.aperio.seat.domain.Seat;
 
 import lombok.AllArgsConstructor;
@@ -19,11 +21,11 @@ public class SeatResponse {
     
     private String description;
     
-    private Integer hourlyPrice;
+    private BigDecimal hourlyPrice;
     
-    private Integer dailyPrice;
+    private BigDecimal dailyPrice;
     
-    private Integer monthlyPrice;
+    private BigDecimal monthlyPrice;
     
     private Integer capacity;
     

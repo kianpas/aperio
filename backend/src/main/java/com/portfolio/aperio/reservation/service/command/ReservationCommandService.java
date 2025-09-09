@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -90,8 +91,6 @@ public class ReservationCommandService {
 
         log.debug("userId {}", userId);
 
-        // TODO: 임시 코드
-        String authCd = "ROLE_ADMIN"; // 임직원 권한 코드 (예시)
         if (userId == null) {
             throw new IllegalStateException("사용자 번호(userNo)를 가져올 수 없습니다.");
         }
@@ -103,32 +102,32 @@ public class ReservationCommandService {
         LocalDateTime startDateTime = toKstLocalDateTime(request.getStartAt());
         LocalDateTime endDateTime = toKstLocalDateTime(request.getEndAt());
 
-        // switch (request.getPlanType()) {
-        // case "HOURLY":
-        // if (request.getSelectedTimes() == null ||
-        // request.getSelectedTimes().isEmpty()) {
-        // throw new IllegalArgumentException("시간제는 예약 시간을 선택해야 합니다.");
-        // }
-        // request.getSelectedTimes().sort(Comparator.naturalOrder());
-        // LocalTime startTime = LocalTime.parse(request.getSelectedTimes().get(0),
-        // TIME_FORMATTER);
-        // LocalTime lastTime = LocalTime.parse(
-        // request.getSelectedTimes().get(request.getSelectedTimes().size() - 1),
-        // TIME_FORMATTER);
-        // startDateTime = reservationDate.atTime(startTime);
-        // endDateTime = reservationDate.atTime(lastTime.plusHours(1));
-        // break;
-        // case "DAILY":
-        // startDateTime = reservationDate.atTime(OPEN_TIME);
-        // endDateTime = reservationDate.atTime(CLOSE_TIME);
-        // break;
-        // case "MONTHLY":
-        // startDateTime = reservationDate.atTime(OPEN_TIME);
-        // endDateTime = reservationDate.plusMonths(1).atTime(CLOSE_TIME);
-        // break;
-        // default:
-        // throw new IllegalArgumentException("알 수 없는 요금제 타입입니다.");
-        // }
+        switch (request.getPlanType()) {
+            case "HOURLY":
+                if (startDateTime == null ||
+                        request.getSelectedTimes().isEmpty()) {
+                    throw new IllegalArgumentException("시간제는 예약 시간을 선택해야 합니다.");
+                }
+                // request.getSelectedTimes().sort(Comparator.naturalOrder());
+                // LocalTime startTime = LocalTime.parse(request.getSelectedTimes().get(0),
+                // TIME_FORMATTER);
+                // LocalTime lastTime = LocalTime.parse(
+                // request.getSelectedTimes().get(request.getSelectedTimes().size() - 1),
+                // TIME_FORMATTER);
+                // startDateTime = reservationDate.atTime(startTime);
+                // endDateTime = reservationDate.atTime(lastTime.plusHours(1));
+                // break;
+                // case "DAILY":
+                // startDateTime = reservationDate.atTime(OPEN_TIME);
+                // endDateTime = reservationDate.atTime(CLOSE_TIME);
+                // break;
+                // case "MONTHLY":
+                // startDateTime = reservationDate.atTime(OPEN_TIME);
+                // endDateTime = reservationDate.plusMonths(1).atTime(CLOSE_TIME);
+                break;
+            default:
+                throw new IllegalArgumentException("알 수 없는 요금제 타입입니다.");
+        }
 
         String lockKey = String.format("lock:seat:%s:%s", request.getSeatId(), request.getStartAt().substring(0, 10));
         String lockValue = UUID.randomUUID().toString();
@@ -259,19 +258,19 @@ public class ReservationCommandService {
             Payment payment = paymentOpt.get();
             System.out.println("[Service] 관련 결제 정보 찾음: PaymentKey=" + payment.getPaymentKey());
 
-            int paidAmount;
+            BigDecimal paidAmount;
             try {
-                paidAmount = Integer.parseInt(payment.getPayPrice());
+                paidAmount = payment.getAmount();
             } catch (NumberFormatException | NullPointerException e) {
-                System.err.println("결제 금액(payPrice) 파싱 오류 또는 없음: " + payment.getPayPrice());
-                paidAmount = 0;
+                System.err.println("결제 금액(payPrice) 파싱 오류 또는 없음: " + payment.getAmount());
+                paidAmount = BigDecimal.ZERO;
             }
 
-            if (paidAmount > 0 && "KAKAO".equals(payment.getPayProvider())) {
+            if (paidAmount.compareTo(BigDecimal.ZERO) > 0 && "KAKAO".equals(payment.getPayProvider())) {
                 try {
                     System.out.println("카카오페이 결제 취소 API 호출 성공 (가정)");
-                    payment.setPayStatus("CANCELED");
-                    payment.setPayCanclDt(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                    payment.setStatus("CANCELED");
+                    payment.setCanceledAt(LocalDateTime.now());
                     paymentRepository.save(payment);
 
                 } catch (Exception e) {
@@ -284,8 +283,8 @@ public class ReservationCommandService {
                 System.out.println("[Service] 0원 예약 또는 카카오페이 결제 건이 아니므로 외부 API 취소 호출 생략.");
             }
 
-            payment.setPayStatus("CANCELED");
-            payment.setPayCanclDt(now.format(DateTimeFormatter.ISO_DATE_TIME));
+            payment.setStatus("CANCELED");
+            payment.setCanceledAt(now);
             paymentRepository.save(payment);
             System.out.println("[Service] Payment 상태 'CANCELED' 업데이트 완료");
 

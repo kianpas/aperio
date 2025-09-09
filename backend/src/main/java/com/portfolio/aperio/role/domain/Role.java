@@ -108,7 +108,7 @@ public class Role {
      */
     public boolean hasPermission(String permissionCode) {
         return rolePermissions.stream()
-                .anyMatch(rp -> permissionCode.equals(rp.getPermission().getPermissionCode()));
+                .anyMatch(rp -> permissionCode.equals(rp.getPermission().getCode()));
     }
 
     /**

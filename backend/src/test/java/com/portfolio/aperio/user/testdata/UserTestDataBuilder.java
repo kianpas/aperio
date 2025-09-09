@@ -52,9 +52,9 @@ public class UserTestDataBuilder {
      */
     public static User createDefaultUser() {
         return User.builder()
-                .userId(1L)
+                .id(1L)
                 .email("test@example.com")
-                .password("encodedPassword123")
+                .password("12345678")
                 .name("테스트사용자")
                 .phoneNumber("01012345678")
                 .userStatus(UserStatus.ACTIVE)
