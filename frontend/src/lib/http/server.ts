@@ -1,6 +1,6 @@
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 
-const BASE = process.env.NEXT_PUBLIC_API_URL!;
+const BASE = process.env.BACKEND_API_URL !;
 
 export async function serverFetch(path: string, init: RequestInit = {}) {
   const cookie = cookies().toString();
@@ -17,10 +17,21 @@ export async function serverFetch(path: string, init: RequestInit = {}) {
   return res;
 }
 
-async function toApiError(res: Response) {
-  let body: any = undefined;
+async function toApiError(res: Response): Promise<Error> {
+  let body: unknown;
   try {
     body = await res.json();
-  } catch {}
-  return new Error(body?.message || `API ${res.status}`);
+  } catch {
+    body = null;
+  }
+
+  let message = `API ${res.status}`;
+  if (typeof body === "object" && body !== null && "message" in body) {
+    const maybeMsg = (body as { message?: unknown }).message;
+    if (typeof maybeMsg === "string" && maybeMsg.trim().length > 0) {
+      message = maybeMsg;
+    }
+  }
+
+  return new Error(message);
 }
