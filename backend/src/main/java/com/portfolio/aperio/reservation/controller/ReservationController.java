@@ -13,7 +13,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import java.util.stream.Collectors;
+import com.portfolio.aperio.common.dto.PagedResponse;
+import com.portfolio.aperio.reservation.dto.response.user.ReservationDto;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -168,5 +176,47 @@ public class ReservationController {
             current = current.plusHours(1);
         }
         return originalTimes;
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<?> getReservations(@AuthenticationPrincipal UserDetails userDetails,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Long currentUserId;
+
+        String username = userDetails.getUsername();
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("DB 사용자 정보 없음: " + username));
+        currentUserId = user.getId();
+
+        log.debug("userId {}", currentUserId);
+
+        long total = reservationRepository.countByUser_Id(currentUserId);
+        int size = pageable.getPageSize();
+        int lastPage = total == 0 ? 0 : (int) Math.max(0, (total - 1) / size);
+        int safePage = Math.min(pageable.getPageNumber(), lastPage);
+        Pageable safe = PageRequest.of(safePage, size, pageable.getSort());
+
+        // List<Reservation> reservationList =
+        // reservationRepository.findByUserId(currentUserId);
+        Page<Reservation> reservations = reservationRepository.findByUserIdOrderByCreatedAtDesc(currentUserId,
+                safe);
+
+        log.debug("reservations {}", reservations);
+
+        log.debug("reservations getContent{}", reservations.getContent());
+
+        var content = reservations.getContent().stream()
+                .map(ReservationDto::from)
+                .collect(java.util.stream.Collectors.toList());
+
+        PagedResponse<ReservationDto> body = new PagedResponse<>(
+                content,
+                reservations.getNumber(),
+                reservations.getSize(),
+                reservations.getTotalElements(),
+                reservations.getTotalPages(),
+                reservations.isLast());
+
+        return ResponseEntity.ok(body);
     }
 }

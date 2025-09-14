@@ -29,6 +29,16 @@ export interface Coupon {
   description: string;
 }
 
+export interface Reservation {
+  id: number;
+  seatName: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  status: "completed" | "upcoming" | "cancelled" | "in-progress";
+  price: number;
+  reservationDate: string;
+}
 export interface CreateReservationPayload {
   seatId: number;
   planType: PlanType;

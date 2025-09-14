@@ -5,6 +5,7 @@ import com.portfolio.aperio.reservation.dto.user.UserReservationResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -20,8 +21,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByUser_IdOrderByCreatedAtDesc(Long userId, Pageable pageable);
 
     // 호환성: 기존 호출부 유지용 (도메인 변경 전/후 모두 동작)
+    @EntityGraph(attributePaths = {"seat"})
     @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId ORDER BY r.createdAt DESC")
-    List<Reservation> findByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId, Pageable pageable);
+    Page<Reservation> findByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId, Pageable pageable);
+
+    long countByUser_Id(Long userId);
+
+
+    
 
     // ReservationService에서 사용하는 메서드
     @Query(

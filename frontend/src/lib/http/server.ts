@@ -1,13 +1,33 @@
 import { cookies } from "next/headers";
 
-const BASE = process.env.BACKEND_API_URL !;
+// Resolve backend base URL with sensible fallbacks for dev
+const BASE =
+  process.env.BACKEND_API_URL ||
+  process.env.INTERNAL_API_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:8080";
 
 export async function serverFetch(path: string, init: RequestInit = {}) {
-  const cookie = cookies().toString();
-  const h = new Headers(init.headers);
-  if (cookie) h.set("cookie", cookie);
+  if (!BASE || BASE === "undefined") {
+    throw new Error(
+      "BACKEND_API_URL is not configured. Set it in your environment (.env.local)."
+    );
+  }
 
-  const res = await fetch(`${BASE}${path}`, {
+  const base = BASE.endsWith("/") ? BASE.slice(0, -1) : BASE;
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  // Next.js 14+ dynamic API: await cookies()
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore
+    .getAll()
+    .map((c) => `${encodeURIComponent(c.name)}=${encodeURIComponent(c.value)}`)
+    .join("; ");
+
+  const h = new Headers(init.headers);
+  if (cookieHeader) h.set("cookie", cookieHeader);
+
+  const res = await fetch(`${base}${normalizedPath}`, {
     ...init,
     headers: h,
     // 서버에서 민감 데이터는 기본적으로 캐시하지 않음

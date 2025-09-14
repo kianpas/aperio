@@ -161,7 +161,7 @@ public class AdminUserService {
 
         // 2. 최근 예약 5개 조회
         Pageable pageable = PageRequest.of(0, RECENT_RESERVATION_COUNT);
-        List<Reservation> recentReservations = reservationRepository.findByUserIdOrderByCreatedAtDesc(userNo, pageable);
+        List<Reservation> recentReservations = reservationRepository.findByUser_IdOrderByCreatedAtDesc(userNo, pageable);
 
         // 3. 예약 엔티티 목록 -> 예약 목록 변환
         List<UserDetailReservationListDto> userDetailReservationListDtos = recentReservations.stream()

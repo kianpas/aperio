@@ -5,7 +5,6 @@
   FaArrowRight,
 } from "react-icons/fa";
 
-import { Seat, TimeSlot, Coupon, PlanType } from "@/types/reservation";
 import { serverFetch } from "@/lib/http/server";
 import SeatSelector from "./SeatSelector";
 
