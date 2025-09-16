@@ -81,20 +81,20 @@ export default function Navigation({
 
   return (
     <>
-      {/* 데스크톱 메뉴 */}
-      <nav className="hidden md:flex items-center space-x-8">
+       {/* 데스크톱 메뉴 */}
+      <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-700">
         {menus.map((menu) => (
           <Link
             key={menu.id}
             href={menu.url}
-            className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+            className="hover:text-blue-600 transition-colors duration-200"
           >
             {menu.name}
           </Link>
         ))}
       </nav>
 
-      {/* 모바일 메뉴 버튼 */}
+    {/* 모바일 메뉴 버튼 */}
       <div className="md:hidden">
         <button
           onClick={onToggleMobileMenu}
@@ -110,7 +110,7 @@ export default function Navigation({
         </button>
       </div>
 
-      {/* 모바일 메뉴 */}
+       {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
         <div className="fixed top-16 left-0 right-0 w-full bg-white shadow-lg border-t border-gray-200 md:hidden z-[60] overflow-x-hidden">
           <div className="px-4 py-6 space-y-4 max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain touch-pan-y">
@@ -118,7 +118,7 @@ export default function Navigation({
               <Link
                 key={menu.id}
                 href={menu.url}
-                className="block text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                className="block text-base text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
                 onClick={onToggleMobileMenu}
               >
                 {menu.name}

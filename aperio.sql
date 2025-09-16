@@ -10,7 +10,7 @@ INSERT INTO menus (parent_id, name, description, url, active, type, sort_order, 
 INSERT INTO menus (parent_id, name, description, url, active, type, sort_order, created_at, updated_at) VALUES (NULL, '문의하기', '문의/연락처 페이지', '/contact', TRUE, 'MAIN_MENU', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO menus (parent_id, name, description, url, active, type, sort_order, created_at, updated_at) VALUES (NULL, 'FAQ', '자주 묻는 질문', '/faq', TRUE, 'MAIN_MENU', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-insert into userroles (role_id, user_id, created_at )
+insert into user_roles (role_id, user_id, created_at )
 values (3, 1, now());
 
 
@@ -21,10 +21,10 @@ VALUES
   ('ROLE_USER', '일반 사용자', '일반적인 접근 권한만 보유', true, NOW(), NOW());
 
 DROP TABLE public.users CASCADE;
-DROP TABLE public.usercoupon CASCADE;
+DROP TABLE public.payment CASCADE;
 
 
-INSERT INTO "faq" (category, category_order, question, answer, display_order, active, created_at, updated_at) VALUES
+INSERT INTO "faqs" (category, category_order, question, answer, display_order, active, created_at, updated_at) VALUES
 ('서비스 이용', 1, '서비스 이용 방법은 어떻게 되나요?', '회원가입 후 로그인하시면 원하시는 서비스를 예약하고 이용하실 수 있습니다. 예약 페이지에서 원하는 좌석이나 회의실을 선택하고 결제를 진행하시면 됩니다.', 1, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('서비스 이용', 1, '운영 시간은 어떻게 되나요?', '저희 Aperio 공유 오피스는 연중무휴 24시간 운영됩니다. 언제든지 편하신 시간에 방문하여 이용하실 수 있습니다.', 2, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('서비스 이용', 1, '주차는 가능한가요?', '건물 내 지하주차장을 이용하실 수 있습니다. 시간당 요금이 부과되며, 월 정기권 회원은 무료 주차 혜택을 제공해 드립니다.', 3, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),

@@ -19,21 +19,21 @@ export default function Header() {
       setIsMobileMenuOpen(false);
       router.push("/");
     } catch (error) {
-      console.error("로그아웃 실패:", error);
+       console.error("로그아웃 실패:", error);
     }
   };
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
 
   const UserInfo = ({ className = "" }: { className?: string }) => (
-    <div className={`flex items-center space-x-2 ${className}`}>
+    <div className={`flex items-center gap-2 ${className}`}>
       <FaUser className="w-4 h-4 text-gray-600" />
-      <span className="text-sm text-gray-700 font-medium">{user?.name}</span>
+      <span className="text-sm text-gray-700 font-semibold">{user?.name}</span>
     </div>
   );
 
   const AuthenticatedMenu = ({ isMobile = false }: { isMobile?: boolean }) => (
-    <div className={isMobile ? "space-y-3" : "flex items-center space-x-4"}>
+    <div className={isMobile ? "space-y-3" : "flex items-center gap-4"}>
       <UserInfo />
       <Link
         href="/mypage"
@@ -49,7 +49,7 @@ export default function Header() {
         className={`text-sm transition-colors duration-200 ${
           isMobile
             ? "block text-gray-600 hover:text-gray-800"
-            : "bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
+            : "bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm font-semibold"
         }`}
       >
         로그아웃
@@ -63,13 +63,13 @@ export default function Header() {
   }: {
     isMobile?: boolean;
   }) => (
-    <div className={isMobile ? "space-y-2" : "flex items-center space-x-3"}>
+    <div className={isMobile ? "space-y-2" : "flex items-center gap-3"}>
       <Link
         href="/login"
         className={`font-medium transition-colors duration-200 ${
           isMobile
             ? "block w-full text-center bg-white border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50"
-            : "text-gray-600 hover:text-blue-600"
+            : "text-sm text-gray-600 hover:text-blue-600 font-medium"
         }`}
         onClick={() => isMobile && setIsMobileMenuOpen(false)}
       >
@@ -80,11 +80,11 @@ export default function Header() {
         className={`font-medium transition-colors duration-200 ${
           isMobile
             ? "block w-full text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-            : "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            : "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold"
         }`}
         onClick={() => isMobile && setIsMobileMenuOpen(false)}
       >
-        회원가입
+       회원가입
       </Link>
     </div>
   );
@@ -113,16 +113,16 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* 네비게이션 + 인증 */}
-          <div className="flex items-center space-x-8 relative">
+         {/* 네비게이션 + 인증 */}
+          <div className="flex items-center gap-8 relative">
             <Navigation
               isMobileMenuOpen={isMobileMenuOpen}
               onToggleMobileMenu={toggleMobileMenu}
               mobileExtra={mobileAuthArea}
             />
 
-            {/* 데스크톱 인증 영역 */}
-            <div className="hidden md:flex items-center space-x-4">
+                  {/* 데스크톱 인증 영역 */}
+            <div className="hidden md:flex items-center gap-4">
               {loading ? (
                 <LoadingSpinner size="sm" />
               ) : isAuthenticated ? (
