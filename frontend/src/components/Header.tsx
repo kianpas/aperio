@@ -1,29 +1,63 @@
-"use client";
+// "use client";
 
-import { useState } from "react";
+import { cache } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import Navigation from "./Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { FaUser } from "react-icons/fa";
 import LoadingSpinner from "./ui/LoadingSpinner";
+import { serverFetch } from "@/lib/http/server";
 
-export default function Header() {
-  const { user, loading, isAuthenticated, logout } = useAuth();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const router = useRouter();
+const FALLBACK_MENUS = [
+  { id: 1, name: "예약하기T", url: "/reservation", sortOrder: 1, active: true },
+  { id: 2, name: "문의하기T", url: "/contact", sortOrder: 2, active: true },
+  { id: 3, name: "FAQT", url: "/faq", sortOrder: 3, active: true },
+];
+
+//함수는 한 번 선언해 두면 호출마다
+// 같은 Promise를 재사용해 주기 때문에,
+// 서버 렌더링 중에 동일한 메뉴 데이터를
+// 여러 컴포넌트가 필요로 할 때 추가 호출 없이 공유
+const getMenus = cache(async () => {
+  const res = await serverFetch("/api/v1/menus", { next: { revalidate: 300 } }); // 5분 캐시
+  const menus = await res.json();
+  return menus?.length ? menus : FALLBACK_MENUS;
+});
+
+// 새 데이터를 가져와야 해서 캐시가 필요 없음
+async function getCurrentUser() {
+  try {
+    const res = await serverFetch("/api/v1/users/me", { cache: "no-store" });
+    return await res.json(); // 로그인 상태면 user, 아니면 서버에서 401 → catch
+  } catch (err) {
+    return null;
+  }
+}
+
+export default async function Header() {
+  //두 비동기 작업을 동시에 시작하고, 둘 다 끝날 때까지 기다리는 구조
+  const [menus, user] = await Promise.all([getMenus(), getCurrentUser()]);
+  console.log("Header - user:", user);
+  const isAuthenticated = !!user.authenticated;
+
+  // const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  let isMobileMenuOpen = false;
+  // const router = useRouter();
+
+  const loading = false;
 
   const handleLogout = async () => {
     try {
-      await logout();
-      setIsMobileMenuOpen(false);
-      router.push("/");
+      // await logout();
+      // setIsMobileMenuOpen(false);
+      // router.push("/");
     } catch (error) {
-       console.error("로그아웃 실패:", error);
+      console.error("로그아웃 실패:", error);
     }
   };
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
+  const toggleMobileMenu = () => (isMobileMenuOpen = !isMobileMenuOpen);
 
   const UserInfo = ({ className = "" }: { className?: string }) => (
     <div className={`flex items-center gap-2 ${className}`}>
@@ -40,12 +74,10 @@ export default function Header() {
         className={`text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200 ${
           isMobile ? "block" : ""
         }`}
-        onClick={() => isMobile && setIsMobileMenuOpen(false)}
       >
         마이페이지
       </Link>
       <button
-        onClick={handleLogout}
         className={`text-sm transition-colors duration-200 ${
           isMobile
             ? "block text-gray-600 hover:text-gray-800"
@@ -71,7 +103,6 @@ export default function Header() {
             ? "block w-full text-center bg-white border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50"
             : "text-sm text-gray-600 hover:text-blue-600 font-medium"
         }`}
-        onClick={() => isMobile && setIsMobileMenuOpen(false)}
       >
         로그인
       </Link>
@@ -82,9 +113,8 @@ export default function Header() {
             ? "block w-full text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
             : "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold"
         }`}
-        onClick={() => isMobile && setIsMobileMenuOpen(false)}
       >
-       회원가입
+        회원가입
       </Link>
     </div>
   );
@@ -113,15 +143,15 @@ export default function Header() {
             </Link>
           </div>
 
-         {/* 네비게이션 + 인증 */}
+          {/* 네비게이션 + 인증 */}
           <div className="flex items-center gap-8 relative">
             <Navigation
+              initialMenus={menus}
               isMobileMenuOpen={isMobileMenuOpen}
-              onToggleMobileMenu={toggleMobileMenu}
               mobileExtra={mobileAuthArea}
             />
 
-                  {/* 데스크톱 인증 영역 */}
+            {/* 데스크톱 인증 영역 */}
             <div className="hidden md:flex items-center gap-4">
               {loading ? (
                 <LoadingSpinner size="sm" />

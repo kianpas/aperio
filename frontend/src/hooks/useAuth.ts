@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect, useCallback } from "react";
 import { authAPI } from "@/lib/api/auth";
 import { accountAPI } from "@/lib/api/account";

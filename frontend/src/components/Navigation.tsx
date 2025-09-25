@@ -15,14 +15,14 @@ interface Menu {
 
 interface NavigationProps {
   isMobileMenuOpen: boolean;
-  onToggleMobileMenu: () => void;
   mobileExtra?: ReactNode;
+  initialMenus: Menu[];
 }
 
 export default function Navigation({
   isMobileMenuOpen,
-  onToggleMobileMenu,
   mobileExtra,
+  initialMenus
 }: NavigationProps) {
   const [menus, setMenus] = useState<Menu[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,14 +30,8 @@ export default function Navigation({
   useEffect(() => {
     const fetchMenus = async () => {
       try {
-        const response = await fetch("/api/v1/menus");
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
-        const menu: Menu[] = await response.json();
-
-        console.log("menulist.data => ", menu);
-
-        setMenus(menu);
+      
+        setMenus(initialMenus);
       } catch (e) {
         console.error("Error fetching menus:", e);
         // Fallback menus
@@ -71,6 +65,8 @@ export default function Navigation({
     fetchMenus();
   }, []);
 
+  const onToggleMobileMenu = () => isMobileMenuOpen = !isMobileMenuOpen;
+
   if (loading) {
     return (
       <nav className="flex items-center space-x-4">
@@ -81,7 +77,7 @@ export default function Navigation({
 
   return (
     <>
-       {/* 데스크톱 메뉴 */}
+      {/* 데스크톱 메뉴 */}
       <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-700">
         {menus.map((menu) => (
           <Link
@@ -94,7 +90,7 @@ export default function Navigation({
         ))}
       </nav>
 
-    {/* 모바일 메뉴 버튼 */}
+      {/* 모바일 메뉴 버튼 */}
       <div className="md:hidden">
         <button
           onClick={onToggleMobileMenu}
@@ -110,7 +106,7 @@ export default function Navigation({
         </button>
       </div>
 
-       {/* 모바일 메뉴 */}
+      {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
         <div className="fixed top-16 left-0 right-0 w-full bg-white shadow-lg border-t border-gray-200 md:hidden z-[60] overflow-x-hidden">
           <div className="px-4 py-6 space-y-4 max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain touch-pan-y">

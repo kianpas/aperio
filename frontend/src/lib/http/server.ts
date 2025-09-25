@@ -27,11 +27,13 @@ export async function serverFetch(path: string, init: RequestInit = {}) {
   const h = new Headers(init.headers);
   if (cookieHeader) h.set("cookie", cookieHeader);
 
+  const cacheOption = init.cache ?? (init.next ? undefined : "no-store");
+
   const res = await fetch(`${base}${normalizedPath}`, {
     ...init,
     headers: h,
     // 서버에서 민감 데이터는 기본적으로 캐시하지 않음
-    cache: "no-store",
+    cache: cacheOption,
   });
   if (!res.ok) throw await toApiError(res);
   return res;
