@@ -8,9 +8,13 @@
 import { serverFetch } from "@/lib/http/server";
 import SeatSelector from "./SeatSelector";
 
-const ReservationPage = async () => {
+async function getSeats() {
   const res = await serverFetch("/api/v1/seats");
-  const seats = await res.json();
+  return res.ok ? res.json() : [];
+}
+
+const ReservationPage = async () => {
+  const seats = await getSeats();
   console.log("seats from server =>", seats);
 
   return (
