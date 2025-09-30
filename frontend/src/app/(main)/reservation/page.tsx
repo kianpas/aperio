@@ -1,16 +1,13 @@
-﻿import {
-  FaCalendarAlt,
-  FaChair,
-  FaCreditCard,
-  FaArrowRight,
-} from "react-icons/fa";
-
-import { serverFetch } from "@/lib/http/server";
+﻿import { serverFetch } from "@/lib/http/server";
 import SeatSelector from "./SeatSelector";
 
 async function getSeats() {
-  const res = await serverFetch("/api/v1/seats");
-  return res.ok ? res.json() : [];
+  try {
+    const res = await serverFetch("/api/v1/seats");
+    return res.ok ? res.json() : [];
+  } catch (err) {
+    return null;
+  }
 }
 
 const ReservationPage = async () => {

@@ -196,6 +196,25 @@ const SeatSelectionStep = ({
   selectedSeat,
   onSeatSelect,
 }: SeatSelectionStepProps) => {
+  if (!seats || seats.length === 0) {
+    // 샘플 데이터
+    seats = [
+      {
+        id: "1",
+        name: "Focus Zone A1",
+        seatType: "SINGLE",
+        status: "available",
+        hourlyPrice: 1500,
+        dailyPrice: 12000,
+        monthlyPrice: 200000,
+        capacity: 1,
+        description: "조용한 개인 작업 공간",
+        floor: "1층",
+        location: "1층",
+      },
+    ];
+  }
+
   const individualSeats = seats.filter((seat) => seat.seatType === "SINGLE");
   const meetingSeats = seats.filter((seat) => seat.seatType === "MEETING");
   const phoneSeats = seats.filter((seat) => seat.seatType === "phone");

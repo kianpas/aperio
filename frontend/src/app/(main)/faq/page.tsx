@@ -11,7 +11,7 @@ import {
   FaWifi,
 } from "react-icons/fa";
 import { FaqResponse, CategoryIconMap } from "@/types/faq";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
+// import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 // 카테고리별 아이콘 매핑
 const CATEGORY_ICON_MAP: CategoryIconMap = {
@@ -121,32 +121,32 @@ const FAQSection = ({ category, questions }: FAQSectionProps) => {
 export default function FAQPage() {
   const { faqs, loading, error, refetch } = useFaq();
 
-  if (loading) {
-    return (
-      <LoadingSpinner
-        size="lg"
-        text="FAQ를 불러오는 중..."
-        fullScreen
-        gradient
-        double
-      />
-    );
-  }
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-600 mb-4">{error}</div>
-          <button
-            onClick={refetch}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            다시 시도
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <LoadingSpinner
+  //       size="lg"
+  //       text="FAQ를 불러오는 중..."
+  //       fullScreen
+  //       gradient
+  //       double
+  //     />
+  //   );
+  // }
+  // if (error) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="text-red-600 mb-4">{error}</div>
+  //         <button
+  //           onClick={refetch}
+  //           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+  //         >
+  //           다시 시도
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   // 페이지에서 직접 그룹화 (React 19 컴파일러가 최적화)
   const groupedFaqs = groupFaqsByCategory(faqs);

@@ -1,8 +1,6 @@
 import { cache } from "react";
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
 import Navigation from "./Navigation";
-import { useAuth } from "@/hooks/useAuth";
 import { FaUser } from "react-icons/fa";
 import LoadingSpinner from "./ui/LoadingSpinner";
 import { serverFetch } from "@/lib/http/server";
@@ -18,9 +16,16 @@ const FALLBACK_MENUS = [
 // 서버 렌더링 중에 동일한 메뉴 데이터를
 // 여러 컴포넌트가 필요로 할 때 추가 호출 없이 공유
 const getMenus = cache(async () => {
-  const res = await serverFetch("/api/v1/menus", { next: { revalidate: 300 } }); // 5분 캐시
-  const menus = await res.json();
-  return menus?.length ? menus : FALLBACK_MENUS;
+  try {
+    const res = await serverFetch("/api/v1/menus", {
+      next: { revalidate: 300 },
+    }); // 5분 캐시
+    const menus = await res.json();
+    return menus?.length ? menus : FALLBACK_MENUS;
+  } catch (e) {
+    console.error("Error fetching menus:", e);
+    return FALLBACK_MENUS;
+  }
 });
 
 // 새 데이터를 가져와야 해서 캐시가 필요 없음
@@ -37,7 +42,10 @@ export default async function Header() {
   //두 비동기 작업을 동시에 시작하고, 둘 다 끝날 때까지 기다리는 구조
   const [menus, user] = await Promise.all([getMenus(), getCurrentUser()]);
   console.log("Header - user:", user);
-  const isAuthenticated = !!user.authenticated;
+  let isAuthenticated;
+  if (user != null) {
+    isAuthenticated = !!user.authenticated;
+  }
 
   // const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   let isMobileMenuOpen = false;
