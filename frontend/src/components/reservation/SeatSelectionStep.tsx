@@ -201,7 +201,7 @@ const SeatSelectionStep = ({
     seats = [
       {
         id: "1",
-        name: "Focus Zone A1",
+        name: "Test Zone A1",
         seatType: "SINGLE",
         status: "available",
         hourlyPrice: 1500,

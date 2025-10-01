@@ -1,7 +1,5 @@
 ﻿import { serverFetch } from "@/lib/http/server";
-import { useUser } from "@/hooks/useUser";
-import { accountAPI } from "@/lib/api/account";
-import ProfileClient from "@/components/main/mypage/profile/ProfileClient";
+import ProfileClient from "@/app/(main)/mypage/profile/ProfileClient";
 
 async function getProfile() {
   const res = await serverFetch("/api/v1/users/me/profile");

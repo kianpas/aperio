@@ -61,6 +61,16 @@ export async function serverFetch(path: string, init: ServerFetchInit = {}) {
   }
 }
 
+type ErrorPayload = { message: string };
+
+function hasMessage(value: unknown): value is ErrorPayload {
+  if (typeof value !== "object" || value === null || !("message" in value)) {
+    return false;
+  }
+  const { message } = value as Record<string, unknown>;
+  return typeof message === "string";
+}
+
 async function toApiError(res: Response): Promise<Error> {
   let body: unknown = null;
   try {
@@ -69,13 +79,9 @@ async function toApiError(res: Response): Promise<Error> {
     body = null;
   }
 
-  const message =
-    typeof body === "object" &&
-    body !== null &&
-    "message" in body &&
-    typeof (body as any).message === "string"
-      ? (body as any).message.trim()
-      : `API ${res.status} ${res.statusText}`.trim();
+ const message = hasMessage(body)
+    ? body.message.trim()
+    : `API ${res.status} ${res.statusText}`.trim();
 
   return new Error(message);
 }
