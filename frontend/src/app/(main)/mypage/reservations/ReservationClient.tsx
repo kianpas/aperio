@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { Reservation } from "@/types/reservation";
 import {
   FaCalendarAlt,
   FaClock,
@@ -13,29 +11,25 @@ import {
   FaExclamationTriangle,
   FaSpinner,
 } from "react-icons/fa";
+import { useState } from "react";
+import { Reservation } from "@/types/reservation";
 
-const ReservationSearch = ({
-  initialReservations,
-}: {
-  initialReservations: Reservation[];
-}) => {
+const ReservationClient = () => {
   const [activeTab, setActiveTab] = useState<
     "all" | "upcoming" | "completed" | "cancelled"
   >("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const getTabCount = (status: string) => {
-    if (status === "all") return initialReservations.length;
-    return initialReservations.filter((r) => r.status === status).length;
-  };
-
-  console.log("initialReservations =>", initialReservations);
+  //   const getTabCount = (status: string) => {
+  //     if (status === "all") return initialReservations.length;
+  //     return initialReservations.filter((r) => r.status === status).length;
+  //   };
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
         {/* 탭 필터 */}
-        <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+        {/* <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
           {[
             { key: "all", label: "전체" },
             { key: "upcoming", label: "예정" },
@@ -58,7 +52,7 @@ const ReservationSearch = ({
               {tab.label} ({getTabCount(tab.key)})
             </button>
           ))}
-        </div>
+        </div> */}
 
         {/* 검색 */}
         <div className="relative">
@@ -76,4 +70,4 @@ const ReservationSearch = ({
   );
 };
 
-export default ReservationSearch;
+export default ReservationClient;
