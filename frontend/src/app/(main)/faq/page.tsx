@@ -70,8 +70,8 @@ const FAQSection = ({ category, questions }: FAQSectionProps) => {
   return (
     <div className="mb-10">
       {/* 카테고리 헤더 */}
-      <div className="flex items-center mb-6 p-4 bg-white rounded-2xl shadow-sm border border-gray-100">
-        <div className="inline-flex items-center justify-center w-14 h-14 bg-blue-600 rounded-2xl mr-4">
+      <div className="flex items-center mb-6 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="inline-flex items-center justify-center w-14 h-14 bg-blue-600 rounded-xl mr-4">
           <IconComponent className="text-white text-xl" />
         </div>
         <div>
@@ -87,7 +87,7 @@ const FAQSection = ({ category, questions }: FAQSectionProps) => {
         {questions.map((item, index) => (
           <div
             key={item.id}
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200 transform hover:scale-[1.01]"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200 transform hover:scale-[1.01]"
           >
             <button
               onClick={() => toggleQuestion(index)}
@@ -121,47 +121,21 @@ const FAQSection = ({ category, questions }: FAQSectionProps) => {
 export default function FAQPage() {
   const { faqs, loading, error, refetch } = useFaq();
 
-  // if (loading) {
-  //   return (
-  //     <LoadingSpinner
-  //       size="lg"
-  //       text="FAQ를 불러오는 중..."
-  //       fullScreen
-  //       gradient
-  //       double
-  //     />
-  //   );
-  // }
-  // if (error) {
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="text-red-600 mb-4">{error}</div>
-  //         <button
-  //           onClick={refetch}
-  //           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-  //         >
-  //           다시 시도
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
+  
   // 페이지에서 직접 그룹화 (React 19 컴파일러가 최적화)
   const groupedFaqs = groupFaqsByCategory(faqs);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="bg-white">
       {/* 헤더 */}
       <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 rounded-2xl mb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 rounded-xl mb-6">
             <span className="text-4xl" role="img" aria-label="질문">
               ❓
             </span>
           </div>
-          <h1 className="text-4xl font-bold mb-4">자주 묻는 질문</h1>
+          <h1 className="text-4xl font-brand-bold mb-4">자주 묻는 질문</h1>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
             Aperio 서비스 이용에 대해 궁금하신 점을 확인하세요
           </p>
@@ -169,7 +143,7 @@ export default function FAQPage() {
       </div>
 
       {/* 메인 콘텐츠 */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         {groupedFaqs.map(({ category, questions }) => (
           <FAQSection
             key={category}
@@ -179,8 +153,8 @@ export default function FAQPage() {
         ))}
 
         {/* 문의하기 섹션 */}
-        <div className="mt-16 text-center bg-white rounded-2xl shadow-xl p-10 border border-gray-100">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-2xl mb-6">
+        <div className="mt-16 text-center bg-white rounded-xl shadow-xl p-10 border border-gray-100">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-xl mb-6">
             <span className="text-2xl" role="img" aria-label="대화">
               💬
             </span>
@@ -192,7 +166,7 @@ export default function FAQPage() {
             문의하기를 통해 빠른 답변을 받아보실 수 있습니다
           </p>
           <button
-            className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-semibold rounded-2xl text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+            className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-semibold rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
             onClick={() => console.log("문의하기 클릭")}
           >
             문의하기
