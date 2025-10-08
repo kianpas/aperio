@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+癤퓁mport { NextRequest, NextResponse } from "next/server";
 
 interface LoginPayload {
   email?: string;
@@ -17,7 +17,7 @@ const REQUEST_TIMEOUT_MS = 5000;
 export async function POST(request: NextRequest) {
   if (!BACKEND_BASE_URL || BACKEND_BASE_URL === "undefined") {
     return NextResponse.json(
-      { message: "BACKEND_API_URL(.env.local) 설정을 확인해주세요." },
+      { message: "BACKEND_API_URL(.env.local) configuration missing. Please verify the value." },
       { status: 500 }
     );
   }
@@ -27,14 +27,14 @@ export async function POST(request: NextRequest) {
     payload = await request.json();
   } catch {
     return NextResponse.json(
-      { message: "잘못된 요청 본문입니다." },
+      { message: "Request body could not be parsed as JSON." },
       { status: 400 }
     );
   }
 
   if (!payload?.email || !payload?.password) {
     return NextResponse.json(
-      { message: "이메일과 비밀번호를 입력해주세요." },
+      { message: "Email and password are required." },
       { status: 400 }
     );
   }
@@ -89,13 +89,13 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
       return NextResponse.json(
-        { message: "로그인 요청이 타임아웃되었습니다." },
+        { message: "Login request timed out." },
         { status: 504 }
       );
     }
 
     return NextResponse.json(
-      { message: "로그인 요청 처리 중 오류가 발생했습니다." },
+      { message: "An error occurred while processing the login request." },
       { status: 502 }
     );
   } finally {
