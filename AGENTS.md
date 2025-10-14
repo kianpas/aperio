@@ -9,8 +9,8 @@
 3. **서비스 통합**: 비즈니스 로직은 하나의 Service에서 관리
 4. **DTO 세분화**: 요청/응답 DTO를 명확히 분리
 5. SOLID - 객체 지향 설계 다섯 원칙 (SRP, OCP, LSP, ISP, DIP)
-  KISS -  Keep It Simple, Stupid – 단순하게 설계하자는 원칙
-  YAGNI - You Aren’t Gonna Need It – 필요하기 전엔 기능 추가하지 말라는 원칙
+6. KISS -  Keep It Simple, Stupid – 단순하게 설계하자는 원칙
+7. YAGNI - You Aren’t Gonna Need It – 필요하기 전엔 기능 추가하지 말라는 원칙
 
 ## SSR/CSR 데이터 접근 지침 (Spring Security)
 
