@@ -3,7 +3,6 @@
 import { useState } from "react";
 // import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
 import {
   FaEye,
   FaEyeSlash,
@@ -24,10 +23,6 @@ const Login = () => {
     rememberMe: false,
   });
   const [isLoading, setIsLoading] = useState(false);
-
-  // const router = useRouter();
-  // useAuth 추가
-  const { login } = useAuth();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
