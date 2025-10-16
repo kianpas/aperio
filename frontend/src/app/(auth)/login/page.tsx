@@ -41,18 +41,34 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const result = await login({
-        email: formData.email,
-        password: formData.password,
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+        credentials: "same-origin", // route.ts가 붙여주는 세션 쿠키 유지
+        cache: "no-store",
       });
 
-      console.log("result ", result);
+      console.log("response ", response);
 
-      if (result.email) {
-        console.log(`환영합니다, ${result.email}님!`);
-        // router.push("/");
-        window.location.href = "/";
+      const text = await response.text();
+      const payload = text ? JSON.parse(text) : {};
+
+      if (!response.ok) {
+        const message =
+          typeof payload === "object" && payload && "message" in payload
+            ? (payload as { message: string }).message
+            : "로그인에 실패했습니다.";
+        throw new Error(message);
       }
+      console.log("login success:", payload);
+      window.location.href = "/";
     } catch (error) {
       alert(error instanceof Error ? error.message : "로그인에 실패했습니다.");
     } finally {
