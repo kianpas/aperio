@@ -1,7 +1,7 @@
 package com.portfolio.aperio.user.controller;
 
 import com.portfolio.aperio.common.util.AuthenticationHelper;
-import com.portfolio.aperio.coupon.service.CouponIssueService;
+import com.portfolio.aperio.coupon.application.service.command.CouponIssueService;
 import com.portfolio.aperio.user.dto.response.user.UserProfileResponse;
 import com.portfolio.aperio.user.service.query.UserQueryService;
 import jakarta.servlet.http.HttpServletRequest;

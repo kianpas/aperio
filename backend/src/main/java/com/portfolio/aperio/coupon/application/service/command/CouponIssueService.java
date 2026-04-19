@@ -1,8 +1,8 @@
-package com.portfolio.aperio.coupon.service;
+package com.portfolio.aperio.coupon.application.service.command;
 
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.common.exception.ErrorCode;
-import com.portfolio.aperio.coupon.domain.Coupon;
+import com.portfolio.aperio.coupon.domain.entity.Coupon;
 import com.portfolio.aperio.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

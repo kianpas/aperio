@@ -1,6 +1,6 @@
 package com.portfolio.aperio.user.domain;
 
-import com.portfolio.aperio.coupon.domain.UserCoupon;
+import com.portfolio.aperio.coupon.domain.entity.UserCoupon;
 import com.portfolio.aperio.role.domain.UserRole;
 
 import jakarta.persistence.*;

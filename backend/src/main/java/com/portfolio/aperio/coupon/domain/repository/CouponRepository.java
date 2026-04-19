@@ -1,9 +1,9 @@
-package com.portfolio.aperio.coupon.repository;
+package com.portfolio.aperio.coupon.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.portfolio.aperio.coupon.domain.Coupon;
+import com.portfolio.aperio.coupon.domain.entity.Coupon;
 
 import java.util.List;
 import java.util.Optional;

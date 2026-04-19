@@ -1,4 +1,4 @@
-package com.portfolio.aperio.coupon.dto.request.user;
+package com.portfolio.aperio.coupon.presentation.user.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;

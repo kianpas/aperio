@@ -1,10 +1,10 @@
-package com.portfolio.aperio.coupon.dto.response.admin;
+package com.portfolio.aperio.coupon.presentation.admin.dto.reponse;
 
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.portfolio.aperio.coupon.domain.Coupon;
+import com.portfolio.aperio.coupon.domain.entity.Coupon;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.portfolio.aperio.coupon.dto.request.admin;
+package com.portfolio.aperio.coupon.presentation.admin.dto.request;
 
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -6,15 +6,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.portfolio.aperio.coupon.domain.Coupon;
-import com.portfolio.aperio.coupon.dto.response.admin.AdminCouponResDto;
+import com.portfolio.aperio.coupon.domain.entity.Coupon;
+import com.portfolio.aperio.coupon.presentation.admin.dto.reponse.AdminCouponResDto;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class AdminCouponRegistReqDto {
+public class AdminCouponEditReqDto {
+
+    private Long cpNo;
 
     @NotBlank(message = "쿠폰명은 필수 입력 항목입니다.")
     @Size(max = 100, message = "쿠폰명은 최대 100자까지 입력 가능합니다.")
@@ -45,8 +47,8 @@ public class AdminCouponRegistReqDto {
     @Size(max = 500, message = "쿠폰 설명은 최대 500자까지 입력 가능합니다.")
     private String cpnDsc;
 
-    private Boolean active;
-
+    @Pattern(regexp = "[YN]", message = "활성 여부는 'Y' 또는 'N'이어야 합니다.")
+    private String activeYn;
 
     public static AdminCouponResDto from(Coupon coupon) {
         return AdminCouponResDto.builder()

@@ -1,14 +1,12 @@
-package com.portfolio.aperio.coupon.service;
+package com.portfolio.aperio.coupon.application.service.command;
 
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.common.exception.ErrorCode;
-import com.portfolio.aperio.coupon.domain.Coupon;
-import com.portfolio.aperio.coupon.domain.UserCoupon;
-import com.portfolio.aperio.coupon.dto.request.admin.AdminCouponEditReqDto;
-import com.portfolio.aperio.coupon.dto.request.admin.AdminCouponRegistReqDto;
-import com.portfolio.aperio.coupon.dto.response.admin.AdminCouponResDto;
-import com.portfolio.aperio.coupon.repository.CouponRepository;
-import com.portfolio.aperio.user.domain.User;
+import com.portfolio.aperio.coupon.domain.entity.Coupon;
+import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponEditReqDto;
+import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponRegistReqDto;
+import com.portfolio.aperio.coupon.presentation.admin.dto.reponse.AdminCouponResDto;
+import com.portfolio.aperio.coupon.domain.repository.CouponRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

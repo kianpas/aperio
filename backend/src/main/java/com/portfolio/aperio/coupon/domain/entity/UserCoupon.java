@@ -1,4 +1,4 @@
-package com.portfolio.aperio.coupon.domain;
+package com.portfolio.aperio.coupon.domain.entity;
 
 import com.portfolio.aperio.user.domain.User;
 

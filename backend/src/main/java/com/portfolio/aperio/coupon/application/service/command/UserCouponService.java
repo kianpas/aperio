@@ -1,9 +1,9 @@
-package com.portfolio.aperio.coupon.service;
+package com.portfolio.aperio.coupon.application.service.command;
 
-import com.portfolio.aperio.coupon.domain.Coupon;
+import com.portfolio.aperio.coupon.domain.entity.Coupon;
 import com.portfolio.aperio.user.domain.User;
-import com.portfolio.aperio.coupon.domain.UserCoupon;
-import com.portfolio.aperio.coupon.repository.UserCouponRepository;
+import com.portfolio.aperio.coupon.domain.entity.UserCoupon;
+import com.portfolio.aperio.coupon.domain.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-import com.portfolio.aperio.coupon.domain.UserCoupon;
+import com.portfolio.aperio.coupon.domain.entity.UserCoupon;
 
 @Getter
 @Builder
