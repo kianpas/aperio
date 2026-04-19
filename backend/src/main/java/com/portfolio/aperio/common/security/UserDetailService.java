@@ -1,4 +1,4 @@
-package com.portfolio.aperio.security;
+package com.portfolio.aperio.common.security;
 
 import com.portfolio.aperio.user.domain.User;
 import com.portfolio.aperio.user.repository.UserRepository;

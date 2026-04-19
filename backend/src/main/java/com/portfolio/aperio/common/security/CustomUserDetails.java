@@ -1,4 +1,4 @@
-package com.portfolio.aperio.security;
+package com.portfolio.aperio.common.security;
 
 import lombok.Builder;
 import lombok.Getter;

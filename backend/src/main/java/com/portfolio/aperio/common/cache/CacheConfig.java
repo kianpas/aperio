@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableCaching
-public class CasheConfig {
+public class CacheConfig {
     // 별도 라이브러리 없이 스프링 기본 메모리 캐시 사용
     @Bean
     public CacheManager cacheManager() {

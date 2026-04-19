@@ -1,4 +1,4 @@
-package com.portfolio.aperio.security;
+package com.portfolio.aperio.common.security;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

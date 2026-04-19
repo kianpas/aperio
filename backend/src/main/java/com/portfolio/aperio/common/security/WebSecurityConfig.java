@@ -1,4 +1,4 @@
-package com.portfolio.aperio.security;
+package com.portfolio.aperio.common.security;
 
 import com.portfolio.aperio.oauth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
