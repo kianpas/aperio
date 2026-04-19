@@ -1,7 +1,7 @@
 package com.portfolio.aperio.common.util;
 
 import com.portfolio.aperio.oauth.domain.CustomOAuth2User;
-import com.portfolio.aperio.security.CustomUserDetails;
+import com.portfolio.aperio.common.security.CustomUserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

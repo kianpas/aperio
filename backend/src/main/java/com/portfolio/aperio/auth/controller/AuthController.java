@@ -1,6 +1,6 @@
 package com.portfolio.aperio.auth.controller;
 
-import com.portfolio.aperio.security.CustomUserDetails;
+import com.portfolio.aperio.common.security.CustomUserDetails;
 import com.portfolio.aperio.user.domain.User;
 import com.portfolio.aperio.user.dto.request.user.LoginUserRequest;
 import com.portfolio.aperio.user.dto.response.user.LoginUserResponse;
