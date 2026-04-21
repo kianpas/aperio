@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.portfolio.aperio.coupon.domain.entity.Coupon;
-import com.portfolio.aperio.coupon.presentation.admin.dto.reponse.AdminCouponResDto;
+import com.portfolio.aperio.coupon.presentation.admin.dto.response.AdminCouponResDto;
 
 import java.time.LocalDateTime;
 

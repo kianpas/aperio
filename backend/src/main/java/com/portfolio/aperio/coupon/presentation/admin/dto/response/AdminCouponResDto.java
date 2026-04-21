@@ -1,4 +1,4 @@
-package com.portfolio.aperio.coupon.presentation.admin.dto.reponse;
+package com.portfolio.aperio.coupon.presentation.admin.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -5,7 +5,7 @@ import com.portfolio.aperio.common.exception.ErrorCode;
 import com.portfolio.aperio.coupon.domain.entity.Coupon;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponEditReqDto;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponRegistReqDto;
-import com.portfolio.aperio.coupon.presentation.admin.dto.reponse.AdminCouponResDto;
+import com.portfolio.aperio.coupon.presentation.admin.dto.response.AdminCouponResDto;
 import com.portfolio.aperio.coupon.domain.repository.CouponRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,25 +17,9 @@ import java.time.LocalDateTime;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CouponService {
+public class CouponCommandService {
 
     private final CouponRepository couponRepository;
-
-    /**
-     * 쿠폰 조회
-     */
-    @Transactional(readOnly = true)
-    public Coupon findById(Long couponId) {
-        return couponRepository.findById(couponId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT));
-    }
-
-    /**
-     * 발급 가능 여부 조회 임시
-     */
-    @Transactional(readOnly = true)
-    public boolean isValidForIssue(Coupon coupon) {
-        return true;
-    }
 
     /**
      * 쿠폰 생성

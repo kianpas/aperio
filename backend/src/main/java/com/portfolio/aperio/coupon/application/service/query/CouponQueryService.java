@@ -10,10 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.portfolio.aperio.coupon.domain.entity.Coupon;
-import com.portfolio.aperio.coupon.presentation.admin.dto.reponse.AdminCouponResDto;
-
-
-import java.time.LocalDateTime;
+import com.portfolio.aperio.coupon.presentation.admin.dto.response.AdminCouponResDto;
 
 @Slf4j
 @Service
@@ -21,6 +18,22 @@ import java.time.LocalDateTime;
 public class CouponQueryService {
 
     private final CouponQueryRepository couponQueryRepository;
+
+    /**
+     * 쿠폰 조회
+     */
+    @Transactional(readOnly = true)
+    public Coupon findById(Long couponId) {
+        return couponQueryRepository.findById(couponId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT));
+    }
+
+    /**
+     * 발급 가능 여부 조회 임시
+     */
+    @Transactional(readOnly = true)
+    public boolean isValidForIssue(Coupon coupon) {
+        return true;
+    }
 
     /**
      * 관리자 > 쿠폰 목록

@@ -3,8 +3,8 @@ package com.portfolio.aperio.coupon.presentation.admin.controller;
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponEditReqDto;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponRegistReqDto;
-import com.portfolio.aperio.coupon.presentation.admin.dto.reponse.AdminCouponResDto;
-import com.portfolio.aperio.coupon.application.service.command.CouponService;
+import com.portfolio.aperio.coupon.presentation.admin.dto.response.AdminCouponResDto;
+import com.portfolio.aperio.coupon.application.service.command.CouponCommandService;
 import com.portfolio.aperio.coupon.application.service.query.CouponQueryService;
 import com.portfolio.aperio.user.domain.User;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AdminCouponController {
 
-    private final CouponService couponService;
+    private final CouponCommandService couponService;
     private final CouponQueryService couponQueryService;
 
     /**

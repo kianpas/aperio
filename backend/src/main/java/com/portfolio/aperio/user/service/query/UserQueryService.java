@@ -2,9 +2,9 @@ package com.portfolio.aperio.user.service.query;
 
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.common.exception.ErrorCode;
+import com.portfolio.aperio.coupon.application.service.command.CouponCommandService;
 import com.portfolio.aperio.coupon.domain.entity.UserCoupon;
 import com.portfolio.aperio.coupon.domain.repository.UserCouponRepository;
-import com.portfolio.aperio.coupon.application.service.command.CouponService;
 import com.portfolio.aperio.user.domain.User;
 import com.portfolio.aperio.user.dto.response.user.MypageCouponResDto;
 import com.portfolio.aperio.user.dto.response.user.UserInfoResponse;
@@ -32,7 +32,7 @@ public class UserQueryService {
 
     private final UserRepository userRepository;
 
-    private final CouponService couponService;
+    private final CouponCommandService couponService;
 
     private final UserCouponRepository userCouponRepository;
 

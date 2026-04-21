@@ -2,6 +2,7 @@ package com.portfolio.aperio.coupon.application.service.command;
 
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.common.exception.ErrorCode;
+import com.portfolio.aperio.coupon.application.service.query.CouponQueryService;
 import com.portfolio.aperio.coupon.domain.entity.Coupon;
 import com.portfolio.aperio.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CouponIssueService {
 
-    private final CouponService couponService;
+    private final CouponQueryService couponQueryService;
     private final UserCouponService userCouponService;
 
     @Transactional
@@ -21,8 +22,8 @@ public class CouponIssueService {
         Long couponId = determineCouponByUser(user);
 
         // 2. 쿠폰 조회 및 검증
-        Coupon coupon = couponService.findById(couponId);
-        if (!couponService.isValidForIssue(coupon)) {
+        Coupon coupon = couponQueryService.findById(couponId);
+        if (!couponQueryService.isValidForIssue(coupon)) {
             throw new CustomException(ErrorCode.INVALID_INPUT);
         }
 
