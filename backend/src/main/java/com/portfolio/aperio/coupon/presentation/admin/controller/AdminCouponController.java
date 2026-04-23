@@ -1,11 +1,16 @@
 package com.portfolio.aperio.coupon.presentation.admin.controller;
 
 import com.portfolio.aperio.common.exception.CustomException;
+import com.portfolio.aperio.coupon.application.dto.command.CreateCouponCommand;
+import com.portfolio.aperio.coupon.application.dto.result.CouponResult;
+import com.portfolio.aperio.coupon.application.mapper.CouponApplicationMapper;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponEditReqDto;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponRegistReqDto;
+import com.portfolio.aperio.coupon.presentation.admin.dto.request.CreateCouponRequest;
 import com.portfolio.aperio.coupon.presentation.admin.dto.response.AdminCouponResDto;
 import com.portfolio.aperio.coupon.application.service.command.CouponCommandService;
 import com.portfolio.aperio.coupon.application.service.query.CouponQueryService;
+import com.portfolio.aperio.coupon.presentation.admin.dto.response.CouponResponse;
 import com.portfolio.aperio.user.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +30,13 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AdminCouponController {
 
-    private final CouponCommandService couponService;
+    private final CouponCommandService couponCommandService;
+
     private final CouponQueryService couponQueryService;
 
     /**
      * 관리자 > 쿠폰관리
+     *
      * @param user
      * @param model
      * @return
@@ -38,7 +45,7 @@ public class AdminCouponController {
     public String getCouponManagementView(@AuthenticationPrincipal User user,
                                           @RequestParam(required = false, defaultValue = "") String searchCouponName,
                                           @RequestParam(defaultValue = "0") int page,
-                                          Model model){
+                                          Model model) {
 
         Pageable pageable = PageRequest.of(page, 10); // 예: 페이지당 10개
 
@@ -51,13 +58,14 @@ public class AdminCouponController {
 
     /**
      * 관리자 > 쿠폰등록 화면
+     *
      * @param user
      * @param model
      * @return
      */
     @GetMapping("/regist")
     public String getCouponRegistView(@AuthenticationPrincipal User user,
-                                          Model model){
+                                      Model model) {
 
         model.addAttribute("couponInfo", new AdminCouponRegistReqDto());
         return "admin/coupon/coupon-regist";
@@ -65,17 +73,16 @@ public class AdminCouponController {
 
     /**
      * 관리자 > 쿠폰등록
-     * @param adminCouponRegistReqDto
+     *
+     * @param request
      * @param bindingResult
      * @param model
      * @return
      */
     @PostMapping("/regist")
-    public String couponRegist(@Valid @ModelAttribute("couponInfo")AdminCouponRegistReqDto adminCouponRegistReqDto,
+    public String couponRegist(@Valid @ModelAttribute("couponInfo") CreateCouponRequest request,
                                BindingResult bindingResult,
                                Model model) {
-
-        log.debug("adminCouponRegistReqDto {}", adminCouponRegistReqDto.getCpnNm());
 
         if (bindingResult.hasErrors()) {
             // 유효성 검사 실패 시, 다시 등록 폼으로 이동 (오류 메시지 표시됨)
@@ -84,7 +91,9 @@ public class AdminCouponController {
 
         try {
 
-            couponService.createCoupon(adminCouponRegistReqDto);
+            CreateCouponCommand command = CouponApplicationMapper.toCommand(request);
+            CouponResult result = couponCommandService.createCoupon(command);
+            CouponResponse response = CouponApplicationMapper.toResponse(result);
             model.addAttribute("result", "success");
 
             return "redirect:/admin/coupons";
@@ -103,6 +112,7 @@ public class AdminCouponController {
 
     /**
      * 쿠폰 단일 조회
+     *
      * @param cpNo
      * @param model
      * @return
@@ -122,6 +132,7 @@ public class AdminCouponController {
 
     /**
      * 관리자 > 쿠폰등록
+     *
      * @param bindingResult
      * @param model
      * @return
@@ -141,7 +152,7 @@ public class AdminCouponController {
 
         try {
 
-            AdminCouponResDto adminCouponResDto = couponService.updateCoupon(cpNo, adminCouponEditReqDto);
+            AdminCouponResDto adminCouponResDto = couponCommandService.updateCoupon(cpNo, adminCouponEditReqDto);
 //            model.addAttribute("couponInfo", adminCouponResDto);
 
             return "redirect:/admin/coupons/edit/" + cpNo;

@@ -4,7 +4,9 @@ import com.portfolio.aperio.coupon.application.dto.command.CreateCouponCommand;
 import com.portfolio.aperio.coupon.application.dto.result.CouponResult;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.CreateCouponRequest;
 import com.portfolio.aperio.coupon.presentation.admin.dto.response.CouponResponse;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public final class CouponApplicationMapper {
 
     public static CreateCouponCommand toCommand(CreateCouponRequest req) {

@@ -2,6 +2,8 @@ package com.portfolio.aperio.coupon.application.service.command;
 
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.common.exception.ErrorCode;
+import com.portfolio.aperio.coupon.application.dto.command.CreateCouponCommand;
+import com.portfolio.aperio.coupon.application.dto.result.CouponResult;
 import com.portfolio.aperio.coupon.domain.entity.Coupon;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponEditReqDto;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponRegistReqDto;
@@ -25,19 +27,19 @@ public class CouponCommandService {
      * 쿠폰 생성
      */
     @Transactional
-    public Coupon createCoupon(AdminCouponRegistReqDto adminCouponRegistReqDto) {
-        log.debug("registAdminCoupon|adminCoupon = {}", adminCouponRegistReqDto);
+    public CouponResult createCoupon(CreateCouponCommand cmd) {
+        log.debug("registAdminCoupon|adminCoupon = {}", cmd);
 
         // 쿠폰 객체 생성
         Coupon coupon = Coupon.builder()
-                .name(adminCouponRegistReqDto.getCpnNm())
+                .name(cmd.name())
                 // .discount(adminCouponRegistReqDto.getDiscount()) // DTO와 Entity의 타입이 맞아야 함
                 // .discountAt(adminCouponRegistReqDto.getDiscountAt())
-                .startAt(adminCouponRegistReqDto.getCpnStartDt())
-                .endAt(adminCouponRegistReqDto.getCpnEndDt())
-                .description(adminCouponRegistReqDto.getCpnDsc())
+                .startAt(cmd.startAt())
+                .endAt(cmd.endAt())
+//                .description(adminCouponRegistReqDto.getCpnDsc())
                 // activeYn은 DTO에서 받거나, 서비스에서 기본값 설정 가능
-                .active(adminCouponRegistReqDto.getActive())
+                .active(cmd.active())
                 // 기본값
                 // 'Y'
                 .createdAt(LocalDateTime.now())
@@ -45,7 +47,15 @@ public class CouponCommandService {
 
         // === 데이터 영속화 ===
         // 리포지토리를 통해 Coupon 엔티티를 DB에 저장
-        return couponRepository.save(coupon);
+        Coupon saved = couponRepository.save(coupon);
+
+        return new CouponResult(
+                saved.getId(),
+                saved.getName(),
+                saved.getStartAt(),
+                saved.getEndAt(),
+                saved.getActive()
+        );
     }
 
     /**
