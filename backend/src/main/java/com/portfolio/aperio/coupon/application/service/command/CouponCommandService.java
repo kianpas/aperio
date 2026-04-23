@@ -63,7 +63,7 @@ public class CouponCommandService {
      * 쿠폰 수정
      */
     @Transactional
-    public AdminCouponResDto updateCoupon(Long cpNo, UpdateCouponCommand cmd) {
+    public CouponResult updateCoupon(Long cpNo, UpdateCouponCommand cmd) {
 
         // 1. 쿠폰정보 조회
         Coupon coupon = couponRepository.findById(cpNo).orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT));
@@ -77,7 +77,15 @@ public class CouponCommandService {
         coupon.setStartAt(cmd.startAt());
         coupon.setEndAt(cmd.endAt());
 
-        return AdminCouponResDto.from(coupon);
+        Coupon saved = couponRepository.save(coupon);
+
+        return new CouponResult(
+                saved.getId(),
+                saved.getName(),
+                saved.getStartAt(),
+                saved.getEndAt(),
+                saved.getActive()
+        );
     }
 
 }
