@@ -154,8 +154,8 @@ public class AdminCouponController {
 
         try {
             UpdateCouponCommand command = CouponApplicationMapper.toUpdateCommand(request);
-//            AdminCouponResDto adminCouponResDto = couponCommandService.updateCoupon(cpNo, command);
-//            model.addAttribute("couponInfo", adminCouponResDto);
+            CouponResult result = couponCommandService.updateCoupon(cpNo, command);
+            CouponResponse response = CouponApplicationMapper.toResponse(result);
 
             return "redirect:/admin/coupons/edit/" + cpNo;
         } catch (CustomException ex) {
