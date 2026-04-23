@@ -1,8 +1,10 @@
 package com.portfolio.aperio.coupon.application.mapper;
 
 import com.portfolio.aperio.coupon.application.dto.command.CreateCouponCommand;
+import com.portfolio.aperio.coupon.application.dto.command.UpdateCouponCommand;
 import com.portfolio.aperio.coupon.application.dto.result.CouponResult;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.CreateCouponRequest;
+import com.portfolio.aperio.coupon.presentation.admin.dto.request.UpdateCouponRequest;
 import com.portfolio.aperio.coupon.presentation.admin.dto.response.CouponResponse;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +13,15 @@ public final class CouponApplicationMapper {
 
     public static CreateCouponCommand toCommand(CreateCouponRequest req) {
         return new CreateCouponCommand(
+                req.name(),
+                req.startAt(),
+                req.endAt(),
+                req.active()
+        );
+    }
+
+    public static UpdateCouponCommand toUpdateCommand(UpdateCouponRequest req) {
+        return new UpdateCouponCommand(
                 req.name(),
                 req.startAt(),
                 req.endAt(),

@@ -3,6 +3,7 @@ package com.portfolio.aperio.coupon.application.service.command;
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.common.exception.ErrorCode;
 import com.portfolio.aperio.coupon.application.dto.command.CreateCouponCommand;
+import com.portfolio.aperio.coupon.application.dto.command.UpdateCouponCommand;
 import com.portfolio.aperio.coupon.application.dto.result.CouponResult;
 import com.portfolio.aperio.coupon.domain.entity.Coupon;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponEditReqDto;
@@ -62,19 +63,19 @@ public class CouponCommandService {
      * 쿠폰 수정
      */
     @Transactional
-    public AdminCouponResDto updateCoupon(Long cpNo, AdminCouponEditReqDto adminCouponEditReqDto) {
+    public AdminCouponResDto updateCoupon(Long cpNo, UpdateCouponCommand cmd) {
 
         // 1. 쿠폰정보 조회
         Coupon coupon = couponRepository.findById(cpNo).orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT));
         log.debug("findAdminCoupon|coupon => {}", coupon);
 
-        coupon.setName(adminCouponEditReqDto.getCpnNm());
+        coupon.setName(cmd.name());
         // 사용여부 수정
         // coupon.setActiveYn(adminCouponEditReqDto.getActiveYn());
         // coupon.setDiscount(adminCouponEditReqDto.getDiscount());
-        coupon.setDescription(adminCouponEditReqDto.getCpnDsc());
-        coupon.setStartAt(adminCouponEditReqDto.getCpnStartDt());
-        coupon.setEndAt(adminCouponEditReqDto.getCpnEndDt());
+//        coupon.setDescription(adminCouponEditReqDto.getCpnDsc());
+        coupon.setStartAt(cmd.startAt());
+        coupon.setEndAt(cmd.endAt());
 
         return AdminCouponResDto.from(coupon);
     }

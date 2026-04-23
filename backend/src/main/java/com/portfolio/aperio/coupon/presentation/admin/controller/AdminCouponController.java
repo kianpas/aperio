@@ -2,11 +2,12 @@ package com.portfolio.aperio.coupon.presentation.admin.controller;
 
 import com.portfolio.aperio.common.exception.CustomException;
 import com.portfolio.aperio.coupon.application.dto.command.CreateCouponCommand;
+import com.portfolio.aperio.coupon.application.dto.command.UpdateCouponCommand;
 import com.portfolio.aperio.coupon.application.dto.result.CouponResult;
 import com.portfolio.aperio.coupon.application.mapper.CouponApplicationMapper;
-import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponEditReqDto;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.AdminCouponRegistReqDto;
 import com.portfolio.aperio.coupon.presentation.admin.dto.request.CreateCouponRequest;
+import com.portfolio.aperio.coupon.presentation.admin.dto.request.UpdateCouponRequest;
 import com.portfolio.aperio.coupon.presentation.admin.dto.response.AdminCouponResDto;
 import com.portfolio.aperio.coupon.application.service.command.CouponCommandService;
 import com.portfolio.aperio.coupon.application.service.query.CouponQueryService;
@@ -139,11 +140,12 @@ public class AdminCouponController {
      */
     @PutMapping("/edit/{cpNo}")
     public String editCoupon(@PathVariable("cpNo") Long cpNo,
-                             @Valid @ModelAttribute("couponInfo") AdminCouponEditReqDto adminCouponEditReqDto,
+                             @Valid @ModelAttribute("couponInfo") UpdateCouponRequest request,
                              BindingResult bindingResult,
                              Model model) {
         log.debug("editCoupon|cpNo = {}", cpNo);
-        log.debug("adminCouponRegistReqDto {}", adminCouponEditReqDto.getCpnNm());
+
+
 
         if (bindingResult.hasErrors()) {
             // 유효성 검사 실패 시, 다시 등록 폼으로 이동 (오류 메시지 표시됨)
@@ -151,8 +153,8 @@ public class AdminCouponController {
         }
 
         try {
-
-            AdminCouponResDto adminCouponResDto = couponCommandService.updateCoupon(cpNo, adminCouponEditReqDto);
+            UpdateCouponCommand command = CouponApplicationMapper.toUpdateCommand(request);
+            AdminCouponResDto adminCouponResDto = couponCommandService.updateCoupon(cpNo, command);
 //            model.addAttribute("couponInfo", adminCouponResDto);
 
             return "redirect:/admin/coupons/edit/" + cpNo;
