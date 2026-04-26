@@ -30,7 +30,7 @@ public class KakaoPayService {
     private ReservationRepository reservationRepository;
 
 
-    @Value("${kakao.pay.admin-key}")
+//    @Value("${kakao.pay.admin-key}")
     private String kakaoAdminKey;
 
     // 카카오페이 API 호스트

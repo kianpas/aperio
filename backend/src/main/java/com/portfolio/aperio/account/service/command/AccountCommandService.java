@@ -47,8 +47,8 @@ public class AccountCommandService {
     private static final int EXPIRATION_TIME = 180; // 3분
 
     // 이메일 인증번호
-    private final JavaMailSender mailSender;
-    @Value("${spring.mail.username:no-reply@aperio.local}") // 미설정 시 로컬 기본 발신 주소 사용
+//    private final JavaMailSender mailSender;
+//    @Value("${spring.mail.username}") // application.properties/yml 값 주입
     private String fromEmail;
 
     /**
@@ -278,7 +278,7 @@ public class AccountCommandService {
         message.setSubject("[Between] 비밀번호 찾기 인증번호 안내");
         message.setText("요청하신 비밀번호 찾기 인증번호는 [" + otp + "] 입니다.\n" +
                 "이 인증번호는 " + (EXPIRATION_TIME / 60) + "분 동안 유효합니다.");
-        mailSender.send(message);
+//        mailSender.send(message);
     }
 
     /**

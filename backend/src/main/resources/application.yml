@@ -33,21 +33,21 @@ spring:
             user-name-attribute: id
 
   # 메일 서버 기본 설정
-  mail:
-    host: smtp.gmail.com  #이메일 전송에 사용할 메일 서버의 호스트 이름으로 Gmail을 활용한다.
-    port: 587             #Gmail 포트로 default값
-    properties: # 말그대로 세팅정보로 후에 Config 설정에서 사용된다.
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-          # 타임아웃 설정
-          connectiontimeout: 5000         # SMTP 서버에 연결하는 데 허용되는 최대 시간(밀리초) : 5초
-          timeout: 5000                   # SMTP 서버에서 응답을 기다리는 최대 시간(밀리초) : 5초
-          writetimeout: 5000              # SMTP 서버에 데이터를 전송할 때 허용되는 최대 시간(밀리초) : 5초
-      auth-code-expiration-millis: 1800000  # 인증코드가 만료되기까지 시간 30 * 60 * 1000 == 30분
+#  mail:
+#    host: smtp.gmail.com  #이메일 전송에 사용할 메일 서버의 호스트 이름으로 Gmail을 활용한다.
+#    port: 587             #Gmail 포트로 default값
+#    properties: # 말그대로 세팅정보로 후에 Config 설정에서 사용된다.
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
+#            required: true
+#          # 타임아웃 설정
+#          connectiontimeout: 5000         # SMTP 서버에 연결하는 데 허용되는 최대 시간(밀리초) : 5초
+#          timeout: 5000                   # SMTP 서버에서 응답을 기다리는 최대 시간(밀리초) : 5초
+#          writetimeout: 5000              # SMTP 서버에 데이터를 전송할 때 허용되는 최대 시간(밀리초) : 5초
+#      auth-code-expiration-millis: 1800000  # 인증코드가 만료되기까지 시간 30 * 60 * 1000 == 30분
 
 # 기본 로깅 설정
 logging:
