@@ -33,6 +33,7 @@ dependencies {
 
 	// DB 연결에 필요한 라이브러리
 	implementation 'org.postgresql:postgresql'
+	runtimeOnly 'com.h2database:h2'										// 로컬 테스트용 인메모리 DB
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'		// JPA 드라이버(JPA 적용 DB와 연결하기 위한 필수 라이브러리, jdbc도 포함되어 있음)
