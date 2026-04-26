@@ -2,6 +2,7 @@ package com.portfolio.aperio.common.security;
 
 import com.portfolio.aperio.oauth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -35,6 +37,7 @@ import java.util.List;
 public class WebSecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final ObjectProvider<ClientRegistrationRepository> clientRegistrationRepositoryProvider;
 
     // 스프링 시큐리티 기능 비활성화
     @Bean
@@ -71,7 +74,7 @@ public class WebSecurityConfig {
                                 "/signup/verify-code", "/findUserInfo/verify-code",
                                 "/findUserInfo/reqSendEmail", "/findUserInfo/verifyPwdCode", "/api/resetPwd",
                                 "/faqList", "/error", "/favicon.ico", "/api/**",
-                                "/oauth2/**", "/**")
+                                "/oauth2/**")
                         .permitAll() // "/login" 누구나 접근 가능하게
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 )
@@ -100,17 +103,18 @@ public class WebSecurityConfig {
                 // // 6. CSRF 비활성화
                 // .csrf(AbstractHttpConfigurer::disable) // .csrf(csrf -> csrf.disable()) 와 동일,
                 // 메서드 레퍼런스 사용
-                // 7. OAuth2 소셜 로그인 설정 추가
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login") // 로그인 페이지 지정 (인증이 필요할 때 이동)
-                        // .defaultSuccessUrl("/") // 로그인 성공 시 이동할 URL (SuccessHandler 사용 시 주석 처리 가능)
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService) // 소셜 로그인 성공 후 사용자 정보 처리 서비스 지정
-                        )
-                        // 로그인 성공 핸들러 (선택적): 로그인 성공 후 특정 로직 수행 필요 시
-                        .successHandler(oAuth2LoginSuccessHandler())
-                        // 로그인 실패 핸들러 (선택적)
-                        .failureHandler(oAuth2LoginFailureHandler()));
+                ;
+
+        // OAuth2 Client 설정(client-id 등)이 존재할 때만 OAuth2 로그인 필터를 활성화
+        if (clientRegistrationRepositoryProvider.getIfAvailable() != null) {
+            http.oauth2Login(oauth2 -> oauth2
+                    .loginPage("/login") // 로그인 페이지 지정 (인증이 필요할 때 이동)
+                    .userInfoEndpoint(userInfo -> userInfo
+                            .userService(customOAuth2UserService) // 소셜 로그인 성공 후 사용자 정보 처리 서비스 지정
+                    )
+                    .successHandler(oAuth2LoginSuccessHandler())
+                    .failureHandler(oAuth2LoginFailureHandler()));
+        }
 
         return http.build();
     }
@@ -155,8 +159,7 @@ public class WebSecurityConfig {
         ));
         cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept",
-                "X-Requested-With", " X-XSRF-TOKEN",
-                "X-XSRF-TOKEN"));
+                "X-Requested-With", "X-XSRF-TOKEN"));
         cfg.setAllowCredentials(true); // ★ 쿠키 전송 허용
         cfg.setMaxAge(3600L);
 
