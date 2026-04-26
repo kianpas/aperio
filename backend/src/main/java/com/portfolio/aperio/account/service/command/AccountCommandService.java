@@ -48,7 +48,7 @@ public class AccountCommandService {
 
     // 이메일 인증번호
     private final JavaMailSender mailSender;
-    @Value("${spring.mail.username}") // application.properties/yml 값 주입
+    @Value("${spring.mail.username:no-reply@aperio.local}") // 미설정 시 로컬 기본 발신 주소 사용
     private String fromEmail;
 
     /**
